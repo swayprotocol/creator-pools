@@ -26,3 +26,13 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.question-item {
+  span {
+    font-size: 22px;
+  }
+  .question-opened {
+    transform: rotate(90deg);
+    display: inline-block;
+  }
+}
