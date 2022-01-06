@@ -36,3 +36,21 @@ a {
     display: inline-block;
   }
 }
+
+.overview-item {
+  .overview-item-name {
+    display: inline-block;
+    margin-right: 20px;
+  }
+
+  .overview-item-value {
+    font-weight: 600;
+    font-size: 20px;
+    display: inline-block;
+    margin-right: 20px;
+  }
+}
+
+.overview-item-title {
+  font-weight: 500;
+}
