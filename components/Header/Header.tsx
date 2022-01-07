@@ -37,7 +37,7 @@ const Header = () => (
             </Link>
           </div>
           <div className="connect">
-            <button className="btn btn-primary">
+            <button className="btn">
               Connect
             </button>
           </div>

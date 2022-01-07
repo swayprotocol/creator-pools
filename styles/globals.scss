@@ -49,8 +49,62 @@ $body-color: #232323;
 }
 
 .btn {
-  border: 1px solid #aaa;
-  background-color: #fff;
-  padding: 4px 12px;
-  box-shadow: -5px 4px 0 #e7e7e7;
+  border: 1px solid #232323;
+  padding: 1px 12px;
+  position: relative;
+  background-color: #444;
+  color: #fff;
+  transition: all 0.1s linear;
+
+  &:after,
+  &:before {
+    position: absolute;
+    content: '';
+    z-index: 1;
+    transition: all 0.1s linear;
+  }
+
+  &:before {
+    top: -2px;
+    right: calc(100% + 1px);
+    height: calc(100% + 2px);
+    width: 10px;
+    transform: matrix(1, -1, 0, 1, 0, 1);
+    transform-origin: right top;
+    border-width: 1px 0 0 1px;
+    border-style: solid;
+    border-color: #aaa;
+    background: #fff;
+  }
+
+  &:after {
+    top: 100%;
+    left: -1px;
+    width: calc(100% + 2px);
+    height: 10px;
+    transform: matrix(1, 0, -1, 1, 0, 1);
+    transform-origin: left top;
+    border-width: 0 1px 1px 1px;
+    border-style: solid;
+    border-color: #aaa;
+    background: #fff;
+  }
+
+  &.btn-secondary {
+    background-color: #fff;
+    color: #232323;
+    border: 1px solid #aaa;
+  }
+
+  &:active {
+    transform: translateY(2px);
+
+    &:before {
+      width: 8px;
+    }
+
+    &:after {
+      height: 8px;
+    }
+  }
 }
