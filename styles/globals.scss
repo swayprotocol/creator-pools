@@ -1,3 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Anaheim&display=swap');
+
+$font-family-base: 'Anaheim', sans-serif;
+$body-color: #232323;
+
 // Bootstrap imports
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
@@ -10,26 +15,10 @@
 @import "~bootstrap/scss/containers";
 @import "~bootstrap/scss/grid";
 
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-* {
-  box-sizing: border-box;
-}
-
 .question-item {
   span {
-    font-size: 22px;
+    font-size: 20px;
+    margin-right: 6px;
   }
   .question-opened {
     transform: rotate(90deg);
