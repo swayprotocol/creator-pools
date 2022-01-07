@@ -1,0 +1,31 @@
+.headerSection {
+  margin-bottom: 3rem;
+}
+
+.topSection {
+  display: flex;
+  justify-content: space-between;
+}
+
+.networkItem {
+  margin-left: 25px;
+  display: flex;
+  align-items: center;
+}
+
+.networkItemStatus {
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  border: 1px solid #232323;
+  background-color: #AAA;
+  margin-right: 10px;
+}
+
+.active {
+  background-color: #92D36E;
+}
+
+.networkItemName {
+
+}

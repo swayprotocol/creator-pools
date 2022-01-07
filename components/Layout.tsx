@@ -18,8 +18,8 @@ const Layout = ({ children }: Props) => (
     <Head>
       <meta httpEquiv="content-type" content="text/html; charset=UTF-8"/>
       <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
-      {/*<link rel="icon" href="/assets/favicon.png" type="image/png"/>*/}
-      {/*<link rel="apple-touch-icon" sizes="137x137" href="/assets/favicon-137x137.png"/>*/}
+      <link rel="icon" href="/assets/favicon.png" type="image/png"/>
+      <link rel="apple-touch-icon" sizes="137x137" href="/assets/favicon-137x137.png"/>
 
       <title>{meta.title}</title>
       <meta name="description" content={meta.description}/>
