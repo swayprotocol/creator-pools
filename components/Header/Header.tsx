@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import Image from 'next/image'
 import styles from './Header.module.scss'
 
@@ -32,12 +31,12 @@ const Header = () => (
         <div className={`${styles.topSection} my-4`}>
           <div className="d-flex align-items-center">
             <h4 className="d-inline-block me-3 mb-0">Powered by</h4>
-            <Link href="/">
+            <a href="https://swaysocial.org/" rel="noreferrer" target="_blank" title="Sway Social">
               <Image src="/assets/logo.svg" height="40" width="140" alt="Sway Social"/>
-            </Link>
+            </a>
           </div>
           <div className="connect">
-            <button className="btn">
+            <button className="btn" disabled={true}>
               Connect
             </button>
           </div>
