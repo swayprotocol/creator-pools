@@ -1,0 +1,15 @@
+.questionList {
+  font-size: 18px;
+  margin-right: 8px;
+  line-height: 1;
+}
+
+.questionOpened {
+  transform: rotate(90deg);
+}
+
+.questionItemTitle {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}

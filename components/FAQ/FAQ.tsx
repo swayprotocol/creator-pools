@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './FAQ.module.scss'
 
 function FAQ() {
   const [openQuestions, setOpenQuestions] = React.useState({
@@ -16,13 +17,15 @@ function FAQ() {
   }
 
   return (
-    <section className="faq-section">
+    <section>
       <div className="container">
         <div className="row">
-          <div className="col-12">
-            <div className="question-item">
-              <h3 onClick={() => expandQuestion('what')}>
-                <span className={openQuestions.what ? 'question-opened' : ''}>▶</span>What are creator pools?
+          <div className="col-12 col-md-10">
+            <h2>FAQ</h2>
+            <div>
+              <h3 className={styles.questionItemTitle} onClick={() => expandQuestion('what')}>
+                <div className={`${styles.questionList} ${openQuestions.what ? styles.questionOpened : ''}`}>▶</div>
+                What are creator pools?
               </h3>
               {openQuestions.what && (
                 <>
@@ -32,9 +35,10 @@ function FAQ() {
                 </>
               )}
             </div>
-            <div className="question-item">
-              <h3 onClick={() => expandQuestion('how')}>
-                <span className={openQuestions.how ? 'question-opened' : ''}>▶</span>How is value generated through NFTs?
+            <div>
+              <h3 className={styles.questionItemTitle} onClick={() => expandQuestion('how')}>
+                <div className={`${styles.questionList} ${openQuestions.how ? styles.questionOpened : ''}`}>▶</div>
+                How is value generated through NFTs?
               </h3>
               {openQuestions.how && (
                 <>
@@ -44,9 +48,10 @@ function FAQ() {
                 </>
               )}
             </div>
-            <div className="question-item">
-              <h3 onClick={() => expandQuestion('howStake')}>
-                <span className={openQuestions.howStake ? 'question-opened' : ''}>▶</span>How can I stake with a creator?
+            <div>
+              <h3 className={styles.questionItemTitle} onClick={() => expandQuestion('howStake')}>
+                <div className={`${styles.questionList} ${openQuestions.howStake ? styles.questionOpened : '' }`}>▶</div>
+                How can I stake with a creator?
               </h3>
               {openQuestions.howStake && (
                 <>
@@ -56,9 +61,10 @@ function FAQ() {
                 </>
               )}
             </div>
-            <div className="question-item">
-              <h3 onClick={() => expandQuestion('whyStake')}>
-                <span className={openQuestions.whyStake ? 'question-opened' : ''}>▶</span>Why should I stake?
+            <div>
+              <h3 className={styles.questionItemTitle} onClick={() => expandQuestion('whyStake')}>
+                <div className={`${styles.questionList} ${openQuestions.whyStake ? styles.questionOpened : ''}`}>▶</div>
+                Why should I stake?
               </h3>
               {openQuestions.whyStake && (
                 <>

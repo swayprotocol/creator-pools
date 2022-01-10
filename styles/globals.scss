@@ -15,17 +15,6 @@ $body-color: #232323;
 @import "~bootstrap/scss/containers";
 @import "~bootstrap/scss/grid";
 
-.question-item {
-  span {
-    font-size: 20px;
-    margin-right: 6px;
-  }
-  .question-opened {
-    transform: rotate(90deg);
-    display: inline-block;
-  }
-}
-
 .overview-item {
   .overview-item-name {
     display: inline-block;
