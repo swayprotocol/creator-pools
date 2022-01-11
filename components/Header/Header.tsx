@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image'
 import styles from './Header.module.scss'
 
 const Header = () => (
@@ -32,7 +31,8 @@ const Header = () => (
           <div className="d-flex align-items-center">
             <h4 className="d-inline-block me-3 mb-0">Powered by</h4>
             <a href="https://swaysocial.org/" rel="noreferrer" target="_blank" title="Sway Social">
-              <Image src="/assets/logo.svg" height="40" width="140" alt="Sway Social"/>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/assets/logo.svg" height="40" width="140" alt="Sway Social"/>
             </a>
           </div>
           <div className="connect">
