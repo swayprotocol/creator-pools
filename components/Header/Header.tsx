@@ -3,7 +3,7 @@ import Image from 'next/image'
 import styles from './Header.module.scss'
 
 const Header = () => (
-  <section className={styles.headerSection}>
+  <section className="mb-5">
     <div className="container">
       <div className="border-bottom">
 
