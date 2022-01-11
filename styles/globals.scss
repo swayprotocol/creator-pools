@@ -2,18 +2,25 @@
 
 $font-family-base: 'Anaheim', sans-serif;
 $body-color: #232323;
+$container-max-widths: (
+  xxl: 1140px
+);
 
 // Bootstrap imports
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
-@import '~bootstrap/scss/utilities';
 @import "~bootstrap/scss/root";
 @import "~bootstrap/scss/reboot";
-@import '~bootstrap/scss/helpers';
+@import '~bootstrap/scss/utilities';
 @import '~bootstrap/scss/utilities/api';
+//@import '~bootstrap/scss/helpers';
 @import "~bootstrap/scss/containers";
 @import "~bootstrap/scss/grid";
+
+.gx-6 {
+  --bs-gutter-x: 4rem;
+}
 
 .overview-item {
   .overview-item-name {

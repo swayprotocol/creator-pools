@@ -1,0 +1,30 @@
+.itemWrap {
+  border-bottom: 1px solid #c9c9c9;
+  padding: 1rem 10px 1rem 0;
+}
+
+.mainWrap {
+  display: flex;
+  justify-content: space-between;
+}
+
+.titleWrap {
+  display: flex;
+  margin-bottom: 4px;
+  color: #000;
+  div {
+    margin-right: 10px;
+  }
+}
+
+.mainText {
+  font-weight: bold;
+}
+
+.subText {
+  font-size: 14px;
+}
+
+.alt {
+  color: #929292;
+}
