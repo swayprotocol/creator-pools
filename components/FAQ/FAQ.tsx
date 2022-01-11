@@ -17,16 +17,16 @@ function FAQ() {
   }
 
   return (
-    <section className="my-5">
+    <section className="mt-5 mb-4">
       <div className="container">
         <div className="row">
           <div className="col-12 col-md-10">
-            <h2>FAQ</h2>
+            <h2 className="mb-4">FAQ</h2>
             <div>
-              <h3 className={styles.questionItemTitle} onClick={() => expandQuestion('what')}>
+              <h4 className={styles.questionItemTitle} onClick={() => expandQuestion('what')}>
                 <div className={`${styles.questionList} ${openQuestions.what ? styles.questionOpened : ''}`}>▶</div>
                 What are creator pools?
-              </h3>
+              </h4>
               {openQuestions.what && (
                 <>
                   <p>Creator pools introduce a new metaverse-ready social capital concept by staking with your creators and sharing in their success.</p>
@@ -36,10 +36,10 @@ function FAQ() {
               )}
             </div>
             <div>
-              <h3 className={styles.questionItemTitle} onClick={() => expandQuestion('how')}>
+              <h4 className={styles.questionItemTitle} onClick={() => expandQuestion('how')}>
                 <div className={`${styles.questionList} ${openQuestions.how ? styles.questionOpened : ''}`}>▶</div>
                 How is value generated through NFTs?
-              </h3>
+              </h4>
               {openQuestions.how && (
                 <>
                   <p>Staking with a creator's pool means you support the creator and his work. You also become part of his subDAO (more to follow).</p>
@@ -49,10 +49,10 @@ function FAQ() {
               )}
             </div>
             <div>
-              <h3 className={styles.questionItemTitle} onClick={() => expandQuestion('howStake')}>
+              <h4 className={styles.questionItemTitle} onClick={() => expandQuestion('howStake')}>
                 <div className={`${styles.questionList} ${openQuestions.howStake ? styles.questionOpened : '' }`}>▶</div>
                 How can I stake with a creator?
-              </h3>
+              </h4>
               {openQuestions.howStake && (
                 <>
                   <p>Easy. First, make sure you own some $SWAY in your Metamask wallet. Get $SWAY here &gt; NOTE: Currently we only support creator pools on Polygon network.</p>
@@ -62,10 +62,10 @@ function FAQ() {
               )}
             </div>
             <div>
-              <h3 className={styles.questionItemTitle} onClick={() => expandQuestion('whyStake')}>
+              <h4 className={styles.questionItemTitle} onClick={() => expandQuestion('whyStake')}>
                 <div className={`${styles.questionList} ${openQuestions.whyStake ? styles.questionOpened : ''}`}>▶</div>
                 Why should I stake?
-              </h3>
+              </h4>
               {openQuestions.whyStake && (
                 <>
                   <p>Every pool needs to be claimed by the original creator in order to start paying out rewards. However, here's two reasons why you should start staking today.</p>
@@ -77,6 +77,7 @@ function FAQ() {
             </div>
           </div>
         </div>
+        <hr className="mt-5"/>
       </div>
     </section>
   );

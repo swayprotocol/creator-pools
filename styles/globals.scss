@@ -23,6 +23,7 @@ $container-max-widths: (
 }
 
 .overview-item {
+  margin-bottom: 0.5rem;
   .overview-item-name {
     display: inline-block;
     margin-right: 20px;
@@ -30,7 +31,7 @@ $container-max-widths: (
 
   .overview-item-value {
     font-weight: 600;
-    font-size: 20px;
+    font-size: 24px;
     display: inline-block;
     margin-right: 20px;
   }

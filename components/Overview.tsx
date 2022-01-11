@@ -1,8 +1,8 @@
 import React from 'react';
 
 const TVLdata = {
-  tvl: 31299322,
-  usd: 1327299,
+  tvl: 81233.65,
+  usd: 4112.23,
   rewards: 0
 }
 
@@ -10,7 +10,7 @@ const Overview = () => (
   <section className="my-5">
     <div className="container">
       <div className="row">
-        <h2>Overview</h2>
+        <h2 className="mb-4">Overview</h2>
         <div className="col-12 col-sm-8">
           <div className="overview-item">
             <div className="overview-item-name">TVL</div>
@@ -34,20 +34,20 @@ const Overview = () => (
             </div>
             <div className="overview-item-channels col-5">
               <div className="overview-item-channels-item">
-                Instagram 13%
+                Instagram 85%
               </div>
+              {/*<div className="overview-item-channels-item">*/}
+              {/*  ENS 9%*/}
+              {/*</div>*/}
               <div className="overview-item-channels-item">
-                ENS 9%
+                TikTok 15%
               </div>
-              <div className="overview-item-channels-item">
-                TikTok 2%
-              </div>
-              <div className="overview-item-channels-item">
-                Wallet 1%
-              </div>
-              <div className="overview-item-channels-item">
-                Other {'<'} 1%
-              </div>
+              {/*<div className="overview-item-channels-item">*/}
+              {/*  Wallet 1%*/}
+              {/*</div>*/}
+              {/*<div className="overview-item-channels-item">*/}
+              {/*  Other {'<'} 1%*/}
+              {/*</div>*/}
             </div>
           </div>
 

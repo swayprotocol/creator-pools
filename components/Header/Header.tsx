@@ -4,7 +4,7 @@ import styles from './Header.module.scss'
 const Header = () => (
   <section className="mb-5">
     <div className="container">
-      <div className="border-bottom">
+      <div>
 
         <div className={`${styles.topSection} my-3`}>
           <div className="header-title">
@@ -41,6 +41,8 @@ const Header = () => (
             </button>
           </div>
         </div>
+
+        <hr/>
 
       </div>
     </div>

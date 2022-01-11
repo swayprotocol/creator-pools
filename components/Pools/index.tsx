@@ -29,22 +29,23 @@ const Pools: FC<PoolsProps> = (props: PoolsProps) => (
   <section className="my-5">
     <div className="container">
       <div className="row gx-6">
-        <div className="col-md-4">
+        <div className="col-md-4 mb-5">
           <h4>Top creator pools</h4>
           <hr/>
           {renderItems(props.top)}
         </div>
-        <div className="col-md-4">
+        <div className="col-md-4 mb-5">
           <h4>Latest stakes</h4>
           <hr/>
           {renderItems(props.latest)}
         </div>
-        <div className="col-md-4">
+        <div className="col-md-4 mb-5">
           <h4>Highest positions</h4>
           <hr/>
           {renderItems(props.positions)}
         </div>
       </div>
+      <hr/>
     </div>
   </section>
 );
