@@ -114,3 +114,34 @@ $container-max-widths: (
   margin: 2em 0;
   border-radius: 4px;
 }
+
+.footer-section {
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+  }
+  li {
+    display: inline-block;
+    margin: 0 5px;
+    &:after {
+      padding-left: 10px;
+      content: '|';
+    }
+
+    &:last-child {
+      &:after {
+        display: none;
+      }
+    }
+  }
+  a {
+    color: #232323;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
