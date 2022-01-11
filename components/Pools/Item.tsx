@@ -1,8 +1,10 @@
 import React, { FC } from 'react';
 import styles from './Item.module.scss'
+import { StakedEvent } from '../../shared/interfaces';
 
 type Item = {
-  index: number
+  index: number,
+  item: StakedEvent
 }
 
 function renderSvg() {
@@ -23,22 +25,22 @@ const Item: FC<Item> = (props: Item) => (
         <div>
           {renderSvg()}
         </div>
-        <div className={styles.mainText}>metaverse</div>
-        <div className={styles.mainText}>3/4</div>
+        <div className={styles.mainText}>{props.item.poolHandle}</div>
+        {/*<div className={styles.mainText}>3/4</div>*/}
       </div>
       <div>
-        <div className={styles.mainText}>$3,499,323</div>
+        {/*<div className={styles.mainText}>$3,499,323</div>*/}
       </div>
     </div>
 
     <div className={styles.mainWrap}>
       <div>
-        <div className={styles.subText}>8.58% of total 13,282,221</div>
+        {/*<div className={styles.subText}>8.58% of total 13,282,221</div>*/}
         <div className={styles.subText}>0xw4....293s</div>
       </div>
       <div>
-        <div className={styles.subText}>23,293,999 SWAY</div>
-        <div className={styles.subText}>4 days ago</div>
+        <div className={styles.subText}>{props.item.amount.toFixed(0)} SWAY</div>
+        {/*<div className={styles.subText}>4 days ago</div>*/}
       </div>
     </div>
 

@@ -104,3 +104,12 @@ $container-max-widths: (
     }
   }
 }
+
+.loading-item {
+  height: 70px;
+  width: 100%;
+  display: block;
+  background-color: #efefef;
+  margin: 2em 0;
+  border-radius: 4px;
+}
