@@ -15,6 +15,12 @@ jobs:
           cache: 'yarn'
           cache-dependency-path: yarn.lock
 
+       - name: Create env file for app
+        env:
+          ENV_FILE: ${{ secrets.ENV_FILE }}
+        run: |
+          echo $ENV_FILE > .env
+
       - run: yarn
       - run: yarn run export
 
