@@ -1,0 +1,52 @@
+name: Deploy website
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'yarn'
+          cache-dependency-path: yarn.lock
+
+      - name: Create env file for app
+        env:
+          ENV_FILE: ${{ secrets.ENV_FILE }}
+        run: |
+          echo $ENV_FILE | base64 --decode > .env
+
+      - run: yarn
+      - run: yarn run export
+
+      - name: Archive Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: out
+          path: out
+
+  deploy:
+    needs: [build]
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: out
+          path: out
+
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_CREATOR_POOLS }}"
+          channelId: live
+          target: creatorpools

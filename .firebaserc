@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "swaysocial-one-pager"
+  },
+  "targets": {
+    "swaysocial-one-pager": {
+      "hosting": {
+        "creatorpools": [
+          "creatorpools"
+        ]
+      }
+    }
+  }
+}
