@@ -11,7 +11,7 @@ import { getSwayPrice } from '../helpers/getSwayPrice';
 const initialAppState = {
   topPools: [],
   latestPools: [],
-  individualHighestPools: [],
+  topPositions: [],
   swayAmountTotal: 0,
   swayUsd: 0
 };
@@ -20,39 +20,44 @@ const Home: NextPage = () => {
   const [appState, setAppState] = React.useState(initialAppState);
 
   React.useEffect(() => {
-    getData();
+    getAndCalculateData();
     // eslint-disable-next-line
   }, []);
 
-  async function getData() {
+  async function getAndCalculateData() {
     const stakedData = await getStakedData();
     const swayPriceUsd = await getSwayPrice();
     let totalLocked = 0;
 
-    // console.log(appState);
-    // console.log(stakedData);
-
-    // creating array of all creators with value
+    // calculate data for different columns
     let allCreators: any = {};
+    let topPositions: any = {};
     stakedData.forEach(event => {
       totalLocked += event.amount;
       allCreators[event.poolHandle] = {
         ...event,
         amount: allCreators[event.poolHandle]?.amount + event.amount || event.amount
       };
+      topPositions[event.sender] = {
+        ...event,
+        amount: allCreators[event.poolHandle]?.amount + event.amount || event.amount
+      }
     });
+
     // sort by high to low
     allCreators = Object.values(allCreators);
     allCreators.sort((a: { amount: number; }, b: { amount: number; }) => (b.amount - a.amount));
+    topPositions = Object.values(topPositions);
+    topPositions.sort((a: { amount: number; }, b: { amount: number; }) => (b.amount - a.amount));
 
     // set state
-    setAppState((prevState) => ({ ...prevState, topPools: allCreators }));
-    setAppState((prevState) => ({ ...prevState, latestPools: stakedData }));
-    setAppState((prevState) => ({ ...prevState, swayUsd: swayPriceUsd }));
-    setAppState((prevState) => ({ ...prevState, swayAmountTotal: totalLocked }));
-
-    // console.log(appState.topPools);
-    // console.log(appState);
+    setAppState({
+      topPools: allCreators,
+      latestPools: stakedData,
+      topPositions: topPositions,
+      swayUsd: swayPriceUsd,
+      swayAmountTotal: totalLocked,
+    });
   }
 
   return (
@@ -63,7 +68,7 @@ const Home: NextPage = () => {
       />
       <Pools top={appState.topPools.slice(0, 10)}
              latest={appState.latestPools.slice(0, 10)}
-             positions={appState.latestPools.slice(0, 10)}
+             positions={appState.topPositions.slice(0, 10)}
              swayUsd={appState.swayUsd}
       />
       <FAQ/>
