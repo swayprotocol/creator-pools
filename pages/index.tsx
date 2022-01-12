@@ -6,6 +6,7 @@ import Overview from '../components/Overview';
 import Header from '../components/Header/Header';
 import Pools from '../components/Pools';
 import { getStakedData } from '../helpers/getStakedData';
+import ReactGA from 'react-ga';
 
 const initialAppState = {
   topPools: [],
@@ -14,10 +15,16 @@ const initialAppState = {
   tvl: 0,
 };
 
+function initialiseAnalytics() {
+  const TRACKING_ID = process.env.NEXT_PUBLIC_GA_TRACKING_ID;
+  ReactGA.initialize(TRACKING_ID);
+}
+
 const Home: NextPage = () => {
   const [appState, setAppState] = React.useState(initialAppState);
-
   React.useEffect(() => {
+    initialiseAnalytics();
+    ReactGA.pageview('/index');
     getData();
     // eslint-disable-next-line
   }, []);

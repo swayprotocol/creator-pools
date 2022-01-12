@@ -41,16 +41,6 @@ const Layout = ({ children }: Props) => (
       <meta name="twitter:title" content={meta.title}/>
       <meta name="twitter:description" content={meta.description}/>
       <meta name="twitter:image" content={`${meta.url}${meta.image}`}/>
-
-      {/* Global site tag (gtag.js) - Google Analytics */}
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-6V4JQ3GYNN"></script>
-      <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'G-6V4JQ3GYNN');
-      </script>
     </Head>
     {children}
     <Footer/>
