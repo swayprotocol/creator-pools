@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import Head from 'next/head';
 import Footer from './Footer';
+import Script from 'next/script';
 
 type Props = {
   children?: ReactNode
@@ -41,17 +42,17 @@ const Layout = ({ children }: Props) => (
       <meta name="twitter:title" content={meta.title}/>
       <meta name="twitter:description" content={meta.description}/>
       <meta name="twitter:image" content={`${meta.url}${meta.image}`}/>
-
-      {/* Global site tag (gtag.js) - Google Analytics */}
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-6V4JQ3GYNN"></script>
-      <script>
+    </Head>
+    {/* Global site tag (gtag.js) - Google Analytics */}
+    <Script src="https://www.googletagmanager.com/gtag/js?id=G-6V4JQ3GYNN" strategy="afterInteractive"/>
+    <Script id="google-analytics" strategy="afterInteractive">
+      {`
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
-
         gtag('config', 'G-6V4JQ3GYNN');
-      </script>
-    </Head>
+      `}
+    </Script>
     {children}
     <Footer/>
   </>
