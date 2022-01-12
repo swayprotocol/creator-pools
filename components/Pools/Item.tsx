@@ -5,7 +5,8 @@ import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 
 type Item = {
   index: number,
-  item: StakedEvent
+  item: StakedEvent,
+  swayUsd: number,
 }
 
 function renderSvg() {
@@ -30,7 +31,7 @@ const Item: FC<Item> = (props: Item) => (
         {/*<div className={styles.mainText}>3/4</div>*/}
       </div>
       <div>
-        {/*<div className={styles.mainText}>$3,499,323</div>*/}
+        <div className={styles.mainText}>${(props.item.amount * props.swayUsd).toLocaleString('en-US', {maximumFractionDigits: 0})}</div>
       </div>
     </div>
 

@@ -6,12 +6,14 @@ import Overview from '../components/Overview';
 import Header from '../components/Header/Header';
 import Pools from '../components/Pools';
 import { getStakedData } from '../helpers/getStakedData';
+import { getSwayPrice } from '../helpers/getSwayPrice';
 
 const initialAppState = {
   topPools: [],
   latestPools: [],
   individualHighestPools: [],
   tvl: 0,
+  swayUsd: 0
 };
 
 const Home: NextPage = () => {
@@ -24,7 +26,8 @@ const Home: NextPage = () => {
 
   async function getData() {
     const stakedData = await getStakedData();
-    appState.tvl = 12;
+    const swayPriceUsd = await getSwayPrice();
+
     // console.log(appState);
     // console.log(stakedData);
 
@@ -43,6 +46,7 @@ const Home: NextPage = () => {
     // set state
     setAppState((prevState) => ({ ...prevState, topPools: allCreators }));
     setAppState((prevState) => ({ ...prevState, latestPools: stakedData }));
+    setAppState((prevState) => ({ ...prevState, swayUsd: swayPriceUsd }));
 
     // console.log(appState.topPools);
     // console.log(appState);
@@ -55,6 +59,7 @@ const Home: NextPage = () => {
       <Pools top={appState.topPools.slice(0, 10)}
              latest={appState.latestPools.slice(0, 10)}
              positions={appState.latestPools.slice(0, 10)}
+             swayUsd={appState.swayUsd}
       />
       <FAQ/>
     </Layout>
