@@ -7,7 +7,6 @@ type PoolsProps = {
   latest: StakedEvent[],
   positions: StakedEvent[],
   swayUsd: number,
-  type: PoolItemType
 }
 
 function renderItems(items: StakedEvent[], swayUsd: number, type: PoolItemType) {
