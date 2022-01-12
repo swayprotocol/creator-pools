@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { FC } from 'react';
 
-const TVLdata = {
-  tvl: 81233.65,
-  usd: 4112.23,
-  rewards: 0
+type OverviewProps = {
+  swayAmountTotal: number,
+  swayUsd: number,
 }
 
-const Overview = () => (
+const Overview: FC<OverviewProps> = (props: OverviewProps) => (
   <section className="my-5">
     <div className="container">
       <div className="row">
@@ -14,8 +13,12 @@ const Overview = () => (
         <div className="col-12 col-sm-8">
           <div className="overview-item">
             <div className="overview-item-name">TVL</div>
-            <div className="overview-item-value">${TVLdata.usd}</div>
-            <div className="overview-item-name">{TVLdata.tvl} SWAY</div>
+            <div className="overview-item-value">
+              ${(props.swayAmountTotal * props.swayUsd).toLocaleString('en-US', { maximumFractionDigits: 0 })}
+            </div>
+            <div className="overview-item-name">
+              {props.swayAmountTotal.toLocaleString('en-US', { maximumFractionDigits: 0 })} SWAY
+            </div>
           </div>
           <div className="overview-item">
             <div className="overview-item-name">APY MAX</div>
@@ -24,7 +27,7 @@ const Overview = () => (
           </div>
           <div className="overview-item">
             <div className="overview-item-name">TOTAL REWARDS PAID</div>
-            <div className="overview-item-value">{TVLdata.rewards} SWAY</div>
+            <div className="overview-item-value">0 SWAY</div>
           </div>
         </div>
         <div className="col-12 col-sm-4">
@@ -34,13 +37,13 @@ const Overview = () => (
             </div>
             <div className="overview-item-channels col-5">
               <div className="overview-item-channels-item">
-                Instagram 85%
+                Instagram 91%
               </div>
               {/*<div className="overview-item-channels-item">*/}
               {/*  ENS 9%*/}
               {/*</div>*/}
               <div className="overview-item-channels-item">
-                TikTok 15%
+                TikTok 9%
               </div>
               {/*<div className="overview-item-channels-item">*/}
               {/*  Wallet 1%*/}

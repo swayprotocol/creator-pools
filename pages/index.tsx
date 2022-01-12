@@ -12,7 +12,7 @@ const initialAppState = {
   topPools: [],
   latestPools: [],
   individualHighestPools: [],
-  tvl: 0,
+  swayAmountTotal: 0,
   swayUsd: 0
 };
 
@@ -27,6 +27,7 @@ const Home: NextPage = () => {
   async function getData() {
     const stakedData = await getStakedData();
     const swayPriceUsd = await getSwayPrice();
+    let totalLocked = 0;
 
     // console.log(appState);
     // console.log(stakedData);
@@ -34,6 +35,7 @@ const Home: NextPage = () => {
     // creating array of all creators with value
     let allCreators: any = {};
     stakedData.forEach(event => {
+      totalLocked += event.amount;
       allCreators[event.poolHandle] = {
         ...event,
         amount: allCreators[event.poolHandle]?.amount + event.amount || event.amount
@@ -47,6 +49,7 @@ const Home: NextPage = () => {
     setAppState((prevState) => ({ ...prevState, topPools: allCreators }));
     setAppState((prevState) => ({ ...prevState, latestPools: stakedData }));
     setAppState((prevState) => ({ ...prevState, swayUsd: swayPriceUsd }));
+    setAppState((prevState) => ({ ...prevState, swayAmountTotal: totalLocked }));
 
     // console.log(appState.topPools);
     // console.log(appState);
@@ -55,7 +58,9 @@ const Home: NextPage = () => {
   return (
     <Layout>
       <Header/>
-      <Overview/>
+      <Overview swayAmountTotal={appState.swayAmountTotal}
+                swayUsd={appState.swayUsd}
+      />
       <Pools top={appState.topPools.slice(0, 10)}
              latest={appState.latestPools.slice(0, 10)}
              positions={appState.latestPools.slice(0, 10)}
