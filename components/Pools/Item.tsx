@@ -1,12 +1,13 @@
 import React, { FC } from 'react';
-import styles from './Item.module.scss'
-import { StakedEvent } from '../../shared/interfaces';
+import styles from './Item.module.scss';
+import { PoolItemType, StakedEvent } from '../../shared/interfaces';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 
 type Item = {
   index: number,
   item: StakedEvent,
   swayUsd: number,
+  type: PoolItemType
 }
 
 function renderSvg() {
@@ -23,7 +24,9 @@ const Item: FC<Item> = (props: Item) => (
   <div className={styles.itemWrap}>
     <div className={styles.mainWrap}>
       <div className={styles.titleWrap}>
-        <div className={`${styles.mainText} ${styles.alt}`}>#{props.index + 1}</div>
+        {(props.type === PoolItemType.TOP || props.type === PoolItemType.INDIVIDUAL) && (
+          <div className={`${styles.mainText} ${styles.alt}`}>#{props.index + 1}</div>
+        )}
         <div>
           {renderSvg()}
         </div>
@@ -31,7 +34,12 @@ const Item: FC<Item> = (props: Item) => (
         {/*<div className={styles.mainText}>3/4</div>*/}
       </div>
       <div>
-        <div className={styles.mainText}>${(props.item.amount * props.swayUsd).toLocaleString('en-US', {maximumFractionDigits: 0})}</div>
+        {(props.type === PoolItemType.LATEST || props.type === PoolItemType.INDIVIDUAL) && (
+          <div className={styles.mainText}>{props.item.amount.toLocaleString('en-US', {maximumFractionDigits: 0})}</div>
+        )}
+        {props.type === PoolItemType.TOP && (
+          <div className={styles.mainText}>${(props.item.amount * props.swayUsd).toLocaleString('en-US', {maximumFractionDigits: 0})}</div>
+        )}
       </div>
     </div>
 
@@ -41,8 +49,12 @@ const Item: FC<Item> = (props: Item) => (
         <div className={styles.subText}>{getWalletShorthand(props.item.sender)}</div>
       </div>
       <div>
-        <div className={styles.subText}>{props.item.amount.toLocaleString('en-US', {maximumFractionDigits: 0})} SWAY</div>
-        <div className={styles.subText}>{props.item.date.toISOString().split('T')[0]}</div>
+        {props.type === PoolItemType.TOP && (
+          <div className={styles.subText}>{props.item.amount.toLocaleString('en-US', {maximumFractionDigits: 0})} SWAY</div>
+        )}
+        {props.type === PoolItemType.LATEST && (
+          <div className={styles.subText}>{props.item.date.toISOString().split('T')[0]}</div>
+        )}
       </div>
     </div>
 

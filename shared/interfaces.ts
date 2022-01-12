@@ -4,3 +4,9 @@ export interface StakedEvent {
   sender: string;
   date: Date;
 }
+
+export enum PoolItemType {
+  TOP = 'Top',
+  LATEST = 'Latest',
+  INDIVIDUAL = 'Individual',
+}
