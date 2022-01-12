@@ -7,12 +7,14 @@ import Header from '../components/Header/Header';
 import Pools from '../components/Pools';
 import { getStakedData } from '../helpers/getStakedData';
 import ReactGA from 'react-ga';
+import { getSwayPrice } from '../helpers/getSwayPrice';
 
 const initialAppState = {
   topPools: [],
   latestPools: [],
-  individualHighestPools: [],
-  tvl: 0,
+  topPositions: [],
+  swayAmountTotal: 0,
+  swayUsd: 0
 };
 
 function initialiseAnalytics() {
@@ -25,43 +27,56 @@ const Home: NextPage = () => {
   React.useEffect(() => {
     initialiseAnalytics();
     ReactGA.pageview('/index');
-    getData();
+    getAndCalculateData();
     // eslint-disable-next-line
   }, []);
 
-  async function getData() {
+  async function getAndCalculateData() {
     const stakedData = await getStakedData();
-    appState.tvl = 12;
-    // console.log(appState);
-    // console.log(stakedData);
+    const swayPriceUsd = await getSwayPrice();
+    let totalLocked = 0;
 
-    // creating array of all creators with value
+    // calculate data for different columns
     let allCreators: any = {};
+    let topPositions: any = {};
     stakedData.forEach(event => {
+      totalLocked += event.amount;
       allCreators[event.poolHandle] = {
         ...event,
         amount: allCreators[event.poolHandle]?.amount + event.amount || event.amount
       };
+      topPositions[event.sender] = {
+        ...event,
+        amount: allCreators[event.poolHandle]?.amount + event.amount || event.amount
+      }
     });
+
     // sort by high to low
     allCreators = Object.values(allCreators);
     allCreators.sort((a: { amount: number; }, b: { amount: number; }) => (b.amount - a.amount));
+    topPositions = Object.values(topPositions);
+    topPositions.sort((a: { amount: number; }, b: { amount: number; }) => (b.amount - a.amount));
 
     // set state
-    setAppState((prevState) => ({ ...prevState, topPools: allCreators }));
-    setAppState((prevState) => ({ ...prevState, latestPools: stakedData }));
-
-    // console.log(appState.topPools);
-    // console.log(appState);
+    setAppState({
+      topPools: allCreators,
+      latestPools: stakedData,
+      topPositions: topPositions,
+      swayUsd: swayPriceUsd,
+      swayAmountTotal: totalLocked,
+    });
   }
 
   return (
     <Layout>
       <Header/>
-      <Overview/>
+      <Overview swayAmountTotal={appState.swayAmountTotal}
+                swayUsd={appState.swayUsd}
+      />
       <Pools top={appState.topPools.slice(0, 10)}
              latest={appState.latestPools.slice(0, 10)}
-             positions={appState.latestPools.slice(0, 10)}
+             positions={appState.topPositions.slice(0, 10)}
+             swayUsd={appState.swayUsd}
       />
       <FAQ/>
     </Layout>

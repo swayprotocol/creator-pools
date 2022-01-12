@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import Head from 'next/head';
 import Footer from './Footer';
+import Script from 'next/script';
 
 type Props = {
   children?: ReactNode
