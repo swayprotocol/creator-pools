@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import styles from './Item.module.scss'
 import { StakedEvent } from '../../shared/interfaces';
+import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 
 type Item = {
   index: number,
@@ -36,11 +37,11 @@ const Item: FC<Item> = (props: Item) => (
     <div className={styles.mainWrap}>
       <div>
         {/*<div className={styles.subText}>8.58% of total 13,282,221</div>*/}
-        <div className={styles.subText}>0xw4....293s</div>
+        <div className={styles.subText}>{getWalletShorthand(props.item.sender)}</div>
       </div>
       <div>
-        <div className={styles.subText}>{props.item.amount.toFixed(0)} SWAY</div>
-        {/*<div className={styles.subText}>4 days ago</div>*/}
+        <div className={styles.subText}>{props.item.amount.toLocaleString('en-US', {maximumFractionDigits: 0})} SWAY</div>
+        <div className={styles.subText}>{props.item.date.toISOString().split('T')[0]}</div>
       </div>
     </div>
 
