@@ -1,7 +1,6 @@
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { NetworkConnector } from '@web3-react/network-connector';
 import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-// import { TorusConnector } from '@web3-react/torus-connector';
 
 const POLLING_INTERVAL = 12000
 const GANACHE_CHAIN_ID = 1337;
@@ -36,58 +35,3 @@ export const walletconnect = new WalletConnectConnector({
   qrcode: true,
   pollingInterval: POLLING_INTERVAL
 })
-
-// export const torus = new TorusConnector({
-//   chainId: 137,
-//   initOptions: {
-//     showTorusButton: true,
-//     network: {
-//       host: 'matic',
-//       chainId: 137,
-//     },
-//     loginConfig: {
-//       'torus-auth0-email-passwordless': {
-//         showOnModal: true
-//       },
-//       'torus-auth0-twitter': {
-//         mainOption: false
-//       },
-//       'reddit': {
-//         showOnModal: false
-//       },
-//       'facebook': {
-//         mainOption: false
-//       },
-//       'google': {
-//         showOnModal: false
-//       },
-//       'discord': {
-//         mainOption: false
-//       },
-//       'torus-auth0-apple': {
-//         showOnModal: false
-//       },
-//       'torus-auth0-github': {
-//         showOnModal: false
-//       },
-//       'torus-auth0-kakao': {
-//         showOnModal: false
-//       },
-//       'torus-auth0-line': {
-//         showOnModal: false
-//       },
-//       'torus-auth0-linkedin': {
-//         showOnModal: false
-//       },
-//       'twitch': {
-//         showOnModal: false
-//       },
-//       'torus-auth0-weibo': {
-//         showOnModal: false
-//       },
-//       'torus-auth0-wechat': {
-//         showOnModal: false
-//       },
-//     },
-//   }
-// });
