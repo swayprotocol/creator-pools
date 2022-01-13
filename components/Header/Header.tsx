@@ -1,7 +1,15 @@
 import React from 'react';
 import styles from './Header.module.scss'
+import { getWalletShorthand } from '../../helpers/getWalletShorthand';
+import { AbstractConnector } from '@web3-react/abstract-connector';
+import { injected } from '../../helpers/Connectors';
 
-const Header = () => (
+type HeaderProps = {
+  walletId: string,
+  connectWallet: (connector?: AbstractConnector) => any
+}
+
+const Header = (props: HeaderProps) => (
   <section className="mb-5">
     <div className="container">
       <div>
@@ -35,11 +43,21 @@ const Header = () => (
               <img src="/assets/logo.svg" height="40" width="140" alt="Sway Social"/>
             </a>
           </div>
-          <div className="connect">
-            <button className="btn" disabled={true}>
-              Connect
-            </button>
-          </div>
+          {!props.walletId ? (
+            <div className="connect">
+              <button className="btn" disabled={false} onClick={async () => {
+                  await props.connectWallet(injected);
+                }}>
+                Connect
+              </button>
+            </div>
+            ) : (
+              <div className="connect">
+                <button className="btn btn-secondary" disabled={true}>
+                  {`${getWalletShorthand(props.walletId)}`}
+                </button>
+              </div>
+            )}
         </div>
 
         <hr/>

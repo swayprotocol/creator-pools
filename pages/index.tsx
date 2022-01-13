@@ -11,13 +11,19 @@ import { getSwayPrice } from '../helpers/getSwayPrice';
 import Stakes from '../components/Stakes';
 import Modal from '../components/Modal';
 import { ModalType } from '../shared/interfaces';
+import { ethers } from 'ethers';
+import { Web3ReactProvider } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
+import WalletConnect from '../components/WalletConnect';
+import { AbstractConnector } from '@web3-react/abstract-connector';
+import { InjectedConnector } from '@web3-react/injected-connector';
 
 const initialAppState = {
   topPools: [],
   latestPools: [],
   topPositions: [],
   swayAmountTotal: 0,
-  swayUsd: 0
+  swayUsd: 0,
 };
 
 function initialiseAnalytics() {
@@ -28,6 +34,9 @@ function initialiseAnalytics() {
 const Home: NextPage = () => {
   const [appState, setAppState] = React.useState(initialAppState);
   const [showModal, setShowModal] = React.useState(false);
+  const [walletId, setWalletId] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
+  const [walletLoaded, setWalletLoaded] = React.useState(false);
 
   React.useEffect(() => {
     initialiseAnalytics();
@@ -35,6 +44,255 @@ const Home: NextPage = () => {
     getAndCalculateData();
     // eslint-disable-next-line
   }, []);
+
+  async function loadWallet(walletId: string, connector?: AbstractConnector) {
+    setWalletId(walletId)
+    connector.on('Web3ReactUpdate', (event) => {
+      if (event.account) {
+        setWalletId(event.account);
+      }
+    });
+    connector.on('Web3ReactDeactivate',  (event) => {
+      setWalletId('');
+    })
+  }
+
+  async function connectWallet(connector?: AbstractConnector) {
+    try {
+      let networkId;
+      let accountId;
+
+      // connector is submitted only when connecting through /connect page
+      if (connector) {
+        accountId = await connector.getAccount() || (await connector.getProvider())?.selectedAddress;
+        let id = await connector.getChainId();
+
+        // re-init metamask chain/account change listeners
+        if (connector instanceof InjectedConnector) {
+          initMetamaskChangeListener();
+        }
+      } else {
+        networkId = await window.ethereum.chainId;
+      }
+
+      if (networkId === process.env.REACT_APP_WEB3_NETWORK_ID) {
+        // if account was not set by connector, get the enabled metamask one
+        if (!accountId) {
+          const metaMaskUser = await window.ethereum.enable();
+          accountId = metaMaskUser[0];
+        }
+
+        setWalletId(accountId);
+      } else {
+
+        resetAccount();
+
+        try {
+          const NETWORK_IDS = ['0x89', '0x4', '0x13881'];
+          NETWORK_IDS.forEach(async id => {
+            if(process.env.REACT_APP_WEB3_NETWORK_ID === id){
+              await window.ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: id }],
+              });
+            }
+          })
+
+        } catch (switchError) {
+          // This error code indicates that the chain has not been added to MetaMask.
+          if (switchError.code === 4902) {
+            try {
+              if(process.env.REACT_APP_WEB3_NETWORK_ID === '0x89'){
+                await window.ethereum.request({
+                  method: 'wallet_addEthereumChain',
+                    params: [{  chainId: '0x89', //0x89 or 137
+                        chainName: 'Matic Mainnet',
+                        nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
+                        rpcUrls: ['https://polygon-rpc.com/'],
+                        blockExplorerUrls: ['https://explorer.matic.network/']
+                    }]
+                });
+              } else if (process.env.REACT_APP_WEB3_NETWORK_ID === '0x4') {
+                await window.ethereum.request({
+                  method: 'wallet_addEthereumChain',
+                    params: [{  chainId: '0x4', //0x4 or 4
+                        chainName: 'Rinkeby Test Network',
+                        nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
+                        rpcUrls: ['https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
+                        blockExplorerUrls: ['https://rinkeby.etherscan.io']
+                    }]
+                });
+              } else if (process.env.REACT_APP_WEB3_NETWORK_ID === '0x13881') {
+                await window.ethereum.request({
+                  method: 'wallet_addEthereumChain',
+                    params: [{  chainId: '0x13881', //0x13881 or 80001
+                        chainName: 'Matic Mumbai',
+                        nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
+                        rpcUrls: ['https://rpc-mumbai.maticvigil.com/'],
+                        blockExplorerUrls: ['https://mumbai.polygonscan.com/']
+                    }]
+                });
+              }
+
+            } catch (addError) {
+              console.log("Automatic switching to MATIC failed!");
+              console.log(addError);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      resetAccount();
+    }
+  }
+
+  function initMetamaskChangeListener() {
+    window.ethereum.on('accountsChanged', handleAccountChange);
+    // window.ethereum.on('chainChanged', this.handleNetworkChange);
+  }
+
+  function getLibrary(provider: any): Web3Provider {
+    const library = new Web3Provider(provider);
+    library.pollingInterval = 12000;
+    return library;
+  }
+
+  async function setContractSigner(library: Web3Provider) {
+    if (library) {
+      let signer = library.getSigner();
+
+      // hack for mobile, if there is no ethereum object - needed for gas price, etc. in the app
+      if (!window.ethereum || library.connection.url !== 'metamask') {
+        window.ethereum = library.provider;
+      }
+
+      // const cloutContract = new ethers.Contract(process.env.REACT_APP_CLOUT_NFT_CONTRACT_ADDRESS, cloutAbi, signer);
+      // const marketplaceContract = new ethers.Contract(process.env.REACT_APP_MARKETPLACE_CONTRACT_ADDRESS, marketplaceAbi, signer);
+
+      // await setAppState({cloutContract, marketplaceContract});
+    }
+  }
+
+  function handleAccountChange(accounts) {
+    console.log(accounts);
+    if (accounts.length > 0) {
+      setWalletId(accounts[0])
+    } else {
+      resetAccount();
+    }
+  }
+
+  async function loadWeb3() {
+    let providerOrSigner;
+
+    if (window.ethereum) {
+      providerOrSigner = new ethers.providers.Web3Provider(window.ethereum);
+
+      const networkId = await window.ethereum.chainId;
+
+      let isLoggedInMetamask = window.ethereum.selectedAddress !== null;
+
+      if (isLoggedInMetamask && networkId === process.env.NEXT_PUBLIC_WEB3_NETWORK_ID) {
+        await connectMetamask();
+        providerOrSigner = providerOrSigner.getSigner();
+
+        await window.ethereum.request({method: 'eth_requestAccounts'});
+        initMetamaskChangeListener();
+      } else {
+        providerOrSigner = new ethers.providers.WebSocketProvider(process.env.NEXT_PUBLIC_WEB3_WS_PROVIDER!);
+        await resetAccount();
+      }
+    } else {
+      providerOrSigner = new ethers.providers.WebSocketProvider(process.env.NEXT_PUBLIC_WEB3_WS_PROVIDER!);
+    }
+
+    // const cloutContract = new ethers.Contract(process.env.NEXT_PUBLIC_CLOUT_NFT_CONTRACT_ADDRESS, cloutAbi, providerOrSigner);
+    // const marketplaceContract = new ethers.Contract(process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT_ADDRESS, marketplaceAbi, providerOrSigner);
+
+    // return [cloutContract, marketplaceContract];
+  }
+
+  async function connectMetamask() {
+    try {
+      const networkId = await window.ethereum.chainId;
+      if (networkId === process.env.NEXT_PUBLIC_WEB3_NETWORK_ID) {
+        const metaMaskUser = await window.ethereum.enable();
+
+        setWalletId(metaMaskUser[0]);
+      } else {
+
+        resetAccount();
+
+        try {
+          if(process.env.NEXT_PUBLIC_WEB3_NETWORK_ID === '0x89'){
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0x89' }], // 0x89 or 137
+            });
+          }else if (process.env.NEXT_PUBLIC_WEB3_NETWORK_ID === '0x4'){
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0x4' }], // 0x4 or 4
+            });
+          }else if (process.env.NEXT_PUBLIC_WEB3_NETWORK_ID === '0x13881'){
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0x13881' }], // 0x13881 or 80001
+            });
+          }
+
+        } catch (switchError) {
+          // This error code indicates that the chain has not been added to MetaMask.
+          if (switchError.code === 4902) {
+            try {
+              if(process.env.NEXT_PUBLIC_WEB3_NETWORK_ID === '0x89'){
+                await window.ethereum.request({
+                  method: 'wallet_addEthereumChain',
+                    params: [{  chainId: '0x89', //0x89 or 137
+                        chainName: 'Matic Mainnet',
+                        nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
+                        rpcUrls: ['https://rpc-mainnet.maticvigil.com/'],
+                        blockExplorerUrls: ['https://explorer.matic.network/']
+                    }]
+                });
+              } else if (process.env.NEXT_PUBLIC_WEB3_NETWORK_ID === '0x4') {
+                await window.ethereum.request({
+                  method: 'wallet_addEthereumChain',
+                    params: [{  chainId: '0x4', //0x4 or 4
+                        chainName: 'Rinkeby Test Network',
+                        nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
+                        rpcUrls: ['https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
+                        blockExplorerUrls: ['https://rinkeby.etherscan.io']
+                    }]
+                });
+              } else if (process.env.NEXT_PUBLIC_WEB3_NETWORK_ID === '0x13881') {
+                await window.ethereum.request({
+                  method: 'wallet_addEthereumChain',
+                    params: [{  chainId: '0x13881', //0x13881 or 80001
+                        chainName: 'Matic Mumbai',
+                        nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
+                        rpcUrls: ['https://rpc-mumbai.maticvigil.com/'],
+                        blockExplorerUrls: ['https://mumbai.polygonscan.com/']
+                    }]
+                });
+              }
+
+            } catch (addError) {
+              console.log("Automatic switching to MATIC failed!");
+              console.log(addError);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      resetAccount();
+    }
+  }
+
+  async function resetAccount() {
+    setWalletId('');
+  }
 
   async function getAndCalculateData() {
     const stakedData = await getStakedData();
@@ -74,22 +332,32 @@ const Home: NextPage = () => {
 
   return (
     <Layout>
-      <Header/>
-      {/*<Stakes/>*/}
-      <Overview swayAmountTotal={appState.swayAmountTotal}
-                swayUsd={appState.swayUsd}
-      />
-      <Pools top={appState.topPools.slice(0, 10)}
-             latest={appState.latestPools.slice(0, 10)}
-             positions={appState.topPositions.slice(0, 10)}
-             swayUsd={appState.swayUsd}
-      />
-      <FAQ/>
-      {showModal && (
-        <Modal onClose={() => setShowModal(false)}
-               type={ModalType.STAKE}
+      <Web3ReactProvider getLibrary={getLibrary}>
+        <WalletConnect
+          userLoaded={walletLoaded}
+          loaded={!loading}
+          setNewSigner={setContractSigner}
+          loadUserData={loadWallet} />
+        <Header
+          walletId={walletId}
+          connectWallet={connectWallet}
         />
-      )}
+        {/*<Stakes/>*/}
+        <Overview swayAmountTotal={appState.swayAmountTotal}
+                  swayUsd={appState.swayUsd}
+        />
+        <Pools top={appState.topPools.slice(0, 10)}
+               latest={appState.latestPools.slice(0, 10)}
+               positions={appState.topPositions.slice(0, 10)}
+               swayUsd={appState.swayUsd}
+        />
+        <FAQ/>
+        {showModal && (
+          <Modal onClose={() => setShowModal(false)}
+                 type={ModalType.STAKE}
+          />
+        )}
+      </Web3ReactProvider>
     </Layout>
   );
 };
