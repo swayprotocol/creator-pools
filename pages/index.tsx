@@ -8,6 +8,7 @@ import Pools from '../components/Pools';
 import { getStakedData } from '../helpers/getStakedData';
 import ReactGA from 'react-ga';
 import { getSwayPrice } from '../helpers/getSwayPrice';
+import Stakes from '../components/Stakes';
 
 const initialAppState = {
   topPools: [],
@@ -70,6 +71,7 @@ const Home: NextPage = () => {
   return (
     <Layout>
       <Header/>
+      <Stakes/>
       <Overview swayAmountTotal={appState.swayAmountTotal}
                 swayUsd={appState.swayUsd}
       />

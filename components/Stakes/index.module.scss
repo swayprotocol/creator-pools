@@ -1,0 +1,73 @@
+.stakesTitleWrapper {
+  display: flex;
+}
+
+.networkItem {
+  margin-left: 25px;
+  display: flex;
+  align-items: center;
+}
+
+.networkItemStatus {
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+  border: 1px solid #232323;
+  background-color: #92D36E;
+  margin-right: 10px;
+}
+
+.connectWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+}
+
+.titleWrapper {
+  display: flex;
+}
+
+.swayAvailable {
+  margin-right: 15px;
+  font-size: 17px;
+  display: flex;
+  align-items: center;
+
+  img {
+    margin-right: 10px;
+  }
+}
+
+.activeStakes {
+  background-color: #FAFEFF;
+  padding: 40px 40px;
+}
+
+.table {
+
+}
+
+.tableHead {
+  display: flex;
+  border-bottom: 1px solid #c9c9c9;
+
+  .tableItem {
+    margin-bottom: 10px;
+  }
+}
+
+.tableItem {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  flex: 1 1 0;
+}
+
+.mainText {
+  font-weight: bold;
+}

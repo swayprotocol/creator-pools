@@ -1,0 +1,29 @@
+.item {
+  display: flex;
+  padding: 12px 0;
+  border-bottom: 1px solid #c9c9c9;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #F3FCFE;
+  }
+}
+
+.icon {
+  width: 18px;
+  margin-right: 10px;
+  margin-left: 8px;
+}
+
+
+.tableItem {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  flex: 1 1 0;
+}
+
+.mainText {
+  font-weight: bold;
+}
