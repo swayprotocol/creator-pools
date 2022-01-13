@@ -70,10 +70,10 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
               </div>
             </div>
             <div className={styles.connectWrapper}>
-              <div className={styles.swayAvailable}>
-                <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
-                <span>1,233,444</span>
-              </div>
+              {/*<div className={styles.swayAvailable}>*/}
+              {/*  <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>*/}
+              {/*  <span>1,233,444</span>*/}
+              {/*</div>*/}
               <button className="btn" onClick={() => props.openModal({ type: ModalType.STAKE })}>
                 Stake
               </button>
