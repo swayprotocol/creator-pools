@@ -44,7 +44,7 @@ const Home: NextPage = () => {
   const [appState, setAppState] = React.useState(initialAppState);
   const [showModal, setShowModal] = React.useState(false);
   const [walletId, setWalletId] = React.useState('');
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(true);
   const [walletData, setWalletData] = React.useState<Contract>();
   const [walletLoaded, setWalletLoaded] = React.useState(false);
 
@@ -52,6 +52,7 @@ const Home: NextPage = () => {
     initialiseAnalytics();
     ReactGA.pageview('/index');
     getAndCalculateData();
+    setLoading(false);
     // eslint-disable-next-line
   }, []);
 
@@ -179,6 +180,7 @@ const Home: NextPage = () => {
 
       const stakingContract = new ethers.Contract(process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
       setWalletData(getContract(stakingContract));
+      setWalletLoaded(true);
     }
   }
 
@@ -350,7 +352,9 @@ const Home: NextPage = () => {
           walletId={walletId}
           connectWallet={connectWallet}
         />
-        {/*<Stakes/>*/}
+        {walletLoaded && (
+          <Stakes/>
+        )}
         <Overview swayAmountTotal={appState.swayAmountTotal}
                   swayUsd={appState.swayUsd}
         />
