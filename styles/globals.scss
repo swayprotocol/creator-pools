@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Anaheim&display=swap');
-
+// Bootstrap variables
 $font-family-base: 'Anaheim', sans-serif;
 $body-color: #232323;
 $container-max-widths: (
@@ -7,16 +6,12 @@ $container-max-widths: (
 );
 
 // Bootstrap imports
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/mixins";
-@import "~bootstrap/scss/root";
-@import "~bootstrap/scss/reboot";
-@import '~bootstrap/scss/utilities';
-@import '~bootstrap/scss/utilities/api';
-//@import '~bootstrap/scss/helpers';
-@import "~bootstrap/scss/containers";
-@import "~bootstrap/scss/grid";
+@import "~bootstrap/scss/bootstrap-reboot";
+@import "~bootstrap/scss/bootstrap-grid";
+
+// font-family
+@import url('https://fonts.googleapis.com/css2?family=Anaheim&display=swap');
+
 
 .gx-6 {
   --bs-gutter-x: 4rem;
@@ -52,6 +47,9 @@ $container-max-widths: (
   background-color: #444;
   color: #fff;
   transition: all 0.1s linear;
+  margin-left: 10px;
+  margin-bottom: 10px;
+  min-width: 100px;
 
   &:after,
   &:before {
@@ -59,6 +57,9 @@ $container-max-widths: (
     content: '';
     z-index: 1;
     transition: all 0.1s linear;
+    background-color: #FAF9F5;
+    border-style: solid;
+    border-color: #aaa;
   }
 
   &:before {
@@ -69,9 +70,6 @@ $container-max-widths: (
     transform: matrix(1, -1, 0, 1, 0, 1);
     transform-origin: right top;
     border-width: 1px 0 0 1px;
-    border-style: solid;
-    border-color: #aaa;
-    background: #fff;
   }
 
   &:after {
@@ -82,9 +80,6 @@ $container-max-widths: (
     transform: matrix(1, 0, -1, 1, 0, 1);
     transform-origin: left top;
     border-width: 0 1px 1px 1px;
-    border-style: solid;
-    border-color: #aaa;
-    background: #fff;
   }
 
   &.btn-secondary {
