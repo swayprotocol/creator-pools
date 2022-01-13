@@ -19,7 +19,7 @@ const Footer = () => (
             </a>
           </li>
           <li>
-            <a href="https://t.me/cloutdotart" rel="noreferrer" target="_blank">
+            <a href="https://t.me/swayprotocol" rel="noreferrer" target="_blank">
               Telegram
             </a>
           </li>
