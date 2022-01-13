@@ -5,7 +5,6 @@ import { injected, walletconnect } from '../helpers/Connectors';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 
 type WalletConnectProps = {
-  user: any,
   userLoaded: boolean,
   loaded: boolean,
   setNewSigner: (signer) => any,
