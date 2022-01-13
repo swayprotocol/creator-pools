@@ -7,14 +7,23 @@
   width: 16.6666666%;
 }
 
+.spacingInput {
+  flex: 0 0 auto;
+  width: calc(16.6666666% * 2);
+
+  input {
+    max-width: 70%;
+  }
+}
+
 .item {
   display: flex;
-  gap: 10px;
+  //gap: 10px;
 }
 
 .tableItem {
   composes: tableItem from "./Item.module.scss";
-  padding: 10px 0;
+  //padding: 10px 0;
 }
 
 .tableHeading {

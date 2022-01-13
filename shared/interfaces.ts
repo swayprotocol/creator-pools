@@ -23,3 +23,21 @@ export enum ModalType {
   UNSTAKE = 'Unstake',
   ADD = 'Stake additional position'
 }
+
+export interface Channel {
+  poolHandle: string;
+  totalAmount: number;
+  social: StakedEventSocialType;
+  farmed: number;
+  positions: ChannelPosition[];
+}
+
+export interface ChannelPosition {
+  amount: number;
+  indexInPool: number;
+  planId: number;
+  poolHandle: string;
+  stakedAt: Date;
+  unlockTime: Date;
+  social: StakedEventSocialType;
+}

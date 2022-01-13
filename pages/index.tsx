@@ -23,7 +23,7 @@ import STAKING_ABI from '../shared/abis/staking-abi.json';
 
 declare global {
     interface Window {
-        ethereum:any;
+        ethereum: any;
     }
 }
 
@@ -45,7 +45,7 @@ const Home: NextPage = () => {
   const [showModal, setShowModal] = React.useState(false);
   const [walletId, setWalletId] = React.useState('');
   const [loading, setLoading] = React.useState(true);
-  const [walletData, setWalletData] = React.useState<Contract>();
+  const [contractData, setContractData] = React.useState<Contract>();
   const [walletLoaded, setWalletLoaded] = React.useState(false);
   const [modalData, setModalData] = React.useState({});
 
@@ -180,7 +180,7 @@ const Home: NextPage = () => {
       }
 
       const stakingContract = new ethers.Contract(process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
-      setWalletData(getContract(stakingContract));
+      setContractData(getContract(stakingContract));
       setWalletLoaded(true);
     }
   }
@@ -359,7 +359,11 @@ const Home: NextPage = () => {
           connectWallet={connectWallet}
         />
         {walletLoaded && (
-          <Stakes openModal={openModal}/>
+          <Stakes openModal={openModal}
+                  walletId={walletId}
+                  contract={contractData}
+                  swayUsd={appState.swayUsd}
+          />
         )}
         <Overview swayAmountTotal={appState.swayAmountTotal}
                   swayUsd={appState.swayUsd}
@@ -373,9 +377,9 @@ const Home: NextPage = () => {
         {showModal && (
           <Modal modalData={modalData}
                  onClose={() => {
-            setShowModal(false);
-            setModalData({});
-          }}
+                   setShowModal(false);
+                   setModalData({});
+                 }}
           />
         )}
       </Web3ReactProvider>

@@ -1,10 +1,13 @@
 import Link from 'next/link';
 import React, { FC } from 'react';
 import styles from './Positions.module.scss';
-import { ModalType } from '../../shared/interfaces';
+import { Channel, ChannelPosition, ModalType } from '../../shared/interfaces';
 
 type ItemPositions = {
-  openModal: ({ type: ModalType }) => any,
+  openModal: ({ type: ModalType }) => any
+  positions: ChannelPosition[],
+  swayUsd: number,
+  channel: Channel,
 }
 
 const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
@@ -18,27 +21,30 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
         </div>
       </div>
 
-      <div className={styles.item}>
-        <div className={styles.spacing}/>
-        <div className={`${styles.tableItem} ${styles.textRight}`}>
-          <strong>#1</strong>
+      {props.positions.map((position, i) => (
+        <div className={styles.item} key={i}>
+          <div className={styles.spacing}/>
+          <div className={`${styles.tableItem} ${styles.textRight}`}>
+            <strong>#{position.indexInPool}</strong>
+          </div>
+          <div className={styles.tableItem}>
+            <strong>{position.amount.toLocaleString('en-US', { maximumFractionDigits: 0 })} SWAY</strong>
+          </div>
+          <div className={styles.tableItem}>
+            99%
+          </div>
+          <div className={styles.tableItem}>
+            {/*<button className="btn btn-secondary" onClick={() => props.openModal({ type: ModalType.UNSTAKE })}>*/}
+            {/*  Unstake*/}
+            {/*</button>*/}
+            {position.unlockTime.toISOString().split('T')[0]}
+          </div>
+          <div className={styles.tableItem}>
+            <strong>{props.channel.farmed.toLocaleString('en-US', { maximumFractionDigits: 2 })}</strong>
+          </div>
         </div>
-        <div className={styles.tableItem}>
-          <strong>2,183,293 SWAY</strong>
-          <div>7,588 USD</div>
-        </div>
-        <div className={styles.tableItem}>
-          99%
-        </div>
-        <div className={styles.tableItem}>
-          <button className="btn btn-secondary" onClick={() => props.openModal({ type: ModalType.UNSTAKE })}>
-            Unstake
-          </button>
-        </div>
-        <div className={styles.tableItem}>
-          <strong>3,299,291</strong>
-        </div>
-      </div>
+      ))}
+
 
       <div className={styles.item}>
         <div className={styles.spacing}/>
@@ -50,14 +56,10 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
       <div className={styles.item}>
         <div className={styles.spacing}/>
         <div className={`${styles.tableItem} ${styles.textRight}`}>
-          <strong>#889</strong>
+          <strong>#{props.positions[props.positions.length - 1].indexInPool + 1}</strong>
         </div>
-        <div className={styles.tableItem}>
-          <strong>2,183,293 SWAY</strong>
-          <div>7,588 USD</div>
-        </div>
-        <div className={styles.tableItem}>
-          99%
+        <div className={`${styles.tableItem} ${styles.spacingInput}`}>
+          <input type="number" placeholder="Amount"/>
         </div>
         <div className={styles.tableItem}>
           <button className="btn"  onClick={() => props.openModal({ type: ModalType.ADD })}>
