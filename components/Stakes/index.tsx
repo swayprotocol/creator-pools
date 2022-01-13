@@ -4,6 +4,7 @@ import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import Item from './Item';
 import { Channel, ChannelPosition, ModalType, StakedEventSocialType } from '../../shared/interfaces';
 import { Contract, ethers } from 'ethers';
+import Link from 'next/link';
 
 type StakesType = {
   openModal: ({ type: ModalType }) => any,
@@ -116,13 +117,18 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
                   </div>
                 </div>
               </div>
-              {channels.map((channelItem, i) => (
+              {channels.length ? channels.map((channelItem, i) => (
                 <Item key={i}
                       openModal={props.openModal}
                       channel={channelItem}
                       swayUsd={props.swayUsd}
                 />
-              ))}
+              )) : (
+                <div className={styles.inactive}>
+                  <p className="mb-4">No active positions yet. <div className="btn-link" onClick={() => props.openModal({ type: ModalType.STAKE })}>Click here</div> to get started.</p>
+                  <p className="mb-0">You will need SWAY to get started. <a target="_blank" rel="noopener noreferrer" href="https://www.gate.io/trade/SWAY_USDT">Get it now</a>.</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

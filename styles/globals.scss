@@ -125,6 +125,18 @@ select {
   }
 }
 
+.btn-link {
+  color: $link-color;
+  text-decoration: underline;
+  display: inline-block;
+  cursor: pointer;
+
+  &:hover {
+    color: $link-hover-color;
+    text-decoration: $link-hover-decoration;
+  }
+}
+
 .loading-item {
   height: 70px;
   width: 100%;
