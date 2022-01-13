@@ -1,0 +1,29 @@
+.positionWrapper {
+  margin-bottom: 40px;
+}
+
+.spacing {
+  flex: 0 0 auto;
+  width: 16.6666666%;
+}
+
+.item {
+  display: flex;
+  gap: 10px;
+}
+
+.tableItem {
+  composes: tableItem from "./Item.module.scss";
+  padding: 10px 0;
+}
+
+.tableHeading {
+  border-bottom: 1px solid #c9c9c9;
+}
+
+.textRight {
+  align-items: flex-end;
+  > * {
+    padding-right: 40%;
+  }
+}

@@ -1,7 +1,10 @@
+.itemWrapper {
+  border-bottom: 1px solid #c9c9c9;
+}
+
 .item {
   display: flex;
-  padding: 12px 0;
-  border-bottom: 1px solid #c9c9c9;
+  gap: 10px;
   cursor: pointer;
 
   &:hover {
@@ -22,6 +25,7 @@
   justify-content: center;
   align-items: flex-start;
   flex: 1 1 0;
+  padding: 12px 0;
 }
 
 .mainText {
