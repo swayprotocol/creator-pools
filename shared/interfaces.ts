@@ -17,3 +17,9 @@ export enum StakedEventSocialType {
   TT = 'TikTok',
   ENS = 'Ethereum Name Service',
 }
+
+export enum ModalType {
+  STAKE = 'Stake',
+  UNSTAKE = 'Unstake',
+  ADD = 'Stake additional position'
+}

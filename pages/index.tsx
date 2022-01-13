@@ -9,6 +9,8 @@ import { getStakedData } from '../helpers/getStakedData';
 import ReactGA from 'react-ga';
 import { getSwayPrice } from '../helpers/getSwayPrice';
 import Stakes from '../components/Stakes';
+import Modal from '../components/Modal';
+import { ModalType } from '../shared/interfaces';
 
 const initialAppState = {
   topPools: [],
@@ -25,6 +27,8 @@ function initialiseAnalytics() {
 
 const Home: NextPage = () => {
   const [appState, setAppState] = React.useState(initialAppState);
+  const [showModal, setShowModal] = React.useState(false);
+
   React.useEffect(() => {
     initialiseAnalytics();
     ReactGA.pageview('/index');
@@ -81,6 +85,11 @@ const Home: NextPage = () => {
              swayUsd={appState.swayUsd}
       />
       <FAQ/>
+      {showModal && (
+        <Modal onClose={() => setShowModal(false)}
+               type={ModalType.STAKE}
+        />
+      )}
     </Layout>
   );
 };

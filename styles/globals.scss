@@ -4,10 +4,16 @@ $body-color: #232323;
 $container-max-widths: (
   xxl: 1140px
 );
+$modal-content-border-color: #000;
+$modal-header-border-width: 0;
+$modal-header-padding: 2rem;
+$modal-inner-padding: 2rem;
+$modal-lg: 640px;
 
 // Bootstrap imports
 @import "~bootstrap/scss/bootstrap-reboot";
 @import "~bootstrap/scss/bootstrap-grid";
+@import "~bootstrap/scss/modal";
 
 // font-family
 @import url('https://fonts.googleapis.com/css2?family=Anaheim&display=swap');
@@ -38,6 +44,24 @@ $container-max-widths: (
 
 .border-bottom {
   border-bottom: 1px solid #ddd;
+}
+
+button {
+  border: 0;
+  background: none;
+}
+
+input,
+select {
+  padding: 6px 10px;
+  border-radius: 0;
+  border: 1px solid #606060;
+  outline: 0;
+  width: 100%;
+
+  &:focus {
+    border: 1px solid #000;
+  }
 }
 
 .btn {
@@ -139,4 +163,25 @@ $container-max-widths: (
       text-decoration: underline;
     }
   }
+}
+
+.modal {
+  display: block;
+  background-color: rgba(0, 0, 0, 0.1);
+
+  .mid-text {
+    font-size: 15px;
+  }
+  .small-text {
+    font-size: 14px;
+  }
+
+  .close {
+    font-size: 24px;
+  }
+}
+
+.form-group {
+  margin-bottom: 1rem;
+  align-items: center;
 }
