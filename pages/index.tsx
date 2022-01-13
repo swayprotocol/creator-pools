@@ -41,7 +41,7 @@ const Home: NextPage = () => {
   const [appState, setAppState] = React.useState(initialAppState);
   const [walletId, setWalletId] = React.useState('');
   const [loading, setLoading] = React.useState(false);
-  const [stakingContract, setStakingContract] = React.useState<Contract>();
+  const [walletData, setWalletData] = React.useState<Contract>();
   const [walletLoaded, setWalletLoaded] = React.useState(false);
 
   React.useEffect(() => {
@@ -50,20 +50,6 @@ const Home: NextPage = () => {
     getAndCalculateData();
     // eslint-disable-next-line
   }, []);
-
-  React.useEffect(() => {
-    if (stakingContract) {
-      const initWalletData = async function () {
-        const walletData = getContract(stakingContract);
-        console.log(await walletData.getCurrentTime())
-        console.log(await walletData.minAmount())
-        console.log(await walletData.owner())
-        console.log(await walletData.stakingToken())
-      }
-      initWalletData();
-    }
-    // eslint-disable-next-line
-  }, [stakingContract]);
 
   async function loadWallet(walletId: string, connector?: AbstractConnector) {
     setWalletId(walletId)
@@ -169,7 +155,7 @@ const Home: NextPage = () => {
 
   function initMetamaskChangeListener() {
     window.ethereum.on('accountsChanged', handleAccountChange);
-    // window.ethereum.on('chainChanged', this.handleNetworkChange);
+    // window.ethereum.on('chainChanged', handleNetworkChange);
   }
 
   function getLibrary(provider: any): Web3Provider {
@@ -187,8 +173,8 @@ const Home: NextPage = () => {
         window.ethereum = library.provider;
       }
 
-      const stakingContractWeb = new ethers.Contract(process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
-      setStakingContract(stakingContractWeb)
+      const stakingContract = new ethers.Contract(process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+      setWalletData(getContract(stakingContract));
     }
   }
 
