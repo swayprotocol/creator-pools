@@ -24,7 +24,7 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
           </div>
         </div>
         <div className={styles.tableItem}>
-          <strong>0</strong>
+          <strong>{props.channel.totalAmount.toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong>
         </div>
         <div className={styles.tableItem}>
           <strong>{props.channel.totalAmount.toLocaleString('en-US', { maximumFractionDigits: 0 })} SWAY</strong>
