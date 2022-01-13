@@ -6,17 +6,26 @@ import Overview from '../components/Overview';
 import Header from '../components/Header/Header';
 import Pools from '../components/Pools';
 import { getStakedData } from '../helpers/getStakedData';
+import { getContract } from '../helpers/getContract';
 import ReactGA from 'react-ga';
 import { getSwayPrice } from '../helpers/getSwayPrice';
 import Stakes from '../components/Stakes';
 import Modal from '../components/Modal';
 import { ModalType } from '../shared/interfaces';
-import { ethers } from 'ethers';
+import { ethers, Contract } from 'ethers';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import WalletConnect from '../components/WalletConnect';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { InjectedConnector } from '@web3-react/injected-connector';
+
+import STAKING_ABI from '../shared/abis/staking-abi.json';
+
+declare global {
+    interface Window {
+        ethereum:any;
+    }
+}
 
 const initialAppState = {
   topPools: [],
@@ -36,6 +45,7 @@ const Home: NextPage = () => {
   const [showModal, setShowModal] = React.useState(false);
   const [walletId, setWalletId] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const [walletData, setWalletData] = React.useState<Contract>();
   const [walletLoaded, setWalletLoaded] = React.useState(false);
 
   React.useEffect(() => {
@@ -98,7 +108,7 @@ const Home: NextPage = () => {
             }
           })
 
-        } catch (switchError) {
+        } catch (switchError: any) {
           // This error code indicates that the chain has not been added to MetaMask.
           if (switchError.code === 4902) {
             try {
@@ -149,7 +159,7 @@ const Home: NextPage = () => {
 
   function initMetamaskChangeListener() {
     window.ethereum.on('accountsChanged', handleAccountChange);
-    // window.ethereum.on('chainChanged', this.handleNetworkChange);
+    // window.ethereum.on('chainChanged', handleNetworkChange);
   }
 
   function getLibrary(provider: any): Web3Provider {
@@ -167,10 +177,8 @@ const Home: NextPage = () => {
         window.ethereum = library.provider;
       }
 
-      // const cloutContract = new ethers.Contract(process.env.REACT_APP_CLOUT_NFT_CONTRACT_ADDRESS, cloutAbi, signer);
-      // const marketplaceContract = new ethers.Contract(process.env.REACT_APP_MARKETPLACE_CONTRACT_ADDRESS, marketplaceAbi, signer);
-
-      // await setAppState({cloutContract, marketplaceContract});
+      const stakingContract = new ethers.Contract(process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+      setWalletData(getContract(stakingContract));
     }
   }
 
@@ -242,7 +250,7 @@ const Home: NextPage = () => {
             });
           }
 
-        } catch (switchError) {
+        } catch (switchError: any) {
           // This error code indicates that the chain has not been added to MetaMask.
           if (switchError.code === 4902) {
             try {
