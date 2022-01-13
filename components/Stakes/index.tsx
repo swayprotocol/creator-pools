@@ -4,7 +4,6 @@ import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import Item from './Item';
 import { Channel, ChannelPosition, ModalType, StakedEventSocialType } from '../../shared/interfaces';
 import { Contract, ethers } from 'ethers';
-import Link from 'next/link';
 
 type StakesType = {
   openModal: ({ type: ModalType }) => any,
