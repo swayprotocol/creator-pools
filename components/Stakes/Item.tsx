@@ -5,10 +5,7 @@ import { StakedEventSocialType } from '../../shared/interfaces';
 import ItemPositions from './Positions';
 
 type StakedItem = {
-  index?: number,
-  item?: string,
-  swayUsd?: number,
-  type?: string
+  openModal: ({ type: ModalType }) => any,
 }
 
 const StakedItem: FC<StakedItem> = (props: StakedItem) => {
@@ -43,7 +40,7 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
       </div>
 
       {isExpanded && (
-        <ItemPositions/>
+        <ItemPositions openModal={props.openModal}/>
       )}
     </div>
   )

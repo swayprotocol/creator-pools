@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { FC } from 'react';
 import styles from './index.module.scss';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import Item from './Item';
+import { ModalType } from '../../shared/interfaces';
 
-const Stakes = () => (
+type StakesType = {
+  openModal: ({ type: ModalType }) => any,
+}
+
+const Stakes: FC<StakesType> = (props: StakesType) => (
   <section className="stakes-section mb-4">
     <div className="container">
 
@@ -23,7 +28,7 @@ const Stakes = () => (
               <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
               <span>1,233,444</span>
             </div>
-            <button className="btn">
+            <button className="btn" onClick={() => props.openModal({ type: ModalType.STAKE })}>
               Stake
             </button>
           </div>
@@ -66,7 +71,7 @@ const Stakes = () => (
               </div>
             </div>
             {['', '', ''].map((_, i) => (
-              <Item key={i}/>
+              <Item key={i} openModal={props.openModal}/>
             ))}
           </div>
         </div>

@@ -47,6 +47,7 @@ const Home: NextPage = () => {
   const [loading, setLoading] = React.useState(true);
   const [walletData, setWalletData] = React.useState<Contract>();
   const [walletLoaded, setWalletLoaded] = React.useState(false);
+  const [modalData, setModalData] = React.useState({});
 
   React.useEffect(() => {
     initialiseAnalytics();
@@ -340,6 +341,11 @@ const Home: NextPage = () => {
     });
   }
 
+  function openModal(modalData: { type: ModalType }) {
+    setShowModal(true);
+    setModalData(modalData);
+  }
+
   return (
     <Layout>
       <Web3ReactProvider getLibrary={getLibrary}>
@@ -353,7 +359,7 @@ const Home: NextPage = () => {
           connectWallet={connectWallet}
         />
         {walletLoaded && (
-          <Stakes/>
+          <Stakes openModal={openModal}/>
         )}
         <Overview swayAmountTotal={appState.swayAmountTotal}
                   swayUsd={appState.swayUsd}
@@ -365,8 +371,11 @@ const Home: NextPage = () => {
         />
         <FAQ/>
         {showModal && (
-          <Modal onClose={() => setShowModal(false)}
-                 type={ModalType.STAKE}
+          <Modal modalData={modalData}
+                 onClose={() => {
+            setShowModal(false);
+            setModalData({});
+          }}
           />
         )}
       </Web3ReactProvider>

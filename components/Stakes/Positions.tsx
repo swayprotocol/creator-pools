@@ -1,12 +1,10 @@
 import Link from 'next/link';
 import React, { FC } from 'react';
 import styles from './Positions.module.scss';
+import { ModalType } from '../../shared/interfaces';
 
 type ItemPositions = {
-  index?: number,
-  item?: string,
-  swayUsd?: number,
-  type?: string
+  openModal: ({ type: ModalType }) => any,
 }
 
 const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
@@ -33,7 +31,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
           99%
         </div>
         <div className={styles.tableItem}>
-          <button className="btn btn-secondary">
+          <button className="btn btn-secondary" onClick={() => props.openModal({ type: ModalType.UNSTAKE })}>
             Unstake
           </button>
         </div>
@@ -62,7 +60,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
           99%
         </div>
         <div className={styles.tableItem}>
-          <button className="btn">
+          <button className="btn"  onClick={() => props.openModal({ type: ModalType.ADD })}>
             Stake
           </button>
         </div>
