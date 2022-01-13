@@ -75,7 +75,7 @@ const Home: NextPage = () => {
   return (
     <Layout>
       <Header/>
-      <Stakes/>
+      {/*<Stakes/>*/}
       <Overview swayAmountTotal={appState.swayAmountTotal}
                 swayUsd={appState.swayUsd}
       />
