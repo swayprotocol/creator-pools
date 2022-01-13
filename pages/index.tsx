@@ -6,14 +6,23 @@ import Overview from '../components/Overview';
 import Header from '../components/Header/Header';
 import Pools from '../components/Pools';
 import { getStakedData } from '../helpers/getStakedData';
+import { getContract } from '../helpers/getContract';
 import ReactGA from 'react-ga';
 import { getSwayPrice } from '../helpers/getSwayPrice';
-import { ethers } from 'ethers';
+import { ethers, Contract } from 'ethers';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import WalletConnect from '../components/WalletConnect';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { InjectedConnector } from '@web3-react/injected-connector';
+
+import STAKING_ABI from '../shared/abis/staking-abi.json';
+
+declare global {
+    interface Window {
+        ethereum:any;
+    }
+}
 
 const initialAppState = {
   topPools: [],
@@ -32,6 +41,7 @@ const Home: NextPage = () => {
   const [appState, setAppState] = React.useState(initialAppState);
   const [walletId, setWalletId] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const [stakingContract, setStakingContract] = React.useState<Contract>();
   const [walletLoaded, setWalletLoaded] = React.useState(false);
 
   React.useEffect(() => {
@@ -40,6 +50,20 @@ const Home: NextPage = () => {
     getAndCalculateData();
     // eslint-disable-next-line
   }, []);
+
+  React.useEffect(() => {
+    if (stakingContract) {
+      const initWalletData = async function () {
+        const walletData = getContract(stakingContract);
+        console.log(await walletData.getCurrentTime())
+        console.log(await walletData.minAmount())
+        console.log(await walletData.owner())
+        console.log(await walletData.stakingToken())
+      }
+      initWalletData();
+    }
+    // eslint-disable-next-line
+  }, [stakingContract]);
 
   async function loadWallet(walletId: string, connector?: AbstractConnector) {
     setWalletId(walletId)
@@ -94,7 +118,7 @@ const Home: NextPage = () => {
             }
           })
 
-        } catch (switchError) {
+        } catch (switchError: any) {
           // This error code indicates that the chain has not been added to MetaMask.
           if (switchError.code === 4902) {
             try {
@@ -163,10 +187,8 @@ const Home: NextPage = () => {
         window.ethereum = library.provider;
       }
 
-      // const cloutContract = new ethers.Contract(process.env.REACT_APP_CLOUT_NFT_CONTRACT_ADDRESS, cloutAbi, signer);
-      // const marketplaceContract = new ethers.Contract(process.env.REACT_APP_MARKETPLACE_CONTRACT_ADDRESS, marketplaceAbi, signer);
-
-      // await setAppState({cloutContract, marketplaceContract});
+      const stakingContractWeb = new ethers.Contract(process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+      setStakingContract(stakingContractWeb)
     }
   }
 
@@ -238,7 +260,7 @@ const Home: NextPage = () => {
             });
           }
 
-        } catch (switchError) {
+        } catch (switchError: any) {
           // This error code indicates that the chain has not been added to MetaMask.
           if (switchError.code === 4902) {
             try {
