@@ -343,14 +343,14 @@ const Home: NextPage = () => {
 
     const latestPools = stakedData.sort((a, b) => { return b.date.getTime() - a.date.getTime() });
     // set state
-    setAppState({
+    setAppState((prevState) => ({
+      ...prevState,
       topPools: allCreators,
       latestPools: latestPools,
       topPositions: topPositions,
       swayUsd: swayPriceUsd,
-      swayLockedTotal: totalLocked,
-      swayUserTotal: 0
-    });
+      swayLockedTotal: totalLocked
+    }));
   }
 
   function openModal(modalData: { type: ModalType }) {
