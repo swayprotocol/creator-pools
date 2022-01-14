@@ -50,6 +50,7 @@ const Home: NextPage = () => {
   const [contractData, setContractData] = React.useState<Contract>();
   const [walletLoaded, setWalletLoaded] = React.useState(false);
   const [modalData, setModalData] = React.useState({});
+  const [dataLoadError, setDataLoadError] = React.useState(false);
 
   React.useEffect(() => {
     initialiseAnalytics();
@@ -316,41 +317,45 @@ const Home: NextPage = () => {
   }
 
   async function getGeneralData() {
-    const stakedData = await getStakedData();
-    const swayPriceUsd = await getSwayPrice();
+    try {
+      const stakedData = await getStakedData();
+      const swayPriceUsd = await getSwayPrice();
 
-    // calculate data for different columns
-    let allCreators: any = {};
-    let topPositions: any = {};
-    let totalLocked = 0;
-    stakedData.forEach(event => {
-      totalLocked += event.amount;
-      allCreators[event.poolHandle] = {
-        ...event,
-        amount: allCreators[event.poolHandle]?.amount + event.amount || event.amount
-      };
-      topPositions[event.sender] = {
-        ...event,
-        amount: allCreators[event.poolHandle]?.amount + event.amount || event.amount
-      }
-    });
+      // calculate data for different columns
+      let allCreators: any = {};
+      let topPositions: any = {};
+      let totalLocked = 0;
+      stakedData.forEach(event => {
+        totalLocked += event.amount;
+        allCreators[event.poolHandle] = {
+          ...event,
+          amount: allCreators[event.poolHandle]?.amount + event.amount || event.amount
+        };
+        topPositions[event.sender] = {
+          ...event,
+          amount: allCreators[event.poolHandle]?.amount + event.amount || event.amount
+        }
+      });
 
-    // sort by high to low
-    allCreators = Object.values(allCreators);
-    allCreators.sort((a: { amount: number; }, b: { amount: number; }) => (b.amount - a.amount));
-    topPositions = Object.values(topPositions);
-    topPositions.sort((a: { amount: number; }, b: { amount: number; }) => (b.amount - a.amount));
+      // sort by high to low
+      allCreators = Object.values(allCreators);
+      allCreators.sort((a: { amount: number; }, b: { amount: number; }) => (b.amount - a.amount));
+      topPositions = Object.values(topPositions);
+      topPositions.sort((a: { amount: number; }, b: { amount: number; }) => (b.amount - a.amount));
 
-    const latestPools = stakedData.sort((a, b) => { return b.date.getTime() - a.date.getTime() });
-    // set state
-    setAppState((prevState) => ({
-      ...prevState,
-      topPools: allCreators,
-      latestPools: latestPools,
-      topPositions: topPositions,
-      swayUsd: swayPriceUsd,
-      swayLockedTotal: totalLocked
-    }));
+      const latestPools = stakedData.sort((a, b) => { return b.date.getTime() - a.date.getTime() });
+      // set state
+      setAppState((prevState) => ({
+        ...prevState,
+        topPools: allCreators,
+        latestPools: latestPools,
+        topPositions: topPositions,
+        swayUsd: swayPriceUsd,
+        swayLockedTotal: totalLocked
+      }));
+    } catch (err) {
+      setDataLoadError(true)
+    }
   }
 
   function openModal(modalData: { type: ModalType }) {
@@ -385,6 +390,7 @@ const Home: NextPage = () => {
                latest={appState.latestPools.slice(0, 10)}
                positions={appState.topPositions.slice(0, 10)}
                swayUsd={appState.swayUsd}
+               loadError={dataLoadError}
         />
         <FAQ/>
         {showModal && (
