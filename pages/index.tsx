@@ -20,6 +20,7 @@ import { AbstractConnector } from '@web3-react/abstract-connector';
 import { InjectedConnector } from '@web3-react/injected-connector';
 
 import STAKING_ABI from '../shared/abis/staking-abi.json';
+import { getUserAvailableTokens } from '../helpers/getUserAvailableTokens';
 
 declare global {
     interface Window {
@@ -31,8 +32,9 @@ const initialAppState = {
   topPools: [],
   latestPools: [],
   topPositions: [],
-  swayAmountTotal: 0,
+  swayLockedTotal: 0,
   swayUsd: 0,
+  swayUserTotal: 0
 };
 
 function initialiseAnalytics() {
@@ -52,10 +54,18 @@ const Home: NextPage = () => {
   React.useEffect(() => {
     initialiseAnalytics();
     ReactGA.pageview('/index');
-    getAndCalculateData();
+    getGeneralData();
     setLoading(false);
     // eslint-disable-next-line
   }, []);
+
+  React.useEffect(() => {
+    async function getUserSwayAmount() {
+      const availableTokens = await getUserAvailableTokens(walletId);
+      setAppState(prevState => ({...prevState, swayUserTotal: availableTokens}))
+    }
+    if (walletId) getUserSwayAmount();
+  }, [walletId]);
 
   async function loadWallet(walletId: string, connector?: AbstractConnector) {
     setWalletId(walletId)
@@ -305,14 +315,14 @@ const Home: NextPage = () => {
     setWalletId('');
   }
 
-  async function getAndCalculateData() {
+  async function getGeneralData() {
     const stakedData = await getStakedData();
     const swayPriceUsd = await getSwayPrice();
-    let totalLocked = 0;
 
     // calculate data for different columns
     let allCreators: any = {};
     let topPositions: any = {};
+    let totalLocked = 0;
     stakedData.forEach(event => {
       totalLocked += event.amount;
       allCreators[event.poolHandle] = {
@@ -337,7 +347,8 @@ const Home: NextPage = () => {
       latestPools: stakedData,
       topPositions: topPositions,
       swayUsd: swayPriceUsd,
-      swayAmountTotal: totalLocked,
+      swayLockedTotal: totalLocked,
+      swayUserTotal: 0
     });
   }
 
@@ -363,9 +374,10 @@ const Home: NextPage = () => {
                   walletId={walletId}
                   contract={contractData}
                   swayUsd={appState.swayUsd}
+                  swayUserTotal={appState.swayUserTotal}
           />
         )}
-        <Overview swayAmountTotal={appState.swayAmountTotal}
+        <Overview swayLockedTotal={appState.swayLockedTotal}
                   swayUsd={appState.swayUsd}
         />
         <Pools top={appState.topPools.slice(0, 10)}

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 
 type OverviewProps = {
-  swayAmountTotal: number,
+  swayLockedTotal: number,
   swayUsd: number,
 }
 
@@ -14,10 +14,10 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => (
           <div className="overview-item">
             <div className="overview-item-name">TVL</div>
             <div className="overview-item-value">
-              ${(props.swayAmountTotal * props.swayUsd).toLocaleString('en-US', { maximumFractionDigits: 0 })}
+              ${(props.swayLockedTotal * props.swayUsd).toLocaleString('en-US', { maximumFractionDigits: 0 })}
             </div>
             <div className="overview-item-name">
-              {props.swayAmountTotal.toLocaleString('en-US', { maximumFractionDigits: 0 })} SWAY
+              {props.swayLockedTotal.toLocaleString('en-US', { maximumFractionDigits: 0 })} SWAY
             </div>
           </div>
           <div className="overview-item">
