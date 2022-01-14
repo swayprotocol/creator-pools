@@ -3,6 +3,7 @@ import styles from './Item.module.scss';
 import { PoolItemType, StakedEvent } from '../../shared/interfaces';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
+import Moment from 'react-moment';
 
 type Item = {
   index: number,
@@ -44,7 +45,9 @@ const Item: FC<Item> = (props: Item) => (
           <div className={styles.subText}>{props.item.amount.toLocaleString('en-US', {maximumFractionDigits: 0})} SWAY</div>
         )}
         {props.type === PoolItemType.LATEST && (
-          <div className={styles.subText}>{props.item.date.toISOString().split('T')[0]}</div>
+          <div className={styles.subText}>
+            <Moment date={props.item.date.toISOString()} fromNow></Moment>
+          </div>
         )}
       </div>
     </div>

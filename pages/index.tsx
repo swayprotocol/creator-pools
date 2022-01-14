@@ -331,10 +331,11 @@ const Home: NextPage = () => {
     topPositions = Object.values(topPositions);
     topPositions.sort((a: { amount: number; }, b: { amount: number; }) => (b.amount - a.amount));
 
+    const latestPools = stakedData.sort((a, b) => { return b.date.getTime() - a.date.getTime() });
     // set state
     setAppState({
       topPools: allCreators,
-      latestPools: stakedData,
+      latestPools: latestPools,
       topPositions: topPositions,
       swayUsd: swayPriceUsd,
       swayAmountTotal: totalLocked,
