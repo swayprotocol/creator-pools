@@ -41,3 +41,10 @@ export interface ChannelPosition {
   unlockTime: Date;
   social: StakedEventSocialType;
 }
+
+export interface StakeData {
+  poolHandle: string;
+  planId: string;
+  amount: string;
+  social: StakedEventSocialType;
+}

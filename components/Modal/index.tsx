@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { ModalType, StakedEventSocialType } from '../../shared/interfaces';
+import { ModalType, StakeData, StakedEventSocialType } from '../../shared/interfaces';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
 import styles from './Modal.module.scss';
 import { Contract, ethers } from 'ethers';
@@ -14,11 +14,16 @@ type ModalProps = {
   swayUserTotal: number
 }
 
+const initialModalData: StakeData = {
+  social: StakedEventSocialType.IG,
+  poolHandle: '',
+  amount: '',
+  planId: '3'
+}
+
 const Modal: FC<ModalProps> = (props: ModalProps) => {
-  const [identificator, setIdentificator] = React.useState('');
-  const [stakeValue, setStakeValue] = React.useState('');
+  const [formData, setFormData] = React.useState(initialModalData);
   const [formError, setFormError] = React.useState({});
-  const [formData, setFormData] = React.useState({});
   const [callError, setCallError] = React.useState('');
   const [loading, setLoading] = React.useState(false);
 
@@ -34,19 +39,19 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     console.log(event);
 
     let stakeData = {
-      channel: event.target.channel.value,
+      social: event.target.social.value,
       poolHandle: event.target.poolHandle.value,
       amount: event.target.amount.value,
       planId: event.target.planId.value
     };
 
     if (checkFormValidation(stakeData)) {
-      // all good
       setCallError('');
 
       // convert amount to eth value
-      stakeData.amount = ethers.utils.parseEther(stakeData.amount.toString(10))
-      setLoading(true);
+      stakeData.amount = ethers.utils.parseEther(stakeData.amount.toString(10));
+      // set social prefix
+      stakeData.poolHandle = `${formData.social === StakedEventSocialType.IG ? 'ig-' : 'tt-'}` + stakeData.poolHandle;
 
       try {
         // check allowance and give permissions
@@ -66,6 +71,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
         const tx = await stakeTx.wait();
         console.log(tx);
         setLoading(false);
+        props.onClose();
       } catch (error) {
         setCallError(error['data']?.message.replace('execution reverted: ', '') || (error as any)?.message || 'Error');
         setLoading(false);
@@ -74,10 +80,11 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
 
   }
 
-  const handleChange = (type: string, event: React.ChangeEvent<HTMLInputElement>) => {
-    const data = event.target.value;
-    console.log(data);
-    setIdentificator(data)
+  const handleChange = (type: string, value: string) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      [type] : value
+    }));
   }
 
   const checkFormValidation = (data) => {
@@ -106,14 +113,17 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     return (
       <div className={styles.socialLinkWrapper}>
         <div className={styles.socialIcon}>
-          {getSocialIcon(StakedEventSocialType.IG)}
+          {getSocialIcon(formData.social)}
         </div>
         <div className={styles.socialName}>
-          <strong>{identificator}</strong>
+          <strong>{formData.poolHandle}</strong>
         </div>
         <div className={styles.socialLink}>
-          <a href={`https://www.instagram.com/${identificator}`} rel="noreferrer" target="_blank">visit</a>
-          {/*<a href={`https://www.tiktok.com/@${identificator}`} rel="noreferrer" target="_blank">visit</a>*/}
+          {formData.social === StakedEventSocialType.IG ? (
+            <a href={`https://www.instagram.com/${formData.poolHandle}`} rel="noreferrer" target="_blank">visit</a>
+          ) : (
+            <a href={`https://www.tiktok.com/@${formData.poolHandle}`} rel="noreferrer" target="_blank">visit</a>
+          )}
         </div>
       </div>
     )
@@ -130,9 +140,12 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
           <div className="modal-body">
             <form onSubmit={stakeAction}>
               <div className="form-group row">
-                <label htmlFor="channel" className="col-sm-3">Channel</label>
+                <label htmlFor="social" className="col-sm-3">Channel</label>
                 <div className="col-sm-4">
-                  <select className="form-control" id="channel" required={true} value={formData['channel']}>
+                  <select className="form-control"
+                          id="social"
+                          value={formData.social}
+                          onChange={(e) => handleChange('social', e.target.value)}>
                     {/*<option hidden={true} value={undefined}>Select</option>*/}
                     <option value={StakedEventSocialType.IG}>Instagram</option>
                     <option value={StakedEventSocialType.TT}>TikTok</option>
@@ -146,8 +159,8 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                          className={`form-control ${formError['poolHandle'] ? 'error' : ''}`}
                          id="poolHandle"
                          placeholder="Enter identificator"
-                         value={identificator}
-                         onChange={(e) => handleChange('poolHandle', e)}/>
+                         value={formData.poolHandle}
+                         onChange={(e) => handleChange('poolHandle', e.target.value)}/>
                 </div>
                 <div className={`${styles.midText} ${styles.lightText} col-sm-5`}>ie. leomessi, banksy.eth...</div>
                 {props.modalData.type === ModalType.STAKE && (
@@ -161,7 +174,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
               </div>
               <div className="row mb-3">
                 <div className="col-sm-8 offset-sm-3">
-                  {identificator && getSocialLink()}
+                  {formData.poolHandle && getSocialLink()}
                 </div>
               </div>
               <div className="form-group row">
@@ -172,21 +185,24 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                          id="amount"
                          min={1}
                          step={0.00000000000001}
-                         value={stakeValue}
-                         onChange={(e) => setStakeValue(e.target.value)}
+                         value={formData.amount}
+                         onChange={(e) => handleChange('amount', e.target.value)}
                          placeholder="1000"/>
-                  <div className="after-element" onClick={() => setStakeValue(props.swayUserTotal.toString())}>MAX</div>
+                  <div className="after-element" onClick={() => handleChange('amount', props.swayUserTotal.toString())}>MAX</div>
                 </div>
                 <div className={`${styles.swayAvailable} col-sm-3`}>
                   <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
-                  <span>{props.swayUserTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                  <span>{props.swayUserTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}</span>
                 </div>
               </div>
               {props.modalData.type === ModalType.STAKE && (
                 <div className="form-group row">
                   <label htmlFor="planId" className="col-sm-3">Promotional APR</label>
                   <div className="col-sm-2">
-                    <select className="form-control" id="planId">
+                    <select className="form-control"
+                            id="planId"
+                            value={formData.planId}
+                            onChange={(e) => handleChange('planId', e.target.value)}>
                       <option value="3">99%</option>
                       <option value="2">66%</option>
                       <option value="1">33%</option>
