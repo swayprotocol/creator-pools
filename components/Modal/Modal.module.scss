@@ -34,3 +34,18 @@
 .socialLink {
   margin-left: 1rem;
 }
+
+.errorText {
+  color: #ED4337;
+}
+
+.swayAvailable {
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+  line-height: 1;
+
+  img {
+    margin-right: 10px;
+  }
+}

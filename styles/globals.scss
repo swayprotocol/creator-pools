@@ -70,6 +70,18 @@ select {
       border: 1px solid #000 !important;
     }
   }
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button,
+  &[type=number]{
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+    margin: 0;
+  }
+
+  &[type=number] {
+    padding: 6px 40px 6px 10px;
+  }
 }
 
 .btn {
@@ -188,4 +200,24 @@ select {
 .form-group {
   margin-bottom: 1rem;
   align-items: center;
+}
+
+.extended-input {
+  position: relative;
+
+  .after-element {
+    position: absolute;
+    top: 1px;
+    padding: 5px 4px;
+    right: 0;
+    margin: 6px 20px 6px 0;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    border-radius: 2px;
+
+    &:hover {
+      background-color: #f2f2f2;
+    }
+  }
 }

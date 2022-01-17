@@ -395,6 +395,8 @@ const Home: NextPage = () => {
         <FAQ/>
         {showModal && (
           <Modal modalData={modalData}
+                 contract={contractData}
+                 swayUserTotal={appState.swayUserTotal}
                  onClose={() => {
                    setShowModal(false);
                    setModalData({});

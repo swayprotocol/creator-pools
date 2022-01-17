@@ -2,35 +2,55 @@ import React, { FC } from 'react';
 import { ModalType, StakedEventSocialType } from '../../shared/interfaces';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
 import styles from './Modal.module.scss';
+import { ethers } from 'ethers';
 
 type ModalProps = {
   onClose: () => any,
-  modalData: { type?: ModalType }
+  modalData: { type?: ModalType },
+  contract: any,
+  swayUserTotal: number,
 }
 
 const Modal: FC<ModalProps> = (props: ModalProps) => {
   const [identificator, setIdentificator] = React.useState('');
+  const [stakeValue, setStakeValue] = React.useState('');
   const [formError, setFormError] = React.useState({});
   const [formData, setFormData] = React.useState({});
+  const [callError, setCallError] = React.useState('');
 
   const handleCloseClick = (e) => {
     e.preventDefault();
     props.onClose();
   };
 
-  const stakeAction = event => {
+  const stakeAction = async event => {
     event.preventDefault();
     console.log(event);
 
     const stakeData = {
       channel: event.target.channel.value,
-      identificator: event.target.identificator.value,
+      poolHandle: event.target.poolHandle.value,
       amount: event.target.amount.value,
-      apr: event.target.apr.value
+      planId: event.target.planId.value
     };
 
     if (checkFormValidation(stakeData)) {
       // all good
+      setCallError('');
+
+      try {
+        const stakeTx = await props.contract.stake(
+          stakeData.poolHandle,
+          ethers.utils.parseEther(stakeData.amount.toString()),
+          stakeData.planId,
+          { gasLimit: 500000 }
+        );
+
+        const tx = await stakeTx.wait();
+        console.log(tx);
+      } catch (error) {
+        setCallError(error['data']?.message.replace('execution reverted: ', '') || (error as any)?.message || 'Error');
+      }
     }
 
   }
@@ -45,13 +65,16 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     let errors = {};
     let formIsValid = true;
 
-    if (!data.amount) {
+    if (!data.amount || +data.amount > props.swayUserTotal) {
       errors['amount'] = true;
       formIsValid = false;
+      if (+data.amount > props.swayUserTotal) {
+        setCallError('Amount exceeds total available.')
+      }
     }
 
-    if (!data.identificator) {
-      errors['identificator'] = true;
+    if (!data.poolHandle) {
+      errors['poolHandle'] = true;
       formIsValid = false;
     }
 
@@ -60,7 +83,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     return formIsValid;
   }
 
-  const socialLink = () => {
+  const getSocialLink = () => {
     return (
       <div className={styles.socialLinkWrapper}>
         <div className={styles.socialIcon}>
@@ -71,6 +94,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
         </div>
         <div className={styles.socialLink}>
           <a href={`https://www.instagram.com/${identificator}`} rel="noreferrer" target="_blank">visit</a>
+          {/*<a href={`https://www.tiktok.com/@${identificator}`} rel="noreferrer" target="_blank">visit</a>*/}
         </div>
       </div>
     )
@@ -97,14 +121,14 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                 </div>
               </div>
               <div className="form-group row mb-0">
-                <label htmlFor="identificator" className="col-sm-3">Identificator</label>
+                <label htmlFor="poolHandle" className="col-sm-3">Identificator</label>
                 <div className="col-sm-4">
                   <input type="text"
-                         className={`form-control ${formError['identificator'] ? 'error' : ''}`}
-                         id="identificator"
+                         className={`form-control ${formError['poolHandle'] ? 'error' : ''}`}
+                         id="poolHandle"
                          placeholder="Enter identificator"
                          value={identificator}
-                         onChange={(e) => handleChange('identificator', e)}/>
+                         onChange={(e) => handleChange('poolHandle', e)}/>
                 </div>
                 <div className={`${styles.midText} ${styles.lightText} col-sm-5`}>ie. leomessi, banksy.eth...</div>
                 {props.modalData.type === ModalType.STAKE && (
@@ -118,26 +142,35 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
               </div>
               <div className="row mb-3">
                 <div className="col-sm-8 offset-sm-3">
-                  {identificator && socialLink()}
+                  {identificator && getSocialLink()}
                 </div>
               </div>
               <div className="form-group row">
                 <label htmlFor="amount" className="col-sm-3">Amount</label>
-                <div className="col-sm-4">
+                <div className="col-sm-4 extended-input">
                   <input type="number"
                          className={`form-control ${formError['amount'] ? 'error' : ''}`}
                          id="amount"
+                         min={1}
+                         step={0.00000000000001}
+                         value={stakeValue}
+                         onChange={(e) => setStakeValue(e.target.value)}
                          placeholder="1000"/>
+                  <div className="after-element" onClick={() => setStakeValue(props.swayUserTotal.toString())}>MAX</div>
+                </div>
+                <div className={`${styles.swayAvailable} col-sm-3`}>
+                  <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
+                  <span>{props.swayUserTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
               </div>
               {props.modalData.type === ModalType.STAKE && (
                 <div className="form-group row">
-                  <label htmlFor="apr" className="col-sm-3">Promotional APR</label>
+                  <label htmlFor="planId" className="col-sm-3">Promotional APR</label>
                   <div className="col-sm-2">
-                    <select className="form-control" id="apr">
-                      <option value="99" defaultValue={99}>99%</option>
-                      <option value="66">66%</option>
-                      <option value="33">33%</option>
+                    <select className="form-control" id="planId">
+                      <option value="3">99%</option>
+                      <option value="2">66%</option>
+                      <option value="1">33%</option>
                     </select>
                   </div>
                   <div className={`${styles.midText} col-sm-7`}>Position will be locked for 9 months.</div>
@@ -156,6 +189,9 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                   <p className={styles.smallText}>After clicking on Stake, Metamask will pop-up to complete the transaction.</p>
                   {props.modalData.type === ModalType.ADD && (
                     <p className={styles.smallText}>NOTE: Adding additional positions with promotional APR extends the lockup duration of the total stake.</p>
+                  )}
+                  {!!callError && (
+                    <p className={`${styles.smallText} ${styles.errorText}`}>{callError}</p>
                   )}
                 </div>
               </div>
