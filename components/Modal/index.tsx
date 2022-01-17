@@ -2,13 +2,16 @@ import React, { FC } from 'react';
 import { ModalType, StakedEventSocialType } from '../../shared/interfaces';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
 import styles from './Modal.module.scss';
-import { ethers } from 'ethers';
+import { Contract, ethers } from 'ethers';
+import SWAY_TOKEN_ABI from '../../shared/abis/token-abi.json';
+import { useWeb3React } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
 
 type ModalProps = {
   onClose: () => any,
   modalData: { type?: ModalType },
   contract: any,
-  swayUserTotal: number,
+  swayUserTotal: number
 }
 
 const Modal: FC<ModalProps> = (props: ModalProps) => {
@@ -17,6 +20,8 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
   const [formError, setFormError] = React.useState({});
   const [formData, setFormData] = React.useState({});
   const [callError, setCallError] = React.useState('');
+
+  const { library, account } = useWeb3React<Web3Provider>();
 
   const handleCloseClick = (e) => {
     e.preventDefault();
@@ -27,7 +32,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     event.preventDefault();
     console.log(event);
 
-    const stakeData = {
+    let stakeData = {
       channel: event.target.channel.value,
       poolHandle: event.target.poolHandle.value,
       amount: event.target.amount.value,
@@ -38,10 +43,20 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
       // all good
       setCallError('');
 
+      // convert amount to eth value
+      stakeData.amount = ethers.utils.parseEther(stakeData.amount.toString(10))
+
       try {
+        // check allowance and give permissions
+        const tokenContract = new Contract(process.env.NEXT_PUBLIC_SWAY_TOKEN_ADDRESS, SWAY_TOKEN_ABI, library.getSigner());
+        const allowance = await tokenContract.allowance(account, process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS);
+        if (+ethers.utils.formatEther(allowance) < +ethers.utils.formatEther(stakeData.amount)) {
+          await tokenContract.approve(process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS, 2^256 - 1);
+        }
+
         const stakeTx = await props.contract.stake(
           stakeData.poolHandle,
-          ethers.utils.parseEther(stakeData.amount.toString()),
+          stakeData.amount,
           stakeData.planId,
           { gasLimit: 500000 }
         );
