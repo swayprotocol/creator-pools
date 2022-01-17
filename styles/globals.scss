@@ -62,6 +62,14 @@ select {
   &:focus {
     border: 1px solid #000;
   }
+
+  &.error {
+    border: 1px solid #ED4337;
+
+    &:not(:placeholder-shown) {
+      border: 1px solid #000 !important;
+    }
+  }
 }
 
 .btn {
@@ -174,22 +182,6 @@ select {
     &:hover {
       text-decoration: underline;
     }
-  }
-}
-
-.modal {
-  display: block;
-  background-color: rgba(0, 0, 0, 0.1);
-
-  .mid-text {
-    font-size: 15px;
-  }
-  .small-text {
-    font-size: 14px;
-  }
-
-  .close {
-    font-size: 24px;
   }
 }
 

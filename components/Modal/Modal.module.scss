@@ -1,0 +1,36 @@
+.modal {
+  display: block;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.midText {
+  font-size: 15px;
+}
+.smallText {
+  font-size: 14px;
+}
+
+.closeBtn {
+  font-size: 24px;
+}
+
+.lightText {
+  color: #AAA;
+}
+
+.socialLinkWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.socialIcon {
+  display: flex;
+}
+
+.socialName {
+  margin-left: 1rem;
+}
+
+.socialLink {
+  margin-left: 1rem;
+}
