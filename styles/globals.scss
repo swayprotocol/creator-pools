@@ -143,6 +143,25 @@ select {
       height: 8px;
     }
   }
+
+  &.btn-pending {
+    pointer-events: none;
+    opacity: 0.8;
+
+    span {
+      &::before {
+        content: '';
+        display: inline-flex;
+        width: 14px;
+        height: 14px;
+        border: 1px solid transparent;
+        border-top-color: #fff;
+        border-radius: 50%;
+        margin-right: 8px;
+        animation: spin 1s ease infinite;
+      }
+    }
+  }
 }
 
 .btn-link {
@@ -219,5 +238,11 @@ select {
     &:hover {
       background-color: #f2f2f2;
     }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
   }
 }

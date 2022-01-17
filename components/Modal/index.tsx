@@ -20,6 +20,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
   const [formError, setFormError] = React.useState({});
   const [formData, setFormData] = React.useState({});
   const [callError, setCallError] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
   const { library, account } = useWeb3React<Web3Provider>();
 
@@ -45,6 +46,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
 
       // convert amount to eth value
       stakeData.amount = ethers.utils.parseEther(stakeData.amount.toString(10))
+      setLoading(true);
 
       try {
         // check allowance and give permissions
@@ -63,8 +65,10 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
 
         const tx = await stakeTx.wait();
         console.log(tx);
+        setLoading(false);
       } catch (error) {
         setCallError(error['data']?.message.replace('execution reverted: ', '') || (error as any)?.message || 'Error');
+        setLoading(false);
       }
     }
 
@@ -194,10 +198,10 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
               <div className="row">
                 <div className="col-sm-4 offset-sm-3 mb-3 mt-2">
                   {props.modalData.type !== ModalType.UNSTAKE && (
-                    <button type="submit" className="btn btn-primary">Stake</button>
+                    <button type="submit" className={`btn btn-primary ${loading ? 'btn-pending' : ''}`}><span/>Stake</button>
                   )}
                   {props.modalData.type === ModalType.UNSTAKE && (
-                    <button type="submit" className="btn btn-primary">Unstake</button>
+                    <button type="submit" className={`btn btn-primary ${loading ? 'btn-pending' : ''}`}><span/>Unstake</button>
                   )}
                 </div>
                 <div className="col-sm-8 offset-sm-3">
