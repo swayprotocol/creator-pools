@@ -2,7 +2,7 @@ import React, { FC, useEffect } from 'react';
 import { ModalData, ModalType, StakeData, StakedEventSocialType } from '../../shared/interfaces';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
 import styles from './Modal.module.scss';
-import { Contract, ethers } from 'ethers';
+import { BigNumber, Contract, ethers } from 'ethers';
 import SWAY_TOKEN_ABI from '../../shared/abis/token-abi.json';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
@@ -80,8 +80,10 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
         // check allowance and give permissions
         const tokenContract = new Contract(process.env.NEXT_PUBLIC_SWAY_TOKEN_ADDRESS, SWAY_TOKEN_ABI, library.getSigner());
         const allowance = await tokenContract.allowance(account, process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS);
-        if (+ethers.utils.formatEther(allowance) < +ethers.utils.formatEther(stakeData.amount)) {
-          await tokenContract.approve(process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS, 2^256 - 1);
+        if (BigNumber.from(allowance).lte(BigNumber.from(stakeData.amount))) {
+          const allowUnlimited = BigNumber.from(2).pow(256).sub(1);
+          const awaitTx = await tokenContract.approve(process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS, allowUnlimited, { gasLimit: 100000 });
+          await awaitTx.wait();
         }
 
         const stakeTx = await props.contract.stake(
