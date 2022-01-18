@@ -29,7 +29,7 @@ function renderItems(items: StakedEvent[], swayUsd: number, type: PoolItemType) 
 
 const Pools: FC<PoolsProps> = (props: PoolsProps) => (
   <section className="my-5">
-    <div className="container">
+    <div className="container" style={{ overflow: 'hidden' }}>
       <div className="row gx-6">
         <div className="col-md-4 mb-5">
           <h4>Top creator pools</h4>

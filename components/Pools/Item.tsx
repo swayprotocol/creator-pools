@@ -38,7 +38,9 @@ const Item: FC<Item> = (props: Item) => (
     <div className={styles.mainWrap}>
       <div>
         {/*<div className={styles.subText}>8.58% of total 13,282,221</div>*/}
-        <div className={styles.subText}>{getWalletShorthand(props.item.sender)}</div>
+        {(props.type === PoolItemType.LATEST || props.type === PoolItemType.INDIVIDUAL) && (
+          <div className={styles.subText}>{getWalletShorthand(props.item.sender)}</div>
+        )}
       </div>
       <div>
         {props.type === PoolItemType.TOP && (

@@ -334,7 +334,7 @@ const Home: NextPage = () => {
         };
         topPositions[event.sender] = {
           ...event,
-          amount: allCreators[event.poolHandle]?.amount + event.amount || event.amount
+          amount: topPositions[event.poolHandle]?.amount + event.amount || event.amount
         }
       });
 
