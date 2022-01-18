@@ -55,19 +55,16 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
       return unstakeAction();
     } else {
       // STAKE and ADD
-      return stakeAction(event);
+      return stakeAction();
     }
   }
 
-  const stakeAction = async (event) => {
-    event.preventDefault();
-    console.log(event);
-
-    let stakeData = {
-      social: event.target.social.value,
-      poolHandle: event.target.poolHandle.value,
-      amount: event.target.amount.value,
-      planId: event.target.planId.value
+  const stakeAction = async () => {
+    let stakeData: any = {
+      social: formData.social,
+      poolHandle: formData.poolHandle,
+      amount: formData.amount,
+      planId: formData.planId
     };
 
     if (checkFormValidation(stakeData)) {
