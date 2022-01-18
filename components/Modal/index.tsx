@@ -8,7 +8,7 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 
 type ModalProps = {
-  onClose: () => any,
+  onClose: (reload?: boolean) => any,
   modalData: ModalData,
   contract: any,
   swayUserTotal: number
@@ -93,12 +93,10 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
           { gasLimit: 500000 }
         );
 
-        const tx = await stakeTx.wait();
-        console.log(tx);
-        props.onClose();
+        await stakeTx.wait();
+        props.onClose(true);
       } catch (error) {
         setCallError(error['data']?.message.replace('execution reverted: ', '') || (error as any)?.message || 'Error');
-      } finally {
         setLoading(false);
       }
     }
@@ -118,12 +116,10 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
 
       try {
         const stakeTx = await props.contract.unstake(stakeData.poolHandle, { gasLimit: 500000 });
-        const tx = await stakeTx.wait();
-        console.log(tx);
-        props.onClose();
+        await stakeTx.wait();
+        props.onClose(true);
       } catch (error) {
         setCallError(error['data']?.message.replace('execution reverted: ', '') || (error as any)?.message || 'Error');
-      } finally {
         setLoading(false);
       }
     }

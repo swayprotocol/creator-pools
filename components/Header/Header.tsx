@@ -51,8 +51,8 @@ const Header = (props: HeaderProps) => {
             {!props.walletId ? (
               <div className="connect">
                 <button className="btn" onClick={async () => {
-                  await activate(injected);
                   await props.connectWallet(injected);
+                  await activate(injected);
                 }}>
                   Connect
                 </button>

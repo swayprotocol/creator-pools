@@ -11,6 +11,7 @@ type StakesType = {
   contract: Contract,
   swayUsd: number,
   swayUserTotal: number,
+  refreshData: number
 }
 
 const initialChannels: Channel[] = [];
@@ -21,7 +22,7 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
   React.useEffect(() => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.contract]);
+  }, [props.contract, props.refreshData]);
 
   async function loadData() {
     const activeChannels: any[] = await props.contract.getUserQueue(props.walletId);

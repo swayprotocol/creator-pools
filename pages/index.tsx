@@ -51,6 +51,7 @@ const Home: NextPage = () => {
   const [walletLoaded, setWalletLoaded] = React.useState(false);
   const [modalData, setModalData] = React.useState<ModalData>({});
   const [dataLoadError, setDataLoadError] = React.useState(false);
+  const [refreshData, doRefreshData] = React.useState(0);
 
   React.useEffect(() => {
     initialiseAnalytics();
@@ -381,6 +382,7 @@ const Home: NextPage = () => {
                   contract={contractData}
                   swayUsd={appState.swayUsd}
                   swayUserTotal={appState.swayUserTotal}
+                  refreshData={refreshData}
           />
         )}
         <Overview swayLockedTotal={appState.swayLockedTotal}
@@ -397,9 +399,10 @@ const Home: NextPage = () => {
           <Modal modalData={modalData}
                  contract={contractData}
                  swayUserTotal={appState.swayUserTotal}
-                 onClose={() => {
+                 onClose={(reload) => {
                    setShowModal(false);
                    setModalData({});
+                   if (reload) doRefreshData((prev) => prev + 1);
                  }}
           />
         )}
