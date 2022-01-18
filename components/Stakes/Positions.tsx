@@ -13,11 +13,11 @@ type ItemPositions = {
 const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
   const [amountToStake, setAmountToStake] = React.useState('');
 
-  const openStakeModal = () => {
+  const openStakeModal = (type: ModalType, amount: string) => {
     props.openModal({
-      type: ModalType.ADD,
+      type: type,
       channel: props.channel,
-      amount: amountToStake
+      amount: amount
     })
   }
 
@@ -44,7 +44,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
             99%
           </div>
           <div className={styles.tableItem}>
-            {/*<button className="btn btn-secondary" onClick={() => props.openModal({ type: ModalType.UNSTAKE })}>*/}
+            {/*<button className="btn btn-secondary" onClick={() => openStakeModal(ModalType.UNSTAKE, '')}>*/}
             {/*  Unstake*/}
             {/*</button>*/}
             {position.unlockTime.toISOString().split('T')[0]}
@@ -77,7 +77,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
           </div>
         </div>
         <div className={styles.tableItem}>
-          <button className="btn" onClick={openStakeModal}>
+          <button className="btn" onClick={() => openStakeModal(ModalType.ADD, amountToStake)}>
             Stake
           </button>
         </div>
