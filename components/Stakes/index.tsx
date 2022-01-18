@@ -125,7 +125,7 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
                 />
               )) : (
                 <div className={styles.inactive}>
-                  <p className="mb-4">No active positions yet. <div className="btn-link" onClick={() => props.openModal({ type: ModalType.STAKE })}>Click here</div> to get started.</p>
+                  <p className="mb-4">No active positions yet. <a className="btn-link" onClick={() => props.openModal({ type: ModalType.STAKE })}>Click here</a> to get started.</p>
                   <p className="mb-0">You will need SWAY to get started. <a target="_blank" rel="noopener noreferrer" href="https://www.gate.io/trade/SWAY_USDT">Get it now</a>.</p>
                 </div>
               )}
