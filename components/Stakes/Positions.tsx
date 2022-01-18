@@ -1,16 +1,26 @@
-import Link from 'next/link';
 import React, { FC } from 'react';
 import styles from './Positions.module.scss';
-import { Channel, ChannelPosition, ModalType } from '../../shared/interfaces';
+import { Channel, ChannelPosition, ModalData, ModalType } from '../../shared/interfaces';
 
 type ItemPositions = {
-  openModal: ({ type: ModalType }) => any
+  openModal: (modalData: ModalData) => any
   positions: ChannelPosition[],
   swayUsd: number,
+  swayUserTotal: number,
   channel: Channel,
 }
 
 const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
+  const [amountToStake, setAmountToStake] = React.useState('');
+
+  const openStakeModal = () => {
+    props.openModal({
+      type: ModalType.ADD,
+      channel: props.channel,
+      amount: amountToStake
+    })
+  }
+
   return (
     <div className={styles.positionWrapper}>
 
@@ -45,7 +55,6 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
         </div>
       ))}
 
-
       <div className={styles.item}>
         <div className={styles.spacing}/>
         <div className={`${styles.tableItem} ${styles.tableHeading}`}>
@@ -59,10 +68,16 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
           <strong>#{props.positions[props.positions.length - 1].indexInPool + 1}</strong>
         </div>
         <div className={`${styles.tableItem} ${styles.spacingInput}`}>
-          <input type="number" placeholder="Amount"/>
+          <div className="extended-input">
+            <input type="number"
+                   placeholder="Amount"
+                   value={amountToStake}
+                   onChange={(e) => setAmountToStake(e.target.value)}/>
+            <div className="after-element" onClick={() => setAmountToStake(props.swayUserTotal.toString())}>MAX</div>
+          </div>
         </div>
         <div className={styles.tableItem}>
-          <button className="btn"  onClick={() => props.openModal({ type: ModalType.ADD })}>
+          <button className="btn" onClick={openStakeModal}>
             Stake
           </button>
         </div>

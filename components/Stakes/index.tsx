@@ -2,11 +2,11 @@ import React, { FC } from 'react';
 import styles from './index.module.scss';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import Item from './Item';
-import { Channel, ChannelPosition, ModalType, StakedEventSocialType } from '../../shared/interfaces';
+import { Channel, ChannelPosition, ModalData, ModalType, StakedEventSocialType } from '../../shared/interfaces';
 import { Contract, ethers } from 'ethers';
 
 type StakesType = {
-  openModal: ({ type: ModalType }) => any,
+  openModal: (modalData: ModalData) => any,
   walletId: string,
   contract: Contract,
   swayUsd: number,
@@ -122,6 +122,7 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
                       openModal={props.openModal}
                       channel={channelItem}
                       swayUsd={props.swayUsd}
+                      swayUserTotal={props.swayUserTotal}
                 />
               )) : (
                 <div className={styles.inactive}>

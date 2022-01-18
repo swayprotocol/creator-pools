@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import { ModalType, StakeData, StakedEventSocialType } from '../../shared/interfaces';
+import React, { FC, useEffect } from 'react';
+import { ModalData, ModalType, StakeData, StakedEventSocialType } from '../../shared/interfaces';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
 import styles from './Modal.module.scss';
 import { Contract, ethers } from 'ethers';
@@ -9,7 +9,7 @@ import { Web3Provider } from '@ethersproject/providers';
 
 type ModalProps = {
   onClose: () => any,
-  modalData: { type?: ModalType },
+  modalData: ModalData,
   contract: any,
   swayUserTotal: number
 }
@@ -26,8 +26,21 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
   const [formError, setFormError] = React.useState({});
   const [callError, setCallError] = React.useState('');
   const [loading, setLoading] = React.useState(false);
+  const [disableEditing, setDisableEditing] = React.useState(false);
 
   const { library, account } = useWeb3React<Web3Provider>();
+
+  useEffect(() => {
+    if (props.modalData.channel) {
+      setFormData((prevState) => ({
+        ...prevState,
+        social: props.modalData.channel.social,
+        poolHandle: props.modalData.channel.poolHandle,
+        amount: props.modalData.amount,
+      }));
+      setDisableEditing(true);
+    }
+  }, [props.modalData]);
 
   const handleCloseClick = (e) => {
     e.preventDefault();
@@ -77,7 +90,6 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
         setLoading(false);
       }
     }
-
   }
 
   const handleChange = (type: string, value: string) => {
@@ -129,6 +141,17 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     )
   }
 
+  const getStakingMonthsDuration = (planId: string) => {
+    switch(planId) {
+      case '1':
+        return '3';
+      case '2':
+        return '6';
+      case '3':
+        return '9';
+    }
+  }
+
   return (
     <div className={`modal ${styles.modal}`}>
       <div className="modal-dialog modal-lg">
@@ -145,7 +168,8 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                   <select className="form-control"
                           id="social"
                           value={formData.social}
-                          onChange={(e) => handleChange('social', e.target.value)}>
+                          onChange={(e) => handleChange('social', e.target.value)}
+                          disabled={disableEditing}>
                     {/*<option hidden={true} value={undefined}>Select</option>*/}
                     <option value={StakedEventSocialType.IG}>Instagram</option>
                     <option value={StakedEventSocialType.TT}>TikTok</option>
@@ -160,9 +184,10 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                          id="poolHandle"
                          placeholder="Enter identificator"
                          value={formData.poolHandle}
-                         onChange={(e) => handleChange('poolHandle', e.target.value)}/>
+                         onChange={(e) => handleChange('poolHandle', e.target.value)}
+                         disabled={disableEditing}/>
                 </div>
-                <div className={`${styles.midText} ${styles.lightText} col-sm-5`}>ie. leomessi, banksy.eth...</div>
+                <div className={`${styles.midText} ${styles.lightText} col-sm-5`}>ie. leomessi, banksy ...</div>
                 {props.modalData.type === ModalType.STAKE && (
                   <div className="col-sm-9 offset-sm-3 mt-3">
                     <p className={styles.smallText}>NOTE: We don't validate entries, so make sure there are no typos.</p>
@@ -190,12 +215,12 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                          placeholder="1000"/>
                   <div className="after-element" onClick={() => handleChange('amount', props.swayUserTotal.toString())}>MAX</div>
                 </div>
-                <div className={`${styles.swayAvailable} col-sm-3`}>
+                <div className={`${styles.swayAvailable} col-sm-5`}>
                   <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
-                  <span>{props.swayUserTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}</span>
+                  <span>{props.swayUserTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} available</span>
                 </div>
               </div>
-              {props.modalData.type === ModalType.STAKE && (
+              {(props.modalData.type === ModalType.STAKE || props.modalData.type === ModalType.ADD) && (
                 <div className="form-group row">
                   <label htmlFor="planId" className="col-sm-3">Promotional APR</label>
                   <div className="col-sm-2">
@@ -208,7 +233,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                       <option value="1">33%</option>
                     </select>
                   </div>
-                  <div className={`${styles.midText} col-sm-7`}>Position will be locked for 9 months.</div>
+                  <div className={`${styles.midText} col-sm-7`}>Position will be locked for {getStakingMonthsDuration(formData.planId)} months.</div>
                 </div>
               )}
               <div className="row">

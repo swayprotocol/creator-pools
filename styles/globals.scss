@@ -58,6 +58,7 @@ select {
   border: 1px solid #606060;
   outline: 0;
   width: 100%;
+  height: 38px;
 
   &:focus {
     border: 1px solid #000;
@@ -81,6 +82,10 @@ select {
 
   &[type=number] {
     padding: 6px 40px 6px 10px;
+  }
+
+  &:disabled {
+    background-color: #F6F6F6;
   }
 }
 

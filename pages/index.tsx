@@ -11,7 +11,7 @@ import ReactGA from 'react-ga';
 import { getSwayPrice } from '../helpers/getSwayPrice';
 import Stakes from '../components/Stakes';
 import Modal from '../components/Modal';
-import { ModalType } from '../shared/interfaces';
+import { ModalData } from '../shared/interfaces';
 import { ethers, Contract } from 'ethers';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
@@ -49,7 +49,7 @@ const Home: NextPage = () => {
   const [loading, setLoading] = React.useState(true);
   const [contractData, setContractData] = React.useState<Contract>();
   const [walletLoaded, setWalletLoaded] = React.useState(false);
-  const [modalData, setModalData] = React.useState({});
+  const [modalData, setModalData] = React.useState<ModalData>({});
   const [dataLoadError, setDataLoadError] = React.useState(false);
 
   React.useEffect(() => {
@@ -358,7 +358,7 @@ const Home: NextPage = () => {
     }
   }
 
-  function openModal(modalData: { type: ModalType }) {
+  function openModal(modalData: ModalData) {
     setShowModal(true);
     setModalData(modalData);
   }

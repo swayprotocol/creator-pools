@@ -48,3 +48,9 @@ export interface StakeData {
   amount: string;
   social: StakedEventSocialType;
 }
+
+export interface ModalData {
+  type?: ModalType,
+  channel?: Channel,
+  amount?: string
+}

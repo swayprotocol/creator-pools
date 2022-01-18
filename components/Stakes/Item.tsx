@@ -1,13 +1,14 @@
 import React, { FC } from 'react';
 import styles from './Item.module.scss';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
-import { Channel } from '../../shared/interfaces';
+import { Channel, ModalData } from '../../shared/interfaces';
 import ItemPositions from './Positions';
 
 type StakedItem = {
-  openModal: ({ type: ModalType }) => any,
+  openModal: (modalData: ModalData) => any,
   channel: Channel,
   swayUsd: number,
+  swayUserTotal: number,
 }
 
 const StakedItem: FC<StakedItem> = (props: StakedItem) => {
@@ -45,6 +46,7 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
         <ItemPositions openModal={props.openModal}
                        positions={props.channel.positions}
                        swayUsd={props.swayUsd}
+                       swayUserTotal={props.swayUserTotal}
                        channel={props.channel}
         />
       )}
