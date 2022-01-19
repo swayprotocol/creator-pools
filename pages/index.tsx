@@ -81,92 +81,14 @@ const Home: NextPage = () => {
     })
   }
 
-  async function connectWallet(connector?: AbstractConnector) {
+  async function connectWallet(connector: AbstractConnector) {
     try {
-      let networkId;
-      let accountId;
-
-      // connector is submitted only when connecting through /connect page
-      if (connector) {
-        accountId = await connector.getAccount() || (await connector.getProvider())?.selectedAddress;
-        let id = await connector.getChainId();
-
-        // re-init metamask chain/account change listeners
-        if (connector instanceof InjectedConnector) {
-          initMetamaskChangeListener();
-        }
-      } else {
-        networkId = await window.ethereum.chainId;
+      const accountId = await connector.getAccount()
+      setWalletId(accountId);
+      if (connector instanceof InjectedConnector) {
+        initMetamaskChangeListener();
       }
-
-      if (networkId === process.env.REACT_APP_WEB3_NETWORK_ID) {
-        // if account was not set by connector, get the enabled metamask one
-        if (!accountId) {
-          const metaMaskUser = await window.ethereum.enable();
-          accountId = metaMaskUser[0];
-        }
-
-        setWalletId(accountId);
-      } else {
-
-        resetAccount();
-
-        try {
-          const NETWORK_IDS = ['0x89', '0x4', '0x13881'];
-          NETWORK_IDS.forEach(async id => {
-            if(process.env.REACT_APP_WEB3_NETWORK_ID === id){
-              await window.ethereum.request({
-                method: 'wallet_switchEthereumChain',
-                params: [{ chainId: id }],
-              });
-            }
-          })
-
-        } catch (switchError: any) {
-          // This error code indicates that the chain has not been added to MetaMask.
-          if (switchError.code === 4902) {
-            try {
-              if(process.env.REACT_APP_WEB3_NETWORK_ID === '0x89'){
-                await window.ethereum.request({
-                  method: 'wallet_addEthereumChain',
-                    params: [{  chainId: '0x89', //0x89 or 137
-                        chainName: 'Matic Mainnet',
-                        nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
-                        rpcUrls: ['https://polygon-rpc.com/'],
-                        blockExplorerUrls: ['https://explorer.matic.network/']
-                    }]
-                });
-              } else if (process.env.REACT_APP_WEB3_NETWORK_ID === '0x4') {
-                await window.ethereum.request({
-                  method: 'wallet_addEthereumChain',
-                    params: [{  chainId: '0x4', //0x4 or 4
-                        chainName: 'Rinkeby Test Network',
-                        nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
-                        rpcUrls: ['https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
-                        blockExplorerUrls: ['https://rinkeby.etherscan.io']
-                    }]
-                });
-              } else if (process.env.REACT_APP_WEB3_NETWORK_ID === '0x13881') {
-                await window.ethereum.request({
-                  method: 'wallet_addEthereumChain',
-                    params: [{  chainId: '0x13881', //0x13881 or 80001
-                        chainName: 'Matic Mumbai',
-                        nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
-                        rpcUrls: ['https://rpc-mumbai.maticvigil.com/'],
-                        blockExplorerUrls: ['https://mumbai.polygonscan.com/']
-                    }]
-                });
-              }
-
-            } catch (addError) {
-              console.log("Automatic switching to MATIC failed!");
-              console.log(addError);
-            }
-          }
-        }
-      }
-    } catch (error) {
-      console.log(error);
+    } catch (e) {
       resetAccount();
     }
   }
@@ -206,115 +128,9 @@ const Home: NextPage = () => {
     }
   }
 
-  async function loadWeb3() {
-    let providerOrSigner;
-
-    if (window.ethereum) {
-      providerOrSigner = new ethers.providers.Web3Provider(window.ethereum);
-
-      const networkId = await window.ethereum.chainId;
-
-      let isLoggedInMetamask = window.ethereum.selectedAddress !== null;
-
-      if (isLoggedInMetamask && networkId === process.env.NEXT_PUBLIC_WEB3_NETWORK_ID) {
-        await connectMetamask();
-        providerOrSigner = providerOrSigner.getSigner();
-
-        await window.ethereum.request({method: 'eth_requestAccounts'});
-        initMetamaskChangeListener();
-      } else {
-        providerOrSigner = new ethers.providers.WebSocketProvider(process.env.NEXT_PUBLIC_WEB3_WS_PROVIDER!);
-        await resetAccount();
-      }
-    } else {
-      providerOrSigner = new ethers.providers.WebSocketProvider(process.env.NEXT_PUBLIC_WEB3_WS_PROVIDER!);
-    }
-
-    // const cloutContract = new ethers.Contract(process.env.NEXT_PUBLIC_CLOUT_NFT_CONTRACT_ADDRESS, cloutAbi, providerOrSigner);
-    // const marketplaceContract = new ethers.Contract(process.env.NEXT_PUBLIC_MARKETPLACE_CONTRACT_ADDRESS, marketplaceAbi, providerOrSigner);
-
-    // return [cloutContract, marketplaceContract];
-  }
-
-  async function connectMetamask() {
-    try {
-      const networkId = await window.ethereum.chainId;
-      if (networkId === process.env.NEXT_PUBLIC_WEB3_NETWORK_ID) {
-        const metaMaskUser = await window.ethereum.enable();
-
-        setWalletId(metaMaskUser[0]);
-      } else {
-
-        resetAccount();
-
-        try {
-          if(process.env.NEXT_PUBLIC_WEB3_NETWORK_ID === '0x89'){
-            await window.ethereum.request({
-              method: 'wallet_switchEthereumChain',
-              params: [{ chainId: '0x89' }], // 0x89 or 137
-            });
-          }else if (process.env.NEXT_PUBLIC_WEB3_NETWORK_ID === '0x4'){
-            await window.ethereum.request({
-              method: 'wallet_switchEthereumChain',
-              params: [{ chainId: '0x4' }], // 0x4 or 4
-            });
-          }else if (process.env.NEXT_PUBLIC_WEB3_NETWORK_ID === '0x13881'){
-            await window.ethereum.request({
-              method: 'wallet_switchEthereumChain',
-              params: [{ chainId: '0x13881' }], // 0x13881 or 80001
-            });
-          }
-
-        } catch (switchError: any) {
-          // This error code indicates that the chain has not been added to MetaMask.
-          if (switchError.code === 4902) {
-            try {
-              if(process.env.NEXT_PUBLIC_WEB3_NETWORK_ID === '0x89'){
-                await window.ethereum.request({
-                  method: 'wallet_addEthereumChain',
-                    params: [{  chainId: '0x89', //0x89 or 137
-                        chainName: 'Matic Mainnet',
-                        nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
-                        rpcUrls: ['https://rpc-mainnet.maticvigil.com/'],
-                        blockExplorerUrls: ['https://explorer.matic.network/']
-                    }]
-                });
-              } else if (process.env.NEXT_PUBLIC_WEB3_NETWORK_ID === '0x4') {
-                await window.ethereum.request({
-                  method: 'wallet_addEthereumChain',
-                    params: [{  chainId: '0x4', //0x4 or 4
-                        chainName: 'Rinkeby Test Network',
-                        nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
-                        rpcUrls: ['https://rinkeby.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161'],
-                        blockExplorerUrls: ['https://rinkeby.etherscan.io']
-                    }]
-                });
-              } else if (process.env.NEXT_PUBLIC_WEB3_NETWORK_ID === '0x13881') {
-                await window.ethereum.request({
-                  method: 'wallet_addEthereumChain',
-                    params: [{  chainId: '0x13881', //0x13881 or 80001
-                        chainName: 'Matic Mumbai',
-                        nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
-                        rpcUrls: ['https://rpc-mumbai.maticvigil.com/'],
-                        blockExplorerUrls: ['https://mumbai.polygonscan.com/']
-                    }]
-                });
-              }
-
-            } catch (addError) {
-              console.log("Automatic switching to MATIC failed!");
-              console.log(addError);
-            }
-          }
-        }
-      }
-    } catch (error) {
-      resetAccount();
-    }
-  }
-
   async function resetAccount() {
     setWalletId('');
+    setWalletLoaded(false);
   }
 
   async function getGeneralData() {

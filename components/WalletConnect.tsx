@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
-import { injected, walletconnect } from '../helpers/Connectors';
+import { injected } from '../helpers/Connectors';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 
 type WalletConnectProps = {
@@ -14,7 +14,6 @@ type WalletConnectProps = {
 export default function WalletConnect(props: WalletConnectProps) {
   const { account, error, library, activate, active, connector } = useWeb3React<Web3Provider>();
 
-  const [tried, setTried] = useState(false);
   // first check if connected through Metamask
   useEffect(() => {
     if (!active && !error && props.loaded) {
@@ -22,24 +21,12 @@ export default function WalletConnect(props: WalletConnectProps) {
         .isAuthorized()
         .then((isAuthorized) => {
           if (isAuthorized) {
-            activateWallet(injected).then(() => setTried(true));
-          } else {
-            setTried(true);
+            activateWallet(injected);
           }
-        })
-        .catch(() => setTried(true))
+        });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.loaded]);
-
-  // then check if connected through wallet connect
-  useEffect(() => {
-    if (window.localStorage.walletconnect && !active && tried && !error && props.loaded) {
-      activateWallet(walletconnect);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tried]);
-
 
   // if connected through web3-react, load the library and user data
   useEffect(() => {

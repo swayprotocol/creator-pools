@@ -3,7 +3,7 @@ import styles from './Header.module.scss'
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { injected } from '../../helpers/Connectors';
-import { useWeb3React } from '@web3-react/core';
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 
 type HeaderProps = {
@@ -13,6 +13,50 @@ type HeaderProps = {
 
 const Header = (props: HeaderProps) => {
   const { activate, deactivate } = useWeb3React<Web3Provider>();
+
+  const tryActivation = async (connector: AbstractConnector) => {
+    return await activate(connector, undefined, true)
+      .then(() => true)
+      .catch(async (err) => {
+        if (err instanceof UnsupportedChainIdError) {
+          try {
+            // prompt user to switch to polygon network
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: '0x89' }],
+            });
+            return true;
+          } catch (e: any) {
+            if (e.code === 4902) {
+              try {
+                // if no polygon network, prompt user to add it
+                await window.ethereum.request({
+                  method: 'wallet_addEthereumChain',
+                  params: [{  chainId: '0x89', //0x89 or 137
+                    chainName: 'Polygon Mainnet',
+                    nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
+                    rpcUrls: ['https://polygon-rpc.com/'],
+                    blockExplorerUrls: ['https://polygonscan.com/']
+                  }]
+                });
+                return true;
+              } catch (e) {
+                return false;
+              }
+            }
+          }
+        }
+        return false;
+      })
+  }
+
+  async function connectWallet() {
+    const isConnected = await tryActivation(injected);
+    if (isConnected) {
+      await activate(injected);
+      props.connectWallet(injected);
+    }
+  }
 
   return (
     <section className="mb-5">
@@ -50,10 +94,7 @@ const Header = (props: HeaderProps) => {
             </div>
             {!props.walletId ? (
               <div className="connect">
-                <button className="btn" onClick={async () => {
-                  await props.connectWallet(injected);
-                  await activate(injected);
-                }}>
+                <button className="btn" onClick={connectWallet}>
                   Connect
                 </button>
               </div>
