@@ -82,7 +82,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
           </button>
         </div>
         <div className={styles.tableItem}>
-          <a target="_blank" rel="noopener noreferrer" href="https://www.gate.io/trade/SWAY_USDT">
+          <a target="_blank" rel="noopener noreferrer" href="https://quickswap.exchange/#/swap?outputCurrency=0x262b8aa7542004f023b0eb02bc6b96350a02b728">
             Get SWAY
           </a>
         </div>

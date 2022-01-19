@@ -297,7 +297,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                 <div className="col-sm-8 offset-sm-3">
                   <p className={styles.smallText}>After clicking on Stake, Metamask will pop-up to complete the transaction.</p>
                   {props.modalData.type === ModalType.ADD && (
-                    <p className={styles.smallText}>NOTE: Adding additional positions with promotional APR extends the lockup duration of the total stake.</p>
+                    <p className={styles.smallText}>NOTE: Adding additional positions with promotional APR extend the lockup duration of the total stake.</p>
                   )}
                   {!!callError && (
                     <p className={`${styles.smallText} ${styles.errorText}`}>{callError}</p>

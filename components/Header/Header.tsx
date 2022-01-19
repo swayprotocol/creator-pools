@@ -40,12 +40,12 @@ const Header = (props: HeaderProps) => {
             </div>
           </div>
 
-          <div className={`${styles.topSection} my-4`}>
+          <div className={`${styles.topSection} my-1`}>
             <div className="d-flex align-items-center">
-              <h4 className="d-inline-block me-3 mb-0">Powered by</h4>
+              <h5 className="d-inline-block me-2 mb-0">Powered by</h5>
               <a href="https://swaysocial.org/" rel="noreferrer" target="_blank" title="Sway Social">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/assets/logo.svg" height="40" width="140" alt="Sway Social"/>
+                <img src="/assets/logo.svg" width="100" alt="Sway Social"/>
               </a>
             </div>
             {!props.walletId ? (
