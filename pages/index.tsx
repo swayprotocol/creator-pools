@@ -67,7 +67,7 @@ const Home: NextPage = () => {
       setAppState(prevState => ({...prevState, swayUserTotal: availableTokens}))
     }
     if (walletId) getUserSwayAmount();
-  }, [walletId]);
+  }, [walletId, refreshData]);
 
   async function loadWallet(walletId: string, connector?: AbstractConnector) {
     setWalletId(walletId)

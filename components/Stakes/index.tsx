@@ -30,21 +30,25 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
   }
 
   function formatData(activeChannels: any[]) {
-    const formatChannels: ChannelPosition[] = activeChannels.map((channel) => ({
-      amount: +ethers.utils.formatEther(channel.amount),
-      indexInPool: +ethers.utils.formatUnits(channel.indexInPool, 0),
-      planId: channel.planId,
-      poolHandle: channel.poolHandle.split('-')[1],
-      social: StakedEventSocialType.IG,
-      stakedAt: new Date(+ethers.utils.formatUnits(channel.stakedAt, 0) * 1000),
-      unlockTime: new Date(+ethers.utils.formatUnits(channel.unlockTime, 0) * 1000),
-    }));
+    const formatChannels: ChannelPosition[] = activeChannels.map((channel) => {
+      const socialIcon = channel.poolHandle.split('-')[0] === 'ig' ? StakedEventSocialType.IG : StakedEventSocialType.TT;
+      return {
+        amount: +ethers.utils.formatEther(channel.amount),
+        indexInPool: +ethers.utils.formatUnits(channel.indexInPool, 0),
+        planId: channel.planId,
+        poolHandle: channel.poolHandle,
+        social: socialIcon,
+        stakedAt: new Date(+ethers.utils.formatUnits(channel.stakedAt, 0) * 1000),
+        unlockTime: new Date(+ethers.utils.formatUnits(channel.unlockTime, 0) * 1000),
+      }
+    });
 
     let channels: Channel[] = {} as Channel[];
     formatChannels.forEach(position => {
+      if (!position.poolHandle) return; // claimed positions return poolHandle: '', let's filter them out
       channels[position.poolHandle] = {
-        totalAmount: channels[position.poolHandle]?.amount + position.amount || position.amount,
-        poolHandle: position.poolHandle,
+        totalAmount: channels[position.poolHandle]?.totalAmount + position.amount || position.amount,
+        poolHandle: position.poolHandle.split('-')[1],
         social: position.social,
         farmed: 20 * Math.random(),
         positions: [...channels[position.poolHandle]?.positions || [], position]

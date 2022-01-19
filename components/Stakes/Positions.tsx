@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import styles from './Positions.module.scss';
 import { Channel, ChannelPosition, ModalData, ModalType } from '../../shared/interfaces';
+import Moment from 'react-moment';
 
 type ItemPositions = {
   openModal: (modalData: ModalData) => any
@@ -44,10 +45,13 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
             99%
           </div>
           <div className={styles.tableItem}>
-            {/*<button className="btn btn-secondary" onClick={() => openStakeModal(ModalType.UNSTAKE, '')}>*/}
-            {/*  Unstake*/}
-            {/*</button>*/}
-            {position.unlockTime.toISOString().split('T')[0]}
+            {+position.unlockTime < +new Date() ? (
+              <button className="btn btn-secondary" onClick={() => openStakeModal(ModalType.UNSTAKE, '')}>
+                Unstake
+              </button>
+            ) : (
+              <Moment to={position.unlockTime} withTitle titleFormat="D MMM YYYY hh:mm:ss"/>
+            )}
           </div>
           <div className={styles.tableItem}>
             <strong>{props.channel.farmed.toLocaleString('en-US', { maximumFractionDigits: 2 })}</strong>
