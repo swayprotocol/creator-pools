@@ -28,7 +28,7 @@ export interface Channel {
   poolHandle: string;
   userTotalAmount: number;
   social: StakedEventSocialType;
-  farmed: number;
+  totalFarmed: number;
   positions: ChannelPosition[];
   creator: string;
   members: number;
@@ -44,6 +44,7 @@ export interface ChannelPosition {
   stakedAt: Date;
   unlockTime: Date;
   social: StakedEventSocialType;
+  farmed: number;
 }
 
 export interface StakeData {

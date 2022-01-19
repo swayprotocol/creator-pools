@@ -22,6 +22,12 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
     })
   }
 
+  const apy: any = {
+    1: 33,
+    2: 66,
+    3: 99
+  };
+
   return (
     <div className={styles.positionWrapper}>
 
@@ -42,7 +48,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
             <strong>{position.amount.toLocaleString('en-US', { maximumFractionDigits: 0 })} SWAY</strong>
           </div>
           <div className={styles.tableItem}>
-            99%
+            {apy[position.planId]}%
           </div>
           <div className={styles.tableItem}>
             {+position.unlockTime < +new Date() ? (
@@ -54,7 +60,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
             )}
           </div>
           <div className={styles.tableItem}>
-            <strong>{props.channel.farmed.toLocaleString('en-US', { maximumFractionDigits: 2 })}</strong>
+            <strong>{position.farmed.toLocaleString('en-US', { maximumFractionDigits: 2 })}</strong>
           </div>
         </div>
       ))}

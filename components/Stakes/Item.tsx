@@ -38,7 +38,7 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
           {props.channel.positions.some(position => +position.unlockTime > +new Date()) ? 'Locked' : 'Unlocked'}
         </div>
         <div className={styles.tableItem}>
-          <strong>{props.channel.farmed.toLocaleString('en-US', { maximumFractionDigits: 2 })}</strong>
+          <strong>{props.channel.totalFarmed.toLocaleString('en-US', { maximumFractionDigits: 2 })}</strong>
         </div>
       </div>
 

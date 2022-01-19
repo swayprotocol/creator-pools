@@ -27,10 +27,13 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
   async function loadData() {
     const activeChannels: any[] = await props.contract.getUserQueue(props.walletId);
     const allPoolHandles = activeChannels.map(channel => channel.poolHandle).filter(name => !!name);
-    // @ts-ignore
-    const uniquePoolHandles = [...new Set(allPoolHandles)];
-    let poolsData: any[] = await props.contract.getMultiplePools(uniquePoolHandles);
-    poolsData = poolsData.map((pool, i) => ({ ...pool, poolHandle: uniquePoolHandles[i] }));
+    let poolsData: any[] = [];
+    if (allPoolHandles.length) {
+      // @ts-ignore
+      const uniquePoolHandles = [...new Set(allPoolHandles)];
+      poolsData = await props.contract.getMultiplePools(uniquePoolHandles);
+      poolsData = poolsData.map((pool, i) => ({ ...pool, poolHandle: uniquePoolHandles[i] }));
+    }
 
     formatData(activeChannels, poolsData);
   }
@@ -38,14 +41,18 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
   function formatData(activeChannels: any[], poolsData: any[]) {
     const formatChannels: ChannelPosition[] = activeChannels.map((channel) => {
       const socialIcon = channel.poolHandle.split('-')[0] === 'ig' ? StakedEventSocialType.IG : StakedEventSocialType.TT;
+      const stakedAtDate = new Date(+ethers.utils.formatUnits(channel.stakedAt, 0) * 1000);
+      const unlockTimeDate = new Date(+ethers.utils.formatUnits(channel.unlockTime, 0) * 1000);
+      const amount = +ethers.utils.formatEther(channel.amount);
       return {
-        amount: +ethers.utils.formatEther(channel.amount),
+        amount: amount,
         indexInPool: +ethers.utils.formatUnits(channel.indexInPool, 0),
         planId: channel.planId,
         poolHandle: channel.poolHandle,
         social: socialIcon,
-        stakedAt: new Date(+ethers.utils.formatUnits(channel.stakedAt, 0) * 1000),
-        unlockTime: new Date(+ethers.utils.formatUnits(channel.unlockTime, 0) * 1000),
+        stakedAt: stakedAtDate,
+        unlockTime: unlockTimeDate,
+        farmed: getFarmedAmount(amount, stakedAtDate, unlockTimeDate, channel.planId)
       };
     });
 
@@ -57,7 +64,7 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
         userTotalAmount: channels[position.poolHandle]?.userTotalAmount + position.amount || position.amount,
         poolHandle: position.poolHandle.split('-')[1],
         social: position.social,
-        farmed: 20 * Math.random(),
+        totalFarmed: channels[position.poolHandle]?.totalFarmed + position.farmed || position.farmed,
         positions: [...channels[position.poolHandle]?.positions || [], position],
         // data from poolsData
         creator: poolsData[poolDataId]?.creator || '',
@@ -68,8 +75,18 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
     });
 
     channels = Object.values(channels);
-    console.log(channels);
     setChannels(channels);
+  }
+
+  const getFarmedAmount = (amount: number, stakedAt: Date, unlockTime: Date, planId: number): number => {
+    const apy: any = {
+      1: 33,
+      2: 66,
+      3: 99
+    };
+    // use new Date() until the staking is over
+    const maxDate = +unlockTime < +new Date() ? unlockTime : new Date();
+    return ((+maxDate - +stakedAt) / 1000 / 3600 / 24 / 365 * apy[planId] / 100) * amount;
   }
 
   return (
