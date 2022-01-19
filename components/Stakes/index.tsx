@@ -67,7 +67,7 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
               <div className={styles.networkItem}>
                 <div className={`${styles.networkItemStatus} ${styles.active}`}/>
                 <div className={styles.networkItemName}>
-                  connected to {getWalletShorthand('0x538Bdc460119Bb95F8ee51E46D22Eee5e7a6cC4e')}
+                  connected to {getWalletShorthand(props.walletId)}
                 </div>
               </div>
             </div>
