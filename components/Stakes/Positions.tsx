@@ -36,7 +36,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
         <div className={styles.item} key={i}>
           <div className={styles.spacing}/>
           <div className={`${styles.tableItem} ${styles.textRight}`}>
-            <strong>#{position.indexInPool}</strong>
+            <strong>#{position.indexInPool + 1}</strong>
           </div>
           <div className={styles.tableItem}>
             <strong>{position.amount.toLocaleString('en-US', { maximumFractionDigits: 0 })} SWAY</strong>
@@ -69,7 +69,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
       <div className={styles.item}>
         <div className={styles.spacing}/>
         <div className={`${styles.tableItem} ${styles.textRight}`}>
-          <strong>#{props.positions[props.positions.length - 1].indexInPool + 1}</strong>
+          <strong>#{props.channel.numberOfStakes + 1}</strong>
         </div>
         <div className={`${styles.tableItem} ${styles.spacingInput}`}>
           <div className="extended-input">

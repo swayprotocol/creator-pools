@@ -26,10 +26,14 @@ export enum ModalType {
 
 export interface Channel {
   poolHandle: string;
-  totalAmount: number;
+  userTotalAmount: number;
   social: StakedEventSocialType;
   farmed: number;
   positions: ChannelPosition[];
+  creator: string;
+  members: number;
+  numberOfStakes: number;
+  totalAmount: number;
 }
 
 export interface ChannelPosition {

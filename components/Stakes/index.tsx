@@ -3,12 +3,12 @@ import styles from './index.module.scss';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import Item from './Item';
 import { Channel, ChannelPosition, ModalData, ModalType, StakedEventSocialType } from '../../shared/interfaces';
-import { Contract, ethers } from 'ethers';
+import { ethers } from 'ethers';
 
 type StakesType = {
   openModal: (modalData: ModalData) => any,
   walletId: string,
-  contract: Contract,
+  contract: any,
   swayUsd: number,
   swayUserTotal: number,
   refreshData: number
@@ -26,10 +26,16 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
 
   async function loadData() {
     const activeChannels: any[] = await props.contract.getUserQueue(props.walletId);
-    formatData(activeChannels);
+    const allPoolHandles = activeChannels.map(channel => channel.poolHandle).filter(name => !!name);
+    // @ts-ignore
+    const uniquePoolHandles = [...new Set(allPoolHandles)];
+    let poolsData: any[] = await props.contract.getMultiplePools(uniquePoolHandles);
+    poolsData = poolsData.map((pool, i) => ({ ...pool, poolHandle: uniquePoolHandles[i] }));
+
+    formatData(activeChannels, poolsData);
   }
 
-  function formatData(activeChannels: any[]) {
+  function formatData(activeChannels: any[], poolsData: any[]) {
     const formatChannels: ChannelPosition[] = activeChannels.map((channel) => {
       const socialIcon = channel.poolHandle.split('-')[0] === 'ig' ? StakedEventSocialType.IG : StakedEventSocialType.TT;
       return {
@@ -40,20 +46,26 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
         social: socialIcon,
         stakedAt: new Date(+ethers.utils.formatUnits(channel.stakedAt, 0) * 1000),
         unlockTime: new Date(+ethers.utils.formatUnits(channel.unlockTime, 0) * 1000),
-      }
+      };
     });
 
     let channels: Channel[] = {} as Channel[];
     formatChannels.forEach(position => {
       if (!position.poolHandle) return; // claimed positions return poolHandle: '', let's filter them out
+      const poolDataId = poolsData.findIndex(pool => pool.poolHandle === position.poolHandle);
       channels[position.poolHandle] = {
-        totalAmount: channels[position.poolHandle]?.totalAmount + position.amount || position.amount,
+        userTotalAmount: channels[position.poolHandle]?.userTotalAmount + position.amount || position.amount,
         poolHandle: position.poolHandle.split('-')[1],
         social: position.social,
         farmed: 20 * Math.random(),
-        positions: [...channels[position.poolHandle]?.positions || [], position]
-      }
-    })
+        positions: [...channels[position.poolHandle]?.positions || [], position],
+        // data from poolsData
+        creator: poolsData[poolDataId]?.creator || '',
+        members: +ethers.utils.formatUnits(poolsData[poolDataId]?.members || 1, 0),
+        numberOfStakes: +ethers.utils.formatUnits(poolsData[poolDataId]?.numberOfStakes || 1, 0),
+        totalAmount: +ethers.utils.formatEther(poolsData[poolDataId]?.totalAmount || 0)
+      };
+    });
 
     channels = Object.values(channels);
     console.log(channels);

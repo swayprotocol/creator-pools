@@ -28,8 +28,8 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
           <strong>{props.channel.totalAmount.toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong>
         </div>
         <div className={styles.tableItem}>
-          <strong>{props.channel.totalAmount.toLocaleString('en-US', { maximumFractionDigits: 0 })} SWAY</strong>
-          <div>{(props.channel.totalAmount * props.swayUsd).toLocaleString('en-US', { maximumFractionDigits: 0 })} USD</div>
+          <strong>{props.channel.userTotalAmount.toLocaleString('en-US', { maximumFractionDigits: 0 })} SWAY</strong>
+          <div>{(props.channel.userTotalAmount * props.swayUsd).toLocaleString('en-US', { maximumFractionDigits: 0 })} USD</div>
         </div>
         <div className={styles.tableItem}>
           99% *promotional

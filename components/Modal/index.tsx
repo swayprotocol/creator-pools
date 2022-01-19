@@ -234,7 +234,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                   <label className="col-sm-3">Staked</label>
                   <div className={`${styles.swayAvailable} col-sm-9`}>
                     <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
-                    <span>{props.modalData.channel?.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    <span>{props.modalData.channel?.userTotalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       {' '}staked in {props.modalData.channel?.positions.length} positions</span>
                   </div>
                 </div>
