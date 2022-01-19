@@ -29,9 +29,9 @@ function FAQ() {
               </h4>
               {openQuestions.what && (
                 <>
-                  <p class="mt-2">Creator pools introduce a new metaverse-ready social capital concept by staking with your creators and sharing in their success.</p>
+                  <p className="mt-2">Creator pools introduce a new metaverse-ready social capital concept by staking with your creators and sharing in their success.</p>
                   <p>Just like with the more familiar liquidity pools, they require value to be locked in a form of a stake that will later yield rewards.</p>
-                  <p class="mb-5">But instead of deriving value from pool’s performance, they use the performance of the creator’s NFTs as the generator of value.</p>
+                  <p className="mb-5">But instead of deriving value from pool’s performance, they use the performance of the creator’s NFTs as the generator of value.</p>
                 </>
               )}
             </div>
@@ -44,7 +44,7 @@ function FAQ() {
                 <>
                   <p>Staking with a creator's pool means you support the creator and his work. You also become part of his subDAO (more to follow).</p>
                   <p>With every NFT sale, the creator sends a small portion of his revenue back to his pool as rewards.</p>
-                  <p class="mb-5">All pools and creators are also subject to additionally mined tokens through creator adoption mining mechnism. (more to follow)</p>
+                  <p className="mb-5">All pools and creators are also subject to additionally mined tokens through creator adoption mining mechnism. (more to follow)</p>
                 </>
               )}
             </div>
@@ -57,7 +57,7 @@ function FAQ() {
                 <>
                   <p>Easy. First, make sure you own some $SWAY in your Metamask wallet. <a target="_blank" rel="noopener noreferrer" href="https://quickswap.exchange/#/swap?outputCurrency=0x262b8aa7542004f023b0eb02bc6b96350a02b728">Get $SWAY here &gt;</a> NOTE: Currently we only support creator pools on Polygon network.</p>
                   <p>Click on Stake and a pop-up will appear. Select the channel and provide the creator's identificator. Ie. on channel "Instagram" you can stake with a creator with the handle @metaverse. We don't validate entries, so make sure there's no typos.</p>
-                  <p class="mb-5">And yes, that means you get to stake with any account you wish -- even if the creator hasn't claimed his pool yet.</p>
+                  <p className="mb-5">And yes, that means you get to stake with any account you wish -- even if the creator hasn't claimed his pool yet.</p>
                 </>
               )}
             </div>
