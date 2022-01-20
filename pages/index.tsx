@@ -39,7 +39,7 @@ const initialAppState = {
   activePlans: []
 };
 
-const planIds = [1, 2, 3]; // hardcoded planIds
+const planIds = [1, 2, 4, 5, 6]; // hardcoded planIds
 
 function initialiseAnalytics() {
   const TRACKING_ID = process.env.NEXT_PUBLIC_GA_TRACKING_ID;
