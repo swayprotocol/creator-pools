@@ -247,6 +247,17 @@ select {
   }
 }
 
+.info-bar {
+  background-color: #606060;
+  color: #fff;
+  text-align: center;
+  font-size: 15px;
+
+  p {
+    margin: 5px 0;
+  }
+}
+
 @keyframes spin {
   to {
     transform: rotate(1turn);

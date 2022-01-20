@@ -22,6 +22,7 @@ import { InjectedConnector } from '@web3-react/injected-connector';
 import STAKING_ABI from '../shared/abis/staking-abi.json';
 import { getUserAvailableTokens } from '../helpers/getUserAvailableTokens';
 import { getPlans } from '../helpers/getPlans';
+import InfoBar from '../components/InfoBar';
 
 declare global {
     interface Window {
@@ -205,6 +206,9 @@ const Home: NextPage = () => {
           loaded={!loading}
           setNewSigner={setContractSigner}
           loadUserData={loadWallet} />
+        <InfoBar swayUsd={appState.swayUsd}
+                 swayLockedTotal={appState.swayLockedTotal}
+        />
         <Header
           walletId={walletId}
           connectWallet={connectWallet}
