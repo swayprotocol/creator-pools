@@ -59,3 +59,10 @@ export interface ModalData {
   channel?: Channel,
   amount?: string
 }
+
+export interface PlanId {
+  planId: number;
+  apy: number;
+  availableUntil: Date;
+  lockMonths: number;
+}

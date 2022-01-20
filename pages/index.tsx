@@ -21,6 +21,7 @@ import { InjectedConnector } from '@web3-react/injected-connector';
 
 import STAKING_ABI from '../shared/abis/staking-abi.json';
 import { getUserAvailableTokens } from '../helpers/getUserAvailableTokens';
+import { getPlans } from '../helpers/getPlans';
 
 declare global {
     interface Window {
@@ -34,8 +35,11 @@ const initialAppState = {
   topPositions: [],
   swayLockedTotal: 0,
   swayUsd: 0,
-  swayUserTotal: 0
+  swayUserTotal: 0,
+  activePlans: []
 };
+
+const planIds = [1, 2, 3]; // hardcoded planIds
 
 function initialiseAnalytics() {
   const TRACKING_ID = process.env.NEXT_PUBLIC_GA_TRACKING_ID;
@@ -137,6 +141,7 @@ const Home: NextPage = () => {
     try {
       const stakedData = await getStakedData();
       const swayPriceUsd = await getSwayPrice();
+      getAvailablePlans();
 
       // calculate data for different columns
       let allCreators: any = {};
@@ -175,6 +180,16 @@ const Home: NextPage = () => {
     }
   }
 
+  async function getAvailablePlans() {
+    const plans = await getPlans(planIds);
+    const activePlans = plans.filter(plan => +plan.availableUntil > +new Date());
+
+    setAppState((prevState) => ({
+      ...prevState,
+      activePlans: activePlans
+    }));
+  }
+
   function openModal(modalData: ModalData) {
     setShowModal(true);
     setModalData(modalData);
@@ -203,6 +218,7 @@ const Home: NextPage = () => {
         )}
         <Overview swayLockedTotal={appState.swayLockedTotal}
                   swayUsd={appState.swayUsd}
+                  activePlans={appState.activePlans}
         />
         <Pools top={appState.topPools.slice(0, 10)}
                latest={appState.latestPools.slice(0, 10)}
