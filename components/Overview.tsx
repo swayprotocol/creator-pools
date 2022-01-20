@@ -13,9 +13,9 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
   const [maxPlan, setMaxPlan] = useState<PlanId>(defaultPlan);
 
   useEffect(() => {
-    // search for plan with max apy
-    const maxPlan = [...props.activePlans].reduce((prev, current) => (prev.apy > current.apy) ? prev : current, defaultPlan);
-    setMaxPlan(maxPlan);
+    if (props.activePlans.length) {
+      setMaxPlan(props.activePlans[0]);
+    }
   }, [props.activePlans]);
 
   return (
