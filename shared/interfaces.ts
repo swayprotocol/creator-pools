@@ -60,7 +60,7 @@ export interface ModalData {
   amount?: string
 }
 
-export interface PlanId {
+export interface Plan {
   planId: number;
   apy: number;
   availableUntil: Date;

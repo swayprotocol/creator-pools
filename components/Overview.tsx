@@ -1,22 +1,24 @@
 import React, { FC, useEffect, useState } from 'react';
-import { PlanId } from '../shared/interfaces';
+import { Plan } from '../shared/interfaces';
+import { filterPlans } from '../helpers/filterPlans';
 
 type OverviewProps = {
   swayLockedTotal: number,
   swayUsd: number,
-  activePlans: PlanId[]
+  plans: Plan[]
 }
 
-const defaultPlan = { apy: 0, planId: 0 } as PlanId;
+const defaultPlan = { apy: 0, planId: 0 } as Plan;
 
 const Overview: FC<OverviewProps> = (props: OverviewProps) => {
-  const [maxPlan, setMaxPlan] = useState<PlanId>(defaultPlan);
+  const [maxPlan, setMaxPlan] = useState<Plan>(defaultPlan);
 
   useEffect(() => {
-    if (props.activePlans.length) {
-      setMaxPlan(props.activePlans[0]);
+    if (props.plans.length) {
+      const activePlans = filterPlans(props.plans);
+      setMaxPlan(activePlans[0]);
     }
-  }, [props.activePlans]);
+  }, [props.plans]);
 
   return (
     <section className="my-5">

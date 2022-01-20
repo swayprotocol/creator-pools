@@ -37,10 +37,10 @@ const initialAppState = {
   swayLockedTotal: 0,
   swayUsd: 0,
   swayUserTotal: 0,
-  activePlans: []
+  plans: []
 };
 
-const planIds = [1, 2, 4, 5, 6]; // hardcoded planIds
+const planIds = [1, 2, 3, 4, 5, 6]; // hardcoded plans
 
 function initialiseAnalytics() {
   const TRACKING_ID = process.env.NEXT_PUBLIC_GA_TRACKING_ID;
@@ -183,13 +183,10 @@ const Home: NextPage = () => {
 
   async function getAvailablePlans() {
     const plans = await getPlans(planIds);
-    // filter out expired dates and sort by apy first
-    const activePlans = plans.filter(plan => +plan.availableUntil > +new Date());
-    activePlans.sort((prev, current) => (current.apy - prev.apy));
 
     setAppState((prevState) => ({
       ...prevState,
-      activePlans: activePlans
+      plans: plans
     }));
   }
 
@@ -224,7 +221,7 @@ const Home: NextPage = () => {
         )}
         <Overview swayLockedTotal={appState.swayLockedTotal}
                   swayUsd={appState.swayUsd}
-                  activePlans={appState.activePlans}
+                  plans={appState.plans}
         />
         <Pools top={appState.topPools.slice(0, 10)}
                latest={appState.latestPools.slice(0, 10)}
@@ -242,7 +239,7 @@ const Home: NextPage = () => {
                    setModalData({});
                    if (reload) doRefreshData((prev) => prev + 1);
                  }}
-                 activePlans={appState.activePlans}
+                 plans={appState.plans}
           />
         )}
       </Web3ReactProvider>

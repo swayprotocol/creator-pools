@@ -1,18 +1,19 @@
 import React, { FC, useEffect } from 'react';
-import { ModalData, ModalType, PlanId, StakeData, StakedEventSocialType } from '../../shared/interfaces';
+import { ModalData, ModalType, Plan, StakeData, StakedEventSocialType } from '../../shared/interfaces';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
 import styles from './Modal.module.scss';
 import { BigNumber, Contract, ethers } from 'ethers';
 import SWAY_TOKEN_ABI from '../../shared/abis/token-abi.json';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
+import { filterPlans } from '../../helpers/filterPlans';
 
 type ModalProps = {
   onClose: (reload?: boolean) => any,
   modalData: ModalData,
   contract: any,
   swayUserTotal: number,
-  activePlans: PlanId[]
+  plans: Plan[]
 }
 
 const initialModalData: StakeData = {
@@ -28,6 +29,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
   const [callError, setCallError] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [disableEditing, setDisableEditing] = React.useState(false);
+  const [activePlans, setActivePlans] = React.useState([]);
 
   const { library, account } = useWeb3React<Web3Provider>();
 
@@ -44,13 +46,15 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
   }, [props.modalData]);
 
   useEffect(() => {
-    if (props.activePlans.length) {
+    if (props.plans.length) {
+      const activePlans = filterPlans(props.plans);
+      setActivePlans(activePlans);
       setFormData((prevState) => ({
         ...prevState,
-        planId: props.activePlans[0].planId.toString()
+        planId: activePlans[0].planId.toString()
       }));
     }
-  }, [props.activePlans]);
+  }, [props.plans]);
 
   const handleCloseClick = (e) => {
     e.preventDefault();
@@ -192,7 +196,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
   }
 
   const getStakingMonthsDuration = (planId: string) => {
-    return props.activePlans.find(plan => plan.planId.toString() === planId)?.lockMonths;
+    return activePlans.find(plan => plan.planId.toString() === planId)?.lockMonths;
   }
 
   return (
@@ -285,7 +289,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                             id="planId"
                             value={formData.planId}
                             onChange={(e) => handleChange('planId', e.target.value)}>
-                      {props.activePlans.map(plan => (
+                      {activePlans.map(plan => (
                         <option value={plan.planId} key={plan.planId}>{plan.apy}%</option>
                       ))}
                     </select>
