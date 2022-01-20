@@ -280,7 +280,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
               {(props.modalData.type === ModalType.STAKE || props.modalData.type === ModalType.ADD) && (
                 <div className="form-group row">
                   <label htmlFor="planId" className="col-sm-3">Promotional APR</label>
-                  <div className="col-sm-2">
+                  <div className="col-sm-3">
                     <select className={`form-control ${formError['planId'] ? 'error' : ''}`}
                             id="planId"
                             value={formData.planId}
@@ -290,7 +290,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                       ))}
                     </select>
                   </div>
-                  <div className={`${styles.midText} col-sm-7`}>Position will be locked for {getStakingMonthsDuration(formData.planId)} months.</div>
+                  <div className={`${styles.midText} col-sm-6`}>Position will be locked for {getStakingMonthsDuration(formData.planId)} months.</div>
                 </div>
               )}
               <div className="row">
