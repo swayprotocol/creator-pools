@@ -34,12 +34,14 @@ export interface Channel {
   members: number;
   numberOfStakes: number;
   totalAmount: number;
+  averageAPR: number;
 }
 
 export interface ChannelPosition {
   amount: number;
   indexInPool: number;
   planId: number;
+  plan: Plan;
   poolHandle: string;
   stakedAt: Date;
   unlockTime: Date;

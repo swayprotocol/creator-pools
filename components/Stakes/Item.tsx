@@ -32,7 +32,7 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
           <div>{(props.channel.userTotalAmount * props.swayUsd).toLocaleString('en-US', { maximumFractionDigits: 0 })} USD</div>
         </div>
         <div className={styles.tableItem}>
-          99% *promotional
+          {props.channel.averageAPR}%
         </div>
         <div className={styles.tableItem}>
           {props.channel.positions.some(position => +position.unlockTime > +new Date()) ? 'Locked' : 'Unlocked'}

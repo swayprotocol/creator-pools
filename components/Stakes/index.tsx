@@ -1,8 +1,8 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import styles from './index.module.scss';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import Item from './Item';
-import { Channel, ChannelPosition, ModalData, ModalType, StakedEventSocialType } from '../../shared/interfaces';
+import { Channel, ChannelPosition, ModalData, ModalType, Plan, StakedEventSocialType } from '../../shared/interfaces';
 import { ethers } from 'ethers';
 
 type StakesType = {
@@ -11,18 +11,26 @@ type StakesType = {
   contract: any,
   swayUsd: number,
   swayUserTotal: number,
-  refreshData: number
+  refreshData: number,
+  plans: Plan[]
 }
 
 const initialChannels: Channel[] = [];
 
 const Stakes: FC<StakesType> = (props: StakesType) => {
-  const [channels, setChannels] = React.useState(initialChannels);
+  const [channels, setChannels] = useState(initialChannels);
 
-  React.useEffect(() => {
+  useEffect(() => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.contract, props.refreshData]);
+
+  useEffect(() => {
+    if (props.plans.length) {
+      calculateAPY();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.plans]);
 
   async function loadData() {
     const activeChannels: any[] = await props.contract.getUserQueue(props.walletId);
@@ -48,24 +56,26 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
         amount: amount,
         indexInPool: +ethers.utils.formatUnits(channel.indexInPool, 0),
         planId: channel.planId,
+        plan: { apy: 0 } as Plan,
         poolHandle: channel.poolHandle,
         social: socialIcon,
         stakedAt: stakedAtDate,
         unlockTime: unlockTimeDate,
-        farmed: getFarmedAmount(amount, stakedAtDate, unlockTimeDate, channel.planId)
+        farmed: 0
       };
     });
 
     let channels: Channel[] = {} as Channel[];
-    formatChannels.forEach(position => {
+    formatChannels.forEach((position: ChannelPosition) => {
       if (!position.poolHandle) return; // claimed positions return poolHandle: '', let's filter them out
       const poolDataId = poolsData.findIndex(pool => pool.poolHandle === position.poolHandle);
       channels[position.poolHandle] = {
         userTotalAmount: channels[position.poolHandle]?.userTotalAmount + position.amount || position.amount,
         poolHandle: position.poolHandle.split('-')[1],
         social: position.social,
-        totalFarmed: channels[position.poolHandle]?.totalFarmed + position.farmed || position.farmed,
+        totalFarmed: 0,
         positions: [...channels[position.poolHandle]?.positions || [], position],
+        averageAPR: 0,
         // data from poolsData
         creator: poolsData[poolDataId]?.creator || '',
         members: +ethers.utils.formatUnits(poolsData[poolDataId]?.members || 1, 0),
@@ -78,15 +88,42 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
     setChannels(channels);
   }
 
+  function calculateAPY() {
+    let updatedChannels = channels.map(channel => ({
+      ...channel,
+      positions: channel.positions.map(position => ({
+        ...position,
+        plan: getPlanById(position.planId),
+        farmed: getFarmedAmount(position.amount, position.stakedAt, position.unlockTime, position.planId)
+      })),
+      averageAPR: calculateAverageAPR(channel.positions)
+    }));
+
+    updatedChannels = updatedChannels.map(channel => ({
+      ...channel,
+      totalFarmed: channel.positions.map(position => position.farmed).reduce((a, b) => a + b, 0),
+    }));
+
+    setChannels(updatedChannels);
+  }
+
   const getFarmedAmount = (amount: number, stakedAt: Date, unlockTime: Date, planId: number): number => {
-    const apy: any = {
-      1: 33,
-      2: 66,
-      3: 99
-    };
+    const plan = getPlanById(planId);
     // use new Date() until the staking is over
     const maxDate = +unlockTime < +new Date() ? unlockTime : new Date();
-    return ((+maxDate - +stakedAt) / 1000 / 3600 / 24 / 365 * apy[planId] / 100) * amount;
+    return ((+maxDate - +stakedAt) / 1000 / 3600 / 24 / 365 * plan.apy / 100) * amount;
+  }
+
+  const getPlanById = (id: number): Plan => {
+    return props.plans.find(plan => plan.planId === id);
+  }
+
+  const calculateAverageAPR = (positions: ChannelPosition[]): number => {
+    // avgApr = (stake1size * apr1 + stake2size * apr2) / (stake1size + stake2size);
+    const averageAPR = positions.map(position => (position.amount * getPlanById(position.planId).apy)).reduce((a, b) => a + b, 0) /
+      positions.map(position => position.amount).reduce((a, b) => a + b, 0);
+
+    return Math.round(averageAPR * 100) / 100;
   }
 
   return (

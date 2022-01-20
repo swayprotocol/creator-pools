@@ -217,6 +217,7 @@ const Home: NextPage = () => {
                   swayUsd={appState.swayUsd}
                   swayUserTotal={appState.swayUserTotal}
                   refreshData={refreshData}
+                  plans={appState.plans}
           />
         )}
         <Overview swayLockedTotal={appState.swayLockedTotal}
