@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import { ModalData, ModalType, StakeData, StakedEventSocialType } from '../../shared/interfaces';
+import { ModalData, ModalType, PlanId, StakeData, StakedEventSocialType } from '../../shared/interfaces';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
 import styles from './Modal.module.scss';
 import { BigNumber, Contract, ethers } from 'ethers';
@@ -11,14 +11,15 @@ type ModalProps = {
   onClose: (reload?: boolean) => any,
   modalData: ModalData,
   contract: any,
-  swayUserTotal: number
+  swayUserTotal: number,
+  activePlans: PlanId[]
 }
 
 const initialModalData: StakeData = {
   social: StakedEventSocialType.IG,
   poolHandle: '',
   amount: '',
-  planId: '3'
+  planId: ''
 }
 
 const Modal: FC<ModalProps> = (props: ModalProps) => {
@@ -41,6 +42,15 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
       setDisableEditing(true);
     }
   }, [props.modalData]);
+
+  useEffect(() => {
+    if (props.activePlans.length) {
+      setFormData((prevState) => ({
+        ...prevState,
+        planId: props.activePlans[0].planId.toString()
+      }));
+    }
+  }, [props.activePlans]);
 
   const handleCloseClick = (e) => {
     e.preventDefault();
@@ -151,7 +161,12 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
       formIsValid = false;
     }
 
-    console.log(errors);
+    if (!data.planId) {
+      errors['planId'] = true;
+      formIsValid = false;
+    }
+
+    console.log('Form errors', errors);
     setFormError(errors);
     return formIsValid;
   }
@@ -177,14 +192,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
   }
 
   const getStakingMonthsDuration = (planId: string) => {
-    switch(planId) {
-      case '1':
-        return '3';
-      case '2':
-        return '6';
-      case '3':
-        return '9';
-    }
+    return props.activePlans.find(plan => plan.planId.toString() === planId)?.lockMonths;
   }
 
   return (
@@ -273,13 +281,13 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                 <div className="form-group row">
                   <label htmlFor="planId" className="col-sm-3">Promotional APR</label>
                   <div className="col-sm-2">
-                    <select className="form-control"
+                    <select className={`form-control ${formError['planId'] ? 'error' : ''}`}
                             id="planId"
                             value={formData.planId}
                             onChange={(e) => handleChange('planId', e.target.value)}>
-                      <option value="3">99%</option>
-                      <option value="2">66%</option>
-                      <option value="1">33%</option>
+                      {props.activePlans.map(plan => (
+                        <option value={plan.planId} key={plan.planId}>{plan.apy}%</option>
+                      ))}
                     </select>
                   </div>
                   <div className={`${styles.midText} col-sm-7`}>Position will be locked for {getStakingMonthsDuration(formData.planId)} months.</div>

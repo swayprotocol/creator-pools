@@ -182,7 +182,9 @@ const Home: NextPage = () => {
 
   async function getAvailablePlans() {
     const plans = await getPlans(planIds);
+    // filter out expired dates and sort by apy first
     const activePlans = plans.filter(plan => +plan.availableUntil > +new Date());
+    activePlans.sort((prev, current) => (current.apy - prev.apy));
 
     setAppState((prevState) => ({
       ...prevState,
@@ -236,6 +238,7 @@ const Home: NextPage = () => {
                    setModalData({});
                    if (reload) doRefreshData((prev) => prev + 1);
                  }}
+                 activePlans={appState.activePlans}
           />
         )}
       </Web3ReactProvider>
