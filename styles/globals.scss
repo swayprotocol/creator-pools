@@ -2,8 +2,7 @@
 $font-family-base: 'Chakra Petch', sans-serif;
 $body-color: #232323;
 $container-max-widths: (
-  xl: 1140px,
-  xxl: 1140px,
+  xl: 1140px
 );
 $modal-content-border-color: #000;
 $modal-header-border-width: 0;
@@ -18,7 +17,6 @@ $modal-lg: 640px;
 
 // font-family
 @import url('https://fonts.googleapis.com/css2?family=Chakra%20Petch&display=swap');
-
 
 .gx-6 {
   --bs-gutter-x: 4rem;
@@ -272,4 +270,3 @@ select {
 .error-text {
   color: #ED4337;
 }
-
