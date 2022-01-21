@@ -58,7 +58,7 @@ export interface StakeData {
 
 export interface ModalData {
   type?: ModalType,
-  channel?: Channel,
+  channel?: Partial<Channel>,
   amount?: string
 }
 

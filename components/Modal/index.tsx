@@ -37,11 +37,13 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     if (props.modalData.channel) {
       setFormData((prevState) => ({
         ...prevState,
-        social: props.modalData.channel.social,
-        poolHandle: props.modalData.channel.poolHandle,
-        amount: props.modalData.amount,
+        social: props.modalData.channel.social || StakedEventSocialType.IG,
+        poolHandle: props.modalData.channel.poolHandle || '',
+        amount: props.modalData.amount || '',
       }));
-      setDisableEditing(true);
+      if (props.modalData.channel.social && props.modalData.channel.poolHandle) {
+        setDisableEditing(true);
+      }
     }
   }, [props.modalData]);
 
