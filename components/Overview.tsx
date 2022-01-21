@@ -1,6 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Plan } from '../shared/interfaces';
 import { filterPlans } from '../helpers/filterPlans';
+import { circulatingSupplSway } from '../shared/constants';
 
 type OverviewProps = {
   swayLockedTotal: number,
@@ -20,6 +21,10 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
     }
   }, [props.plans]);
 
+  const getSupplyLocked = (amount: number): string => {
+    return (amount / circulatingSupplSway * 100).toFixed(2);
+  }
+
   return (
     <section className="my-5">
       <div className="container">
@@ -29,10 +34,10 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
             <div className="overview-item">
               <div className="overview-item-name">TVL</div>
               <div className="overview-item-value">
-                ${(props.swayLockedTotal * props.swayUsd).toLocaleString('en-US', { maximumFractionDigits: 0 })}
+                {props.swayLockedTotal.toLocaleString('en-US', { maximumFractionDigits: 0 })} SWAY
               </div>
               <div className="overview-item-name">
-                {props.swayLockedTotal.toLocaleString('en-US', { maximumFractionDigits: 0 })} SWAY
+                {getSupplyLocked(props.swayLockedTotal)}% of circulating supply
               </div>
             </div>
             <div className="overview-item">
