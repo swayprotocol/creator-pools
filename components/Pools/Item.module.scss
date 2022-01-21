@@ -16,7 +16,16 @@
   display: flex;
   margin-bottom: 4px;
   color: #000;
-  div {
+
+  .mainText {
+    margin-right: 10px;
+  }
+}
+
+.innerTitleWrap {
+  display: flex;
+
+  .socialIcon {
     margin-right: 10px;
     width: 18px;
   }
@@ -32,4 +41,8 @@
 
 .alt {
   color: #929292;
+}
+
+.clickable {
+  cursor: pointer;
 }

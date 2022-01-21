@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styles from './Item.module.scss';
-import { PoolItemType, StakedEvent } from '../../shared/interfaces';
+import { ModalData, ModalType, PoolItemType, StakedEvent } from '../../shared/interfaces';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
 import Moment from 'react-moment';
@@ -9,7 +9,8 @@ type Item = {
   index: number,
   item: StakedEvent,
   swayUsd: number,
-  type: PoolItemType
+  type: PoolItemType,
+  openModal: (modalData: ModalData) => any,
 }
 
 const Item: FC<Item> = (props: Item) => (
@@ -19,11 +20,14 @@ const Item: FC<Item> = (props: Item) => (
         {(props.type === PoolItemType.TOP || props.type === PoolItemType.INDIVIDUAL) && (
           <div className={`${styles.mainText} ${styles.alt}`}>#{props.index + 1}</div>
         )}
-        <div>
-          {getSocialIcon(props.item.social)}
+        <div className={`${styles.innerTitleWrap} ${styles.clickable}`}
+             onClick={() => props.openModal({ type: ModalType.STAKE, channel: { poolHandle: props.item.poolHandle, social: props.item.social }})}>
+          <div className={styles.socialIcon}>
+            {getSocialIcon(props.item.social)}
+          </div>
+          <div className={styles.mainText}>{props.item.poolHandle}</div>
+          {/*<div className={styles.mainText}>3/4</div>*/}
         </div>
-        <div className={styles.mainText}>{props.item.poolHandle}</div>
-        {/*<div className={styles.mainText}>3/4</div>*/}
       </div>
       <div>
         {(props.type === PoolItemType.LATEST || props.type === PoolItemType.INDIVIDUAL) && (

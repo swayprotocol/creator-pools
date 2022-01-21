@@ -230,6 +230,7 @@ const Home: NextPage = () => {
                positions={appState.topPositions.slice(0, 10)}
                swayUsd={appState.swayUsd}
                loadError={dataLoadError}
+               openModal={openStakeModal}
         />
         <FAQ/>
         {showModal === 'STAKE' && (
