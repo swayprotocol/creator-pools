@@ -18,6 +18,7 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
     <div className={`${styles.itemWrapper} ${isExpanded ? styles.itemWrapperActive : ''}`}>
 
       <div className={styles.item} onClick={() => setExpanded((prevState => !prevState))}>
+        <div className={styles.itemIcon}>▶</div>
         <div className={styles.tableItem}>
           <div className="d-flex">
             <div className={styles.icon}>{getSocialIcon(props.channel.social)}</div>

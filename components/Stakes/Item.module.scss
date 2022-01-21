@@ -3,16 +3,17 @@
 }
 
 .itemWrapperActive {
-  background-color: #F3FCFE;
+  background-color: #e6f8fb;
 }
 
 .item {
   display: flex;
   gap: 10px;
   cursor: pointer;
+  position: relative;
 
   &:hover {
-    background-color: #F3FCFE;
+    background-color: #e6f8fb;
   }
 }
 
@@ -21,7 +22,6 @@
   margin-right: 10px;
   margin-left: 8px;
 }
-
 
 .tableItem {
   display: flex;
@@ -34,4 +34,18 @@
 
 .mainText {
   font-weight: bold;
+}
+
+.itemIcon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: -24px;
+  font-size: 14px;
+  line-height: 1;
+  pointer-events: none;
+
+  .itemWrapperActive & {
+    transform: rotate(90deg) translateX(-50%);
+  }
 }
