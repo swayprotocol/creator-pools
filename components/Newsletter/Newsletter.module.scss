@@ -1,0 +1,15 @@
+.smallText {
+  font-size: 14px;
+  text-align: center;
+}
+
+.successText {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+
+  svg {
+    margin-right: 14px;
+  }
+}

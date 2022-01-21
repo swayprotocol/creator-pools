@@ -43,10 +43,6 @@ $modal-lg: 640px;
   font-weight: 500;
 }
 
-.border-bottom {
-  border-bottom: 1px solid #ddd;
-}
-
 button {
   border: 0;
   background: none;
@@ -182,6 +178,12 @@ select {
   }
 }
 
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
 .loading-item {
   height: 70px;
   width: 100%;
@@ -258,8 +260,16 @@ select {
   }
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(1turn);
+.modal {
+  display: block;
+  background-color: rgba(0, 0, 0, 0.2);
+
+  .close-btn {
+    font-size: 24px;
   }
 }
+
+.error-text {
+  color: #ED4337;
+}
+

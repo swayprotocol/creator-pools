@@ -23,6 +23,7 @@ import STAKING_ABI from '../shared/abis/staking-abi.json';
 import { getUserAvailableTokens } from '../helpers/getUserAvailableTokens';
 import { getPlans } from '../helpers/getPlans';
 import InfoBar from '../components/InfoBar';
+import Newsletter from '../components/Newsletter/Newsletter';
 
 declare global {
     interface Window {
@@ -49,7 +50,7 @@ function initialiseAnalytics() {
 
 const Home: NextPage = () => {
   const [appState, setAppState] = React.useState(initialAppState);
-  const [showModal, setShowModal] = React.useState(false);
+  const [showModal, setShowModal] = React.useState<'STAKE' | 'NEWSLETTER' | ''>('');
   const [walletId, setWalletId] = React.useState('');
   const [loading, setLoading] = React.useState(true);
   const [contractData, setContractData] = React.useState<Contract>();
@@ -190,8 +191,8 @@ const Home: NextPage = () => {
     }));
   }
 
-  function openModal(modalData: ModalData) {
-    setShowModal(true);
+  function openStakeModal(modalData: ModalData) {
+    setShowModal('STAKE');
     setModalData(modalData);
   }
 
@@ -211,7 +212,7 @@ const Home: NextPage = () => {
           connectWallet={connectWallet}
         />
         {walletLoaded && (
-          <Stakes openModal={openModal}
+          <Stakes openModal={openStakeModal}
                   walletId={walletId}
                   contract={contractData}
                   swayUsd={appState.swayUsd}
@@ -231,17 +232,23 @@ const Home: NextPage = () => {
                loadError={dataLoadError}
         />
         <FAQ/>
-        {showModal && (
+        {showModal === 'STAKE' && (
           <Modal modalData={modalData}
                  contract={contractData}
                  swayUserTotal={appState.swayUserTotal}
                  onClose={(reload) => {
-                   setShowModal(false);
+                   setShowModal('');
                    setModalData({});
-                   if (reload) doRefreshData((prev) => prev + 1);
+                   if (reload) {
+                     doRefreshData((prev) => prev + 1);
+                     setShowModal('NEWSLETTER');
+                   }
                  }}
                  plans={appState.plans}
           />
+        )}
+        {showModal === 'NEWSLETTER' && (
+          <Newsletter onClose={() => setShowModal('')}/>
         )}
       </Web3ReactProvider>
     </Layout>

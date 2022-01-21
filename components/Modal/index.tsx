@@ -205,7 +205,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
         <div className="modal-content">
           <div className="modal-header pb-0">
             <h3 className="modal-title">{props.modalData.type}</h3>
-            <button type="button" className={styles.closeBtn} onClick={handleCloseClick}>X</button>
+            <button type="button" className="close-btn" onClick={handleCloseClick}>X</button>
           </div>
           <div className="modal-body">
             <form onSubmit={formSubmit}>
