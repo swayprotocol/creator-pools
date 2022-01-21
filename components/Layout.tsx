@@ -10,7 +10,7 @@ const meta = {
   title: 'Creator Pools | Sway Social',
   description: 'Creator pools introduce a new metaverse-ready social capital concept by staking with your creators and sharing in their success.',
   url: 'https://creatorpools.live',
-  image: '/assets/og-image.png'
+  image: '/assets/og-image.jpg'
 };
 
 const Layout = ({ children }: Props) => (
