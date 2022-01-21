@@ -11,8 +11,8 @@ const InfoBar: FC<BarType> = (props: BarType) => (
       <div className="container">
         <div className="row">
           <p>
-            <strong>${(props.swayLockedTotal * props.swayUsd).toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong> TVL
-            - total $SWAY locked in creator pools
+            <strong>{(props.swayLockedTotal).toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong> TVL
+            - total SWAY locked in creator pools
           </p>
         </div>
       </div>
