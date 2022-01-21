@@ -160,15 +160,15 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
           setCallError('Amount exceeds total available.')
         }
       }
+
+      if (!data.planId) {
+        errors['planId'] = true;
+        formIsValid = false;
+      }
     }
 
     if (!data.poolHandle) {
       errors['poolHandle'] = true;
-      formIsValid = false;
-    }
-
-    if (!data.planId) {
-      errors['planId'] = true;
       formIsValid = false;
     }
 
@@ -314,7 +314,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                     <p className={styles.smallText}>NOTE: Adding additional positions with promotional APR extend the lockup duration of the total stake.</p>
                   )}
                   {!!callError && (
-                    <p className={`${styles.smallText} ${styles.errorText}`}>{callError}</p>
+                    <p className={`${styles.smallText} error-text`}>{callError}</p>
                   )}
                 </div>
               </div>
