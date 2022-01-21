@@ -8,9 +8,9 @@ type Props = {
 
 const meta = {
   title: 'Creator Pools | Sway Social',
-  description: '',
-  url: '',
-  image: ''
+  description: 'Creator pools introduce a new metaverse-ready social capital concept by staking with your creators and sharing in their success.',
+  url: 'https://creatorpools.live',
+  image: '/assets/og-image.png'
 };
 
 const Layout = ({ children }: Props) => (
