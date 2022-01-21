@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
-import { injected } from '../helpers/Connectors';
+import { injected } from '../shared/constants';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 
 type WalletConnectProps = {

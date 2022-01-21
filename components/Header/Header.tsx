@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './Header.module.scss'
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { injected } from '../../helpers/Connectors';
+import { injected } from '../../shared/constants';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 
