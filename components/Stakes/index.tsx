@@ -26,7 +26,7 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
   useEffect(() => {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.contract, props.refreshData]);
+  }, [props.contract, props.refreshData, account]);
 
   useEffect(() => {
     if (props.plans.length) {
