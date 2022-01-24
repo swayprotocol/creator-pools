@@ -24,7 +24,7 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
   const { account } = useWeb3React<Web3Provider>();
 
   useEffect(() => {
-    loadData();
+    if (account) loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.contract, props.refreshData, account]);
 
