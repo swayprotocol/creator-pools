@@ -47,10 +47,10 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
                 <div className="overview-item-name">*promotional</div>
               )}
             </div>
-            <div className="overview-item">
+            {/*<div className="overview-item">
               <div className="overview-item-name">TOTAL REWARDS PAID</div>
               <div className="overview-item-value">0 SWAY</div>
-            </div>
+            </div>*/}
           </div>
           <div className="col-12 col-sm-4">
             <div className="row">
