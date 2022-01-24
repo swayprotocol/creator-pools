@@ -19,7 +19,8 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
       const activePlans = filterPlans(props.plans);
       setMaxPlan(activePlans[0]);
     }
-  }, [props.plans]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.plans.length]);
 
   const getSupplyLocked = (amount: number): string => {
     return (amount / circulatingSupplSway * 100).toFixed(2);

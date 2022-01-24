@@ -30,10 +30,10 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
 
   useEffect(() => {
     if (props.plans.length) {
-      calculateAPY();
+      calculateAPY(channels);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.plans]);
+  }, [props.plans.length]);
 
   async function loadData() {
     const activeChannels: any[] = await props.contract.getUserQueue(account);
@@ -88,24 +88,28 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
     });
 
     channels = Object.values(channels);
-    setChannels(channels);
+    calculateAPY(channels);
   }
 
-  function calculateAPY() {
-    let updatedChannels = channels.map(channel => ({
-      ...channel,
-      positions: channel.positions.map(position => ({
-        ...position,
-        plan: getPlanById(position.planId),
-        farmed: getFarmedAmount(position.amount, position.stakedAt, position.unlockTime, position.planId)
-      })),
-      averageAPR: calculateAverageAPR(channel.positions)
-    }));
+  function calculateAPY(activeChannels: Channel[]) {
+    let updatedChannels = activeChannels;
+    // calculate apy and farmed amount only if plans present
+    if (props.plans.length) {
+      updatedChannels = activeChannels.map(channel => ({
+        ...channel,
+        positions: channel.positions.map(position => ({
+          ...position,
+          plan: getPlanById(position.planId),
+          farmed: getFarmedAmount(position.amount, position.stakedAt, position.unlockTime, position.planId)
+        })),
+        averageAPR: calculateAverageAPR(channel.positions)
+      }));
 
-    updatedChannels = updatedChannels.map(channel => ({
-      ...channel,
-      totalFarmed: channel.positions.map(position => position.farmed).reduce((a, b) => a + b, 0),
-    }));
+      updatedChannels = updatedChannels.map(channel => ({
+        ...channel,
+        totalFarmed: channel.positions.map(position => position.farmed).reduce((a, b) => a + b, 0),
+      }));
+    }
 
     setChannels(updatedChannels);
   }

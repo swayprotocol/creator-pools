@@ -23,6 +23,7 @@ import { getUserAvailableTokens } from '../helpers/getUserAvailableTokens';
 import { getPlans } from '../helpers/getPlans';
 import InfoBar from '../components/InfoBar';
 import Newsletter from '../components/Newsletter/Newsletter';
+import { availablePlans } from '../shared/constants';
 
 declare global {
     interface Window {
@@ -37,7 +38,7 @@ const initialAppState = {
   swayLockedTotal: 0,
   swayUsd: 0,
   swayUserTotal: 0,
-  plans: []
+  plans: availablePlans
 };
 
 const planIds = [1, 2, 3, 4, 5, 6]; // hardcoded plans

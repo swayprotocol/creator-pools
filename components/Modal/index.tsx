@@ -56,7 +56,8 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
         planId: activePlans[0].planId.toString()
       }));
     }
-  }, [props.plans]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.plans.length]);
 
   const handleCloseClick = (e) => {
     e.preventDefault();
