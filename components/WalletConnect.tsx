@@ -5,18 +5,16 @@ import { injected } from '../shared/constants';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 
 type WalletConnectProps = {
-  userLoaded: boolean,
-  loaded: boolean,
-  setNewSigner: (signer) => any,
-  loadUserData: (walletId: string, connector) => any,
+  appLoaded: boolean,
+  loadWallet: (connector: AbstractConnector, library: Web3Provider) => any
 }
 
 export default function WalletConnect(props: WalletConnectProps) {
-  const { account, error, library, activate, active, connector } = useWeb3React<Web3Provider>();
+  const { error, library, activate, active, connector } = useWeb3React<Web3Provider>();
 
   // first check if connected through Metamask
   useEffect(() => {
-    if (!active && !error && props.loaded) {
+    if (!active && !error && props.appLoaded) {
       injected
         .isAuthorized()
         .then((isAuthorized) => {
@@ -26,16 +24,12 @@ export default function WalletConnect(props: WalletConnectProps) {
         });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.loaded]);
+  }, [props.appLoaded]);
 
-  // if connected through web3-react, load the library and user data
+  // if connected through web3-react, load the library
   useEffect(() => {
     if (active) {
-      props.setNewSigner(library);
-      // on reload, wallet might be connected, but user is not loaded, let's make sure we load the user as well
-      if (!props.userLoaded) {
-        props.loadUserData(account, connector);
-      }
+      props.loadWallet(connector, library);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active]);

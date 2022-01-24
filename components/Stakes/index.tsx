@@ -4,10 +4,11 @@ import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import Item from './Item';
 import { Channel, ChannelPosition, ModalData, ModalType, Plan, StakedEventSocialType } from '../../shared/interfaces';
 import { ethers } from 'ethers';
+import { useWeb3React } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
 
 type StakesType = {
   openModal: (modalData: ModalData) => any,
-  walletId: string,
   contract: any,
   swayUsd: number,
   swayUserTotal: number,
@@ -19,6 +20,8 @@ const initialChannels: Channel[] = [];
 
 const Stakes: FC<StakesType> = (props: StakesType) => {
   const [channels, setChannels] = useState(initialChannels);
+
+  const { account } = useWeb3React<Web3Provider>();
 
   useEffect(() => {
     loadData();
@@ -33,7 +36,7 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
   }, [props.plans]);
 
   async function loadData() {
-    const activeChannels: any[] = await props.contract.getUserQueue(props.walletId);
+    const activeChannels: any[] = await props.contract.getUserQueue(account);
     const allPoolHandles = activeChannels.map(channel => channel.poolHandle).filter(name => !!name);
     let poolsData: any[] = [];
     if (allPoolHandles.length) {
@@ -137,7 +140,7 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
               <div className={styles.networkItem}>
                 <div className={`${styles.networkItemStatus} ${styles.active}`}/>
                 <div className={styles.networkItemName}>
-                  connected to {getWalletShorthand(props.walletId)}
+                  connected to {getWalletShorthand(account)}
                 </div>
               </div>
             </div>

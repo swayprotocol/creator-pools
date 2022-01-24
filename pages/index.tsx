@@ -17,7 +17,6 @@ import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import WalletConnect from '../components/WalletConnect';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { InjectedConnector } from '@web3-react/injected-connector';
 
 import STAKING_ABI from '../shared/abis/staking-abi.json';
 import { getUserAvailableTokens } from '../helpers/getUserAvailableTokens';
@@ -75,63 +74,29 @@ const Home: NextPage = () => {
     if (walletId) getUserSwayAmount();
   }, [walletId, refreshData]);
 
-  async function loadWallet(walletId: string, connector?: AbstractConnector) {
-    setWalletId(walletId)
+  async function loadWallet(connector: AbstractConnector, library: Web3Provider) {
     connector.on('Web3ReactUpdate', (event) => {
       if (event.account) {
         setWalletId(event.account);
       }
     });
     connector.on('Web3ReactDeactivate',  (event) => {
-      setWalletId('');
-    })
-  }
-
-  async function connectWallet(connector: AbstractConnector) {
-    try {
-      const accountId = await connector.getAccount()
-      setWalletId(accountId);
-      if (connector instanceof InjectedConnector) {
-        initMetamaskChangeListener();
-      }
-    } catch (e) {
       resetAccount();
-    }
-  }
+    })
 
-  function initMetamaskChangeListener() {
-    window.ethereum.on('accountsChanged', handleAccountChange);
-    // window.ethereum.on('chainChanged', handleNetworkChange);
+    let signer = library.getSigner();
+    const stakingContract = new ethers.Contract(process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+    const walletId = await connector.getAccount();
+
+    setContractData(getContract(stakingContract));
+    setWalletId(walletId);
+    setWalletLoaded(true);
   }
 
   function getLibrary(provider: any): Web3Provider {
     const library = new Web3Provider(provider);
     library.pollingInterval = 12000;
     return library;
-  }
-
-  async function setContractSigner(library: Web3Provider) {
-    if (library) {
-      let signer = library.getSigner();
-
-      // hack for mobile, if there is no ethereum object - needed for gas price, etc. in the app
-      if (!window.ethereum || library.connection.url !== 'metamask') {
-        window.ethereum = library.provider;
-      }
-
-      const stakingContract = new ethers.Contract(process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
-      setContractData(getContract(stakingContract));
-      setWalletLoaded(true);
-    }
-  }
-
-  function handleAccountChange(accounts) {
-    console.log(accounts);
-    if (accounts.length > 0) {
-      setWalletId(accounts[0])
-    } else {
-      resetAccount();
-    }
   }
 
   async function resetAccount() {
@@ -200,20 +165,15 @@ const Home: NextPage = () => {
     <Layout>
       <Web3ReactProvider getLibrary={getLibrary}>
         <WalletConnect
-          userLoaded={walletLoaded}
-          loaded={!loading}
-          setNewSigner={setContractSigner}
-          loadUserData={loadWallet} />
+          appLoaded={!loading}
+          loadWallet={loadWallet}
+        />
         <InfoBar swayUsd={appState.swayUsd}
                  swayLockedTotal={appState.swayLockedTotal}
         />
-        <Header
-          walletId={walletId}
-          connectWallet={connectWallet}
-        />
+        <Header disconnectWallet={resetAccount}/>
         {walletLoaded && (
           <Stakes openModal={openStakeModal}
-                  walletId={walletId}
                   contract={contractData}
                   swayUsd={appState.swayUsd}
                   swayUserTotal={appState.swayUserTotal}

@@ -7,12 +7,11 @@ import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 
 type HeaderProps = {
-  walletId: string,
-  connectWallet: (connector?: AbstractConnector) => any
+  disconnectWallet: () => any
 }
 
 const Header = (props: HeaderProps) => {
-  const { activate, deactivate } = useWeb3React<Web3Provider>();
+  const { activate, deactivate, account, active } = useWeb3React<Web3Provider>();
 
   const tryActivation = async (connector: AbstractConnector) => {
     return await activate(connector, undefined, true)
@@ -54,7 +53,6 @@ const Header = (props: HeaderProps) => {
     const isConnected = await tryActivation(injected);
     if (isConnected) {
       await activate(injected);
-      props.connectWallet(injected);
     }
   }
 
@@ -92,7 +90,7 @@ const Header = (props: HeaderProps) => {
                 <img src="/assets/logo.svg" width="100" alt="Sway Social"/>
               </a>
             </div>
-            {!props.walletId ? (
+            {!active ? (
               <div className="connect">
                 <button className="btn" onClick={connectWallet}>
                   Connect
@@ -100,10 +98,11 @@ const Header = (props: HeaderProps) => {
               </div>
             ) : (
               <div className="connect">
-                <button className="btn btn-secondary" disabled={true} onClick={async () => {
+                <button className="btn btn-secondary" onClick={async () => {
                   await deactivate();
+                  props.disconnectWallet();
                 }}>
-                  {`${getWalletShorthand(props.walletId)}`}
+                  {getWalletShorthand(account)}
                 </button>
               </div>
             )}

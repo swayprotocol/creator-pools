@@ -1,3 +1,3 @@
-export const getWalletShorthand = (walletId: string) => {
-  return walletId.substring(0, 4) + '...' + walletId.substring(walletId.length - 4);
+export const getWalletShorthand = (walletId: string | undefined) => {
+  return walletId ? walletId.substring(0, 4) + '...' + walletId.substring(walletId.length - 4) : '';
 }
