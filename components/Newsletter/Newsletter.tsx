@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import styles from './Newsletter.module.scss';
 
 type ModalProps = {
@@ -6,9 +6,9 @@ type ModalProps = {
 }
 
 const Newsletter: FC<ModalProps> = (props: ModalProps) => {
-  const [formError, setFormError] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
-  const [success, setSuccess] = React.useState(false);
+  const [formError, setFormError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleCloseClick = (e) => {
     e.preventDefault();

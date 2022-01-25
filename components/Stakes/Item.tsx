@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import styles from './Item.module.scss';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
 import { Channel, ModalData } from '../../shared/interfaces';
@@ -12,7 +12,7 @@ type StakedItem = {
 }
 
 const StakedItem: FC<StakedItem> = (props: StakedItem) => {
-  const [isExpanded, setExpanded] = React.useState(false);
+  const [isExpanded, setExpanded] = useState(false);
 
   return (
     <div className={`${styles.itemWrapper} ${isExpanded ? styles.itemWrapperActive : ''}`}>

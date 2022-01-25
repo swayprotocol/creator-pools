@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { ModalData, ModalType, Plan, StakeData, StakedEventSocialType } from '../../shared/interfaces';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
 import styles from './Modal.module.scss';
@@ -24,12 +24,12 @@ const initialModalData: StakeData = {
 }
 
 const Modal: FC<ModalProps> = (props: ModalProps) => {
-  const [formData, setFormData] = React.useState(initialModalData);
-  const [formError, setFormError] = React.useState({});
-  const [callError, setCallError] = React.useState('');
-  const [loading, setLoading] = React.useState(false);
-  const [disableEditing, setDisableEditing] = React.useState(false);
-  const [activePlans, setActivePlans] = React.useState([]);
+  const [formData, setFormData] = useState(initialModalData);
+  const [formError, setFormError] = useState({});
+  const [callError, setCallError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [disableEditing, setDisableEditing] = useState(false);
+  const [activePlans, setActivePlans] = useState<Plan[]>([]);
 
   const { library, account } = useWeb3React<Web3Provider>();
 

@@ -16,10 +16,8 @@ type StakesType = {
   plans: Plan[]
 }
 
-const initialChannels: Channel[] = [];
-
 const Stakes: FC<StakesType> = (props: StakesType) => {
-  const [channels, setChannels] = useState(initialChannels);
+  const [channels, setChannels] = useState<Channel[]>([]);
 
   const { account } = useWeb3React<Web3Provider>();
 

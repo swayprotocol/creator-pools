@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 import Layout from '../components/Layout';
 import FAQ from '../components/FAQ/FAQ';
@@ -49,17 +49,17 @@ function initialiseAnalytics() {
 }
 
 const Home: NextPage = () => {
-  const [appState, setAppState] = React.useState(initialAppState);
-  const [showModal, setShowModal] = React.useState<'STAKE' | 'NEWSLETTER' | ''>('');
-  const [walletId, setWalletId] = React.useState('');
-  const [loading, setLoading] = React.useState(true);
-  const [contractData, setContractData] = React.useState<Contract>();
-  const [walletLoaded, setWalletLoaded] = React.useState(false);
-  const [modalData, setModalData] = React.useState<ModalData>({});
-  const [dataLoadError, setDataLoadError] = React.useState(false);
-  const [refreshData, doRefreshData] = React.useState(0);
+  const [appState, setAppState] = useState(initialAppState);
+  const [showModal, setShowModal] = useState<'STAKE' | 'NEWSLETTER' | ''>('');
+  const [walletId, setWalletId] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [contractData, setContractData] = useState<Contract>();
+  const [walletLoaded, setWalletLoaded] = useState(false);
+  const [modalData, setModalData] = useState<ModalData>({});
+  const [dataLoadError, setDataLoadError] = useState(false);
+  const [refreshData, doRefreshData] = useState(0);
 
-  React.useEffect(() => {
+  useEffect(() => {
     initialiseAnalytics();
     ReactGA.pageview('/index');
     getGeneralData();
@@ -67,7 +67,7 @@ const Home: NextPage = () => {
     // eslint-disable-next-line
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function getUserSwayAmount() {
       const availableTokens = await getUserAvailableTokens(walletId);
       setAppState(prevState => ({...prevState, swayUserTotal: availableTokens}))

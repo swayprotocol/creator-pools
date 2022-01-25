@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import styles from './Positions.module.scss';
 import { Channel, ChannelPosition, ModalData, ModalType } from '../../shared/interfaces';
 import Moment from 'react-moment';
@@ -12,7 +12,7 @@ type ItemPositions = {
 }
 
 const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
-  const [amountToStake, setAmountToStake] = React.useState('');
+  const [amountToStake, setAmountToStake] = useState('');
 
   const openStakeModal = (type: ModalType, amount: string) => {
     props.openModal({

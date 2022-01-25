@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './FAQ.module.scss'
 
 function FAQ() {
-  const [openQuestions, setOpenQuestions] = React.useState({
+  const [openQuestions, setOpenQuestions] = useState({
     what: false,
     how: false,
     howStake: false,
