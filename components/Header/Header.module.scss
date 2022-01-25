@@ -22,6 +22,20 @@
   background-color: #92D36E;
 }
 
-.networkItemName {
+.themeButtonWrapper {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+}
 
+.themeButton {
+  cursor: pointer;
+  line-height: 1;
+  padding: 6px;
+  border-radius: 50%;
+  color: var(--bs-body-color);
+
+  &:hover {
+    background-color: rgba(201, 201, 201, 0.5);
+  }
 }

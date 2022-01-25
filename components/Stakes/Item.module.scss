@@ -4,6 +4,10 @@
 
 .itemWrapperActive {
   background-color: #e6f8fb;
+
+  :global(.dark) & {
+    background-color: #242d30;
+  }
 }
 
 .item {
@@ -14,6 +18,10 @@
 
   &:hover {
     background-color: #e6f8fb;
+
+    :global(.dark) & {
+      background-color: #242d30;
+    }
   }
 }
 

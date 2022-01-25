@@ -18,6 +18,24 @@ $modal-lg: 640px;
 // font-family
 @import url('https://fonts.googleapis.com/css2?family=Chakra%20Petch&display=swap');
 
+// default colors
+:root {
+  --bs-body-color: $body-color;
+  --bs-body-bg: #fff;
+  --text-dark: #000;
+}
+
+html.dark {
+  --bs-body-color: #fff;
+  --bs-body-bg: #0c0c0c;
+  --text-dark: #eeeeee;
+}
+
+hr {
+  background-color: #c9c9c9;
+  opacity: 1;
+}
+
 .gx-6 {
   --bs-gutter-x: 4rem;
 }
@@ -56,14 +74,14 @@ select {
   height: 38px;
 
   &:focus {
-    border: 1px solid #000;
+    border: 1px solid var(--text-dark);
   }
 
   &.error {
     border: 1px solid #ED4337;
 
     &:not(:placeholder-shown) {
-      border: 1px solid #000 !important;
+      border: 1px solid var(--text-dark) !important;
     }
   }
 
@@ -186,7 +204,7 @@ select {
   height: 70px;
   width: 100%;
   display: block;
-  background-color: #efefef;
+  background-color: rgba(201, 201, 201, 0.4);
   margin: 2em 0;
   border-radius: 4px;
 }
@@ -213,7 +231,7 @@ select {
     }
   }
   a {
-    color: #232323;
+    color: var(--bs-body-color);
     text-decoration: none;
 
     &:hover {
@@ -240,6 +258,7 @@ select {
     line-height: 1;
     cursor: pointer;
     border-radius: 2px;
+    color: #232323;
 
     &:hover {
       background-color: #f2f2f2;
@@ -264,6 +283,12 @@ select {
 
   .close-btn {
     font-size: 24px;
+    color: var(--text-dark)
+  }
+
+  .modal-content {
+    background-color: var(--bs-body-bg);
+    border: 1px solid var(--text-dark);
   }
 }
 
