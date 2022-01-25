@@ -193,7 +193,7 @@ const Home: NextPage = () => {
                loadError={dataLoadError}
                openModal={openStakeModal}
         />
-        <FAQ/>
+        <FAQ openModal={openStakeModal}/>
         {showModal === 'STAKE' && (
           <Modal modalData={modalData}
                  contract={contractData}

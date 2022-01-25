@@ -1,13 +1,20 @@
-import React, { useState } from 'react';
-import styles from './FAQ.module.scss'
+import React, { FC, useState } from 'react';
+import styles from './FAQ.module.scss';
+import { ModalData, ModalType } from '../../shared/interfaces';
 
-function FAQ() {
-  const [openQuestions, setOpenQuestions] = useState({
-    what: false,
-    how: false,
-    howStake: false,
-    whyStake: false
-  });
+type FAQProps = {
+  openModal: (modalData: ModalData) => any,
+}
+
+const initialFAQState = {
+  what: false,
+  how: false,
+  howStake: false,
+  whyStake: false
+}
+
+const FAQ: FC<FAQProps> = (props: FAQProps) => {
+  const [openQuestions, setOpenQuestions] = useState(initialFAQState);
 
   function expandQuestion(question: 'what' | 'how' | 'howStake' | 'whyStake') {
     setOpenQuestions({
@@ -21,7 +28,7 @@ function FAQ() {
       <div className="container">
         <div className="row">
           <div className="col-12 col-md-10">
-            <h2 className="mb-5">FAQ</h2>
+            <h2 className="mb-4">FAQ</h2>
             <div>
               <h4 className={styles.questionItemTitle} onClick={() => expandQuestion('what')}>
                 <div className={`${styles.questionList} ${openQuestions.what ? styles.questionOpened : ''}`}>▶</div>
@@ -56,7 +63,7 @@ function FAQ() {
               {openQuestions.howStake && (
                 <>
                   <p>Easy. First, make sure you own some $SWAY in your Metamask wallet. <a target="_blank" rel="noopener noreferrer" href="https://quickswap.exchange/#/swap?outputCurrency=0x262b8aa7542004f023b0eb02bc6b96350a02b728">Get $SWAY here &gt;</a> NOTE: Currently we only support creator pools on Polygon network.</p>
-                  <p>Click on Stake and a pop-up will appear. Select the channel and provide the creator's identificator. Ie. on channel "Instagram" you can stake with a creator with the handle @metaverse. We don't validate entries, so make sure there's no typos.</p>
+                  <p>Click on <a className="btn-link" onClick={() => props.openModal({ type: ModalType.STAKE })}>Stake</a> and a pop-up will appear. Select the channel and provide the creator's identificator. Ie. on channel "Instagram" you can stake with a creator with the handle @metaverse. We don't validate entries, so make sure there's no typos.</p>
                   <p className="mb-5">And yes, that means you get to stake with any account you wish -- even if the creator hasn't claimed his pool yet.</p>
                 </>
               )}
@@ -69,9 +76,9 @@ function FAQ() {
               {openQuestions.whyStake && (
                 <>
                   <p>Every pool needs to be claimed by the original creator in order to start paying out rewards. However, here's two reasons why you should start staking today.</p>
-                  <p>1) PROMOTIONAL PERIOD. The first generation staking pool offers a promotional APR of up to 99% instead of direct returns from NFT sales. Read more</p>
+                  <p>1) PROMOTIONAL PERIOD. The first generation staking pool offers a promotional APR of up to 888% instead of direct returns from NFT sales.</p>
                   <p>2) BEING FIRST PAYS OFF. The first position in the pool gets the most favorable terms and yields better rewards. You can sit at the top position forever. Might be a smart idea to be the first to stake with @garyvee or beeple.eth...?</p>
-                  <p>If a creator doesn't claim his pool, you can simply withdraw your stake after the promotional period. Click on Stake to begin the withdrawal process.</p>
+                  <p>If a creator doesn't claim his pool, you can simply withdraw your stake after the promotional period. Click on Unstake to begin the withdrawal process.</p>
                 </>
               )}
             </div>
