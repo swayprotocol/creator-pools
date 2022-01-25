@@ -68,3 +68,11 @@ export interface Plan {
   availableUntil: Date;
   lockMonths: number;
 }
+
+type DistributionT = {
+  [key in StakedEventSocialType]: number;
+}
+
+export interface Distribution extends Partial<DistributionT> {
+  total: number;
+}

@@ -1,12 +1,13 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Plan } from '../shared/interfaces';
+import { Distribution, Plan } from '../shared/interfaces';
 import { filterPlans } from '../helpers/filterPlans';
 import { circulatingSupplSway } from '../shared/constants';
 
 type OverviewProps = {
   swayLockedTotal: number,
   swayUsd: number,
-  plans: Plan[]
+  plans: Plan[],
+  distribution: Distribution
 }
 
 const defaultPlan = { apy: 0, planId: 0 } as Plan;
@@ -24,6 +25,11 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
 
   const getSupplyLocked = (amount: number): string => {
     return (amount / circulatingSupplSway * 100).toFixed(2);
+  }
+
+  const calcPercentage = (value: number, total: number): string | number => {
+    if (!total) return value;
+    return ((value / total) * 100).toFixed(0);
   }
 
   return (
@@ -60,13 +66,13 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
               </div>
               <div className="overview-item-channels col-5">
                 <div className="overview-item-channels-item">
-                  Instagram 91%
+                  Instagram {calcPercentage(props.distribution.Instagram, props.distribution.total)}%
                 </div>
                 {/*<div className="overview-item-channels-item">*/}
                 {/*  ENS 9%*/}
                 {/*</div>*/}
                 <div className="overview-item-channels-item">
-                  TikTok 9%
+                  TikTok {calcPercentage(props.distribution.TikTok, props.distribution.total)}%
                 </div>
                 {/*<div className="overview-item-channels-item">*/}
                 {/*  Wallet 1%*/}

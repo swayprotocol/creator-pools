@@ -11,8 +11,8 @@ import ReactGA from 'react-ga';
 import { getSwayPrice } from '../helpers/getSwayPrice';
 import Stakes from '../components/Stakes';
 import Modal from '../components/Modal';
-import { ModalData } from '../shared/interfaces';
-import { ethers, Contract } from 'ethers';
+import { Distribution, ModalData } from '../shared/interfaces';
+import { Contract, ethers } from 'ethers';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import WalletConnect from '../components/WalletConnect';
@@ -38,7 +38,12 @@ const initialAppState = {
   swayLockedTotal: 0,
   swayUsd: 0,
   swayUserTotal: 0,
-  plans: availablePlans
+  plans: availablePlans,
+  distribution: {
+    total: 0,
+    TikTok: 0,
+    Instagram: 0
+  } as Distribution
 };
 
 const planIds = [1, 2, 3, 4, 5, 6]; // hardcoded plans
@@ -115,6 +120,11 @@ const Home: NextPage = () => {
       let allCreators: any = {};
       let topPositions: any = {};
       let totalLocked = 0;
+      const distribution: Distribution = {
+        total: stakedData.length,
+        Instagram: 0,
+        TikTok: 0
+      };
       stakedData.forEach(event => {
         totalLocked += event.amount;
         allCreators[event.poolHandle] = {
@@ -125,6 +135,7 @@ const Home: NextPage = () => {
           ...event,
           amount: topPositions[event.poolHandle]?.amount + event.amount || event.amount
         }
+        distribution[event.social] += 1;
       });
 
       // sort by high to low
@@ -141,7 +152,8 @@ const Home: NextPage = () => {
         latestPools: latestPools,
         topPositions: topPositions,
         swayUsd: swayPriceUsd,
-        swayLockedTotal: totalLocked
+        swayLockedTotal: totalLocked,
+        distribution: distribution
       }));
     } catch (err) {
       setDataLoadError(true)
@@ -185,6 +197,7 @@ const Home: NextPage = () => {
         <Overview swayLockedTotal={appState.swayLockedTotal}
                   swayUsd={appState.swayUsd}
                   plans={appState.plans}
+                  distribution={appState.distribution}
         />
         <Pools top={appState.topPools.slice(0, 10)}
                latest={appState.latestPools.slice(0, 10)}
