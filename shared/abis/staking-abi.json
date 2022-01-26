@@ -137,6 +137,34 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint8",
+        "name": "_planId",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_lockMonths",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_apy",
+        "type": "uint16"
+      },
+      {
+        "internalType": "uint64",
+        "name": "_availableUntil",
+        "type": "uint64"
+      }
+    ],
+    "name": "changePlan",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "getCurrentTime",
     "outputs": [
