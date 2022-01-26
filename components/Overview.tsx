@@ -7,7 +7,8 @@ type OverviewProps = {
   swayLockedTotal: number,
   swayUsd: number,
   plans: Plan[],
-  distribution: Distribution
+  distribution: Distribution,
+  totalRewards: number
 }
 
 const defaultPlan = { apy: 0, planId: 0 } as Plan;
@@ -54,10 +55,10 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
                 <div className="overview-item-name">*promotional</div>
               )}
             </div>
-            {/*<div className="overview-item">
-              <div className="overview-item-name">TOTAL REWARDS PAID</div>
-              <div className="overview-item-value">0 SWAY</div>
-            </div>*/}
+            <div className="overview-item">
+              <div className="overview-item-name">TOTAL REWARDS EARNED</div>
+              <div className="overview-item-value">{props.totalRewards.toLocaleString('en-US', { maximumFractionDigits: 2 })} SWAY</div>
+            </div>
           </div>
           <div className="col-12 col-sm-4">
             <div className="row">

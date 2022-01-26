@@ -3,7 +3,9 @@ export interface StakedEvent {
   poolHandle: string;
   sender: string;
   date: Date;
-  social: StakedEventSocialType
+  social: StakedEventSocialType;
+  plan?: Plan;
+  unlockTime?: Date;
 }
 
 export enum PoolItemType {
@@ -67,6 +69,7 @@ export interface Plan {
   apy: number;
   availableUntil: Date;
   lockMonths: number;
+  createdAt?: Date;
 }
 
 type DistributionT = {

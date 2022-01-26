@@ -6,6 +6,8 @@ import { Channel, ChannelPosition, ModalData, ModalType, Plan, StakedEventSocial
 import { ethers } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
+import { getFarmedAmount } from '../../helpers/getFarmedAmount';
+import { getPlanById } from '../../helpers/getPlanById';
 
 type StakesType = {
   openModal: (modalData: ModalData) => any,
@@ -95,11 +97,14 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
     if (props.plans.length) {
       updatedChannels = activeChannels.map(channel => ({
         ...channel,
-        positions: channel.positions.map(position => ({
-          ...position,
-          plan: getPlanById(position.planId),
-          farmed: getFarmedAmount(position.amount, position.stakedAt, position.unlockTime, position.planId)
-        })),
+        positions: channel.positions.map(position => {
+          const positionPlan = getPlanById(position.planId, props.plans);
+          return {
+            ...position,
+            plan: positionPlan,
+            farmed: getFarmedAmount(position.amount, position.stakedAt, position.unlockTime, positionPlan)
+          }
+        }),
         averageAPR: calculateAverageAPR(channel.positions)
       }));
 
@@ -112,20 +117,9 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
     setChannels(updatedChannels);
   }
 
-  const getFarmedAmount = (amount: number, stakedAt: Date, unlockTime: Date, planId: number): number => {
-    const plan = getPlanById(planId);
-    // use new Date() until the staking is over
-    const maxDate = +unlockTime < +new Date() ? unlockTime : new Date();
-    return ((+maxDate - +stakedAt) / 1000 / 3600 / 24 / 365 * plan.apy / 100) * amount;
-  }
-
-  const getPlanById = (id: number): Plan => {
-    return props.plans.find(plan => plan.planId === id);
-  }
-
   const calculateAverageAPR = (positions: ChannelPosition[]): number => {
     // avgApr = (stake1size * apr1 + stake2size * apr2) / (stake1size + stake2size);
-    const averageAPR = positions.map(position => (position.amount * getPlanById(position.planId).apy)).reduce((a, b) => a + b, 0) /
+    const averageAPR = positions.map(position => (position.amount * getPlanById(position.planId, props.plans).apy)).reduce((a, b) => a + b, 0) /
       positions.map(position => position.amount).reduce((a, b) => a + b, 0);
 
     return Math.round(averageAPR * 100) / 100;
