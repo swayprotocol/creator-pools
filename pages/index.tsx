@@ -11,7 +11,7 @@ import ReactGA from 'react-ga';
 import { getSwayPrice } from '../helpers/getSwayPrice';
 import Stakes from '../components/Stakes';
 import Modal from '../components/Modal';
-import { Distribution, ModalData } from '../shared/interfaces';
+import { Distribution, ModalData, StakedEvent } from '../shared/interfaces';
 import { Contract, ethers } from 'ethers';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
@@ -24,6 +24,8 @@ import { getPlans } from '../helpers/getPlans';
 import InfoBar from '../components/InfoBar';
 import Newsletter from '../components/Newsletter/Newsletter';
 import { availablePlans } from '../shared/constants';
+import { getFarmedAmount } from '../helpers/getFarmedAmount';
+import { getMaxPlanByDate } from '../helpers/getMaxPlanByDate';
 
 declare global {
     interface Window {
@@ -43,7 +45,8 @@ const initialAppState = {
     total: 0,
     TikTok: 0,
     Instagram: 0
-  } as Distribution
+  } as Distribution,
+  totalRewardsFarmed: 0
 };
 
 const planIds = [1, 2, 3, 4, 5, 6]; // hardcoded plans
@@ -125,6 +128,8 @@ const Home: NextPage = () => {
         Instagram: 0,
         TikTok: 0
       };
+      let totalRewardsFarmed = 0;
+
       stakedData.forEach(event => {
         totalLocked += event.amount;
         allCreators[event.poolHandle] = {
@@ -136,6 +141,10 @@ const Home: NextPage = () => {
           amount: topPositions[event.poolHandle]?.amount + event.amount || event.amount
         }
         distribution[event.social] += 1;
+        // prefill plan and unlockTime for farmed calculations
+        event.plan = getMaxPlanByDate(event.date);
+        event.unlockTime = new Date(new Date(event.date).setMonth(new Date(event.date).getMonth() + event.plan.lockMonths));
+        totalRewardsFarmed += getFarmedAmount(event.amount, event.date, event.unlockTime, event.plan)
       });
 
       // sort by high to low
@@ -153,11 +162,28 @@ const Home: NextPage = () => {
         topPositions: topPositions,
         swayUsd: swayPriceUsd,
         swayLockedTotal: totalLocked,
-        distribution: distribution
+        distribution: distribution,
+        totalRewardsFarmed: totalRewardsFarmed
       }));
+      setTotalRewardsInterval(stakedData);
     } catch (err) {
       setDataLoadError(true)
     }
+  }
+
+  function setTotalRewardsInterval(stakedData: StakedEvent[]) {
+    // recalculate total farmed and update state
+    const reloadInterval = 7500;
+    setInterval(() => {
+      let totalRewardsFarmed = 0;
+      stakedData.forEach(event => {
+        totalRewardsFarmed += getFarmedAmount(event.amount, event.date, event.unlockTime, event.plan)
+      });
+      setAppState((prevState) => ({
+        ...prevState,
+        totalRewardsFarmed: totalRewardsFarmed
+      }));
+    }, reloadInterval);
   }
 
   async function getAvailablePlans() {
@@ -198,6 +224,7 @@ const Home: NextPage = () => {
                   swayUsd={appState.swayUsd}
                   plans={appState.plans}
                   distribution={appState.distribution}
+                  totalRewards={appState.totalRewardsFarmed}
         />
         <Pools top={appState.topPools.slice(0, 10)}
                latest={appState.latestPools.slice(0, 10)}
