@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Distribution, Plan } from '../shared/interfaces';
+import { DistributionT, Plan } from '../shared/interfaces';
 import { filterPlans } from '../helpers/filterPlans';
 import { circulatingSupplSway } from '../shared/constants';
 
@@ -7,8 +7,9 @@ type OverviewProps = {
   swayLockedTotal: number,
   swayUsd: number,
   plans: Plan[],
-  distribution: Distribution,
-  totalRewards: number
+  distribution: DistributionT,
+  totalRewards: number,
+  totalStakes: number
 }
 
 const defaultPlan = { apy: 0, planId: 0 } as Plan;
@@ -66,21 +67,11 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
                 CHANNEL DISTRIBUTION
               </div>
               <div className="overview-item-channels col-5">
-                <div className="overview-item-channels-item">
-                  Instagram {calcPercentage(props.distribution.Instagram, props.distribution.total)}%
-                </div>
-                {/*<div className="overview-item-channels-item">*/}
-                {/*  ENS 9%*/}
-                {/*</div>*/}
-                <div className="overview-item-channels-item">
-                  TikTok {calcPercentage(props.distribution.TikTok, props.distribution.total)}%
-                </div>
-                {/*<div className="overview-item-channels-item">*/}
-                {/*  Wallet 1%*/}
-                {/*</div>*/}
-                {/*<div className="overview-item-channels-item">*/}
-                {/*  Other {'<'} 1%*/}
-                {/*</div>*/}
+                {Object.keys(props.distribution).map((item,index) => (
+                  <div className="overview-item-channels-item" key={index}>
+                    {item} {calcPercentage(props.distribution[item], props.totalStakes)}%
+                  </div>
+                ))}
               </div>
             </div>
 
