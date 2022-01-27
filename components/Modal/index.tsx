@@ -8,6 +8,7 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { filterPlans } from '../../helpers/filterPlans';
 import { setSocialPrefix } from '../../helpers/getSocialType';
+import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 
 type ModalProps = {
   onClose: (reload?: boolean) => any,
@@ -186,17 +187,28 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
           {getSocialIcon(formData.social)}
         </div>
         <div className={styles.socialName}>
-          <strong>{formData.poolHandle}</strong>
+          <strong>
+            {formData.poolHandle.length > 30 ? getWalletShorthand(formData.poolHandle) : formData.poolHandle}
+          </strong>
         </div>
         <div className={styles.socialLink}>
-          {formData.social === StakedEventSocialType.IG ? (
-            <a href={`https://www.instagram.com/${formData.poolHandle}`} rel="noreferrer" target="_blank">visit</a>
-          ) : (
-            <a href={`https://www.tiktok.com/@${formData.poolHandle}`} rel="noreferrer" target="_blank">visit</a>
-          )}
+          <a href={getSocialUrl()} rel="noreferrer" target="_blank">visit</a>
         </div>
       </div>
     )
+  }
+
+  const getSocialUrl = (): string => {
+    switch (formData.social) {
+      case StakedEventSocialType.IG:
+        return `https://www.instagram.com/${formData.poolHandle}`;
+      case StakedEventSocialType.TT:
+        return `https://www.tiktok.com/@${formData.poolHandle}`;
+      case StakedEventSocialType.ENS:
+        return `https://app.ens.domains/name/${formData.poolHandle}`;
+      case StakedEventSocialType.W:
+        return `https://etherscan.io/address/${formData.poolHandle}`;
+    }
   }
 
   const getStakingMonthsDuration = (planId: string) => {
