@@ -207,7 +207,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
       case StakedEventSocialType.ENS:
         return `https://app.ens.domains/name/${formData.poolHandle}`;
       case StakedEventSocialType.W:
-        return `https://etherscan.io/address/${formData.poolHandle}`;
+        return `https://polygonscan.com/address/${formData.poolHandle}`;
     }
   }
 
