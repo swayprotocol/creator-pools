@@ -16,5 +16,18 @@ export const getSocialIcon = (social: StakedEventSocialType) => {
         <line x1="17.5" x2="17.5" y1="6.5" y2="6.5"/>
       </svg>
     )
+  } else if (social === StakedEventSocialType.ENS) {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72.52 80.95" width="22" height="18" fill="currentColor">
+        <path d="M15.43 20.74a9.75 9.75 0 0 1 3.18-3.5l22.34-15.6-22.89 37.85s-2-3.38-2.78-5.09a16.19 16.19 0 0 1 .15-13.66zM6.21 46.85a25.47 25.47 0 0 0 10 18.51l24.71 17.23s-15.46-22.28-28.5-44.45a22.39 22.39 0 0 1-2.62-7.56 12.1 12.1 0 0 1 0-3.63c-.34.63-1 1.92-1 1.92a29.35 29.35 0 0 0-2.67 8.55 52.28 52.28 0 0 0 .08 9.43zm63 3c-.8-1.71-2.78-5.09-2.78-5.09L43.58 82.59 65.92 67a9.75 9.75 0 0 0 3.18-3.5 16.19 16.19 0 0 0 .15-13.66zm9.07-12.46a25.47 25.47 0 0 0-10-18.51L43.61 1.64s15.45 22.28 28.5 44.45a22.39 22.39 0 0 1 2.61 7.56 12.1 12.1 0 0 1 0 3.63c.34-.63 1-1.92 1-1.92a29.35 29.35 0 0 0 2.67-8.55 52.28 52.28 0 0 0-.07-9.43z" transform="translate(-6 -1.64)"/>
+      </svg>
+    )
+  } else if (social === StakedEventSocialType.W) {
+    return (
+      <svg fill="currentColor" xmlns="http://www.w3.org/2000/svg"  viewBox="0 0 50 50" width="22" height="22">
+        <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="2.7" d="M12 24L26 2 40 24 26 32zM26 32L26 2"/>
+        <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="10" strokeWidth="2.7" d="M12 29L26 37 40 29 26 48zM26 48L26 37M12 24L26 18 40 24"/>
+      </svg>
+    )
   }
 }

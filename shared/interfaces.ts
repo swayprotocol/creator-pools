@@ -17,7 +17,8 @@ export enum PoolItemType {
 export enum StakedEventSocialType {
   IG = 'Instagram',
   TT = 'TikTok',
-  ENS = 'Ethereum Name Service',
+  ENS = 'ENS',
+  W = 'Wallet'
 }
 
 export enum ModalType {
@@ -72,10 +73,6 @@ export interface Plan {
   createdAt?: Date;
 }
 
-type DistributionT = {
+export type DistributionT = {
   [key in StakedEventSocialType]: number;
-}
-
-export interface Distribution extends Partial<DistributionT> {
-  total: number;
 }

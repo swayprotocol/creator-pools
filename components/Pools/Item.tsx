@@ -25,7 +25,9 @@ const Item: FC<Item> = (props: Item) => (
           <div className={styles.socialIcon}>
             {getSocialIcon(props.item.social)}
           </div>
-          <div className={styles.mainText}>{props.item.poolHandle}</div>
+          <div className={styles.mainText}>
+            {props.item.poolHandle.length > 30 ? getWalletShorthand(props.item.poolHandle) : props.item.poolHandle}
+          </div>
           {/*<div className={styles.mainText}>3/4</div>*/}
         </div>
       </div>

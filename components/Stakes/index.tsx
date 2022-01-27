@@ -8,6 +8,7 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { getFarmedAmount } from '../../helpers/getFarmedAmount';
 import { getPlanById } from '../../helpers/getPlanById';
+import { getSocialType } from '../../helpers/getSocialType';
 
 type StakesType = {
   openModal: (modalData: ModalData) => any,
@@ -51,7 +52,6 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
 
   function formatData(activeChannels: any[], poolsData: any[]) {
     const formatChannels: ChannelPosition[] = activeChannels.map((channel) => {
-      const socialIcon = channel.poolHandle.split('-')[0] === 'ig' ? StakedEventSocialType.IG : StakedEventSocialType.TT;
       const stakedAtDate = new Date(+ethers.utils.formatUnits(channel.stakedAt, 0) * 1000);
       const unlockTimeDate = new Date(+ethers.utils.formatUnits(channel.unlockTime, 0) * 1000);
       const amount = +ethers.utils.formatEther(channel.amount);
@@ -61,7 +61,7 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
         planId: channel.planId,
         plan: { apy: 0 } as Plan,
         poolHandle: channel.poolHandle,
-        social: socialIcon,
+        social: getSocialType(channel.poolHandle),
         stakedAt: stakedAtDate,
         unlockTime: unlockTimeDate,
         farmed: 0

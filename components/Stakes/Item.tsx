@@ -3,6 +3,7 @@ import styles from './Item.module.scss';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
 import { Channel, ModalData } from '../../shared/interfaces';
 import ItemPositions from './Positions';
+import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 
 type StakedItem = {
   openModal: (modalData: ModalData) => any,
@@ -22,7 +23,9 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
         <div className={styles.tableItem}>
           <div className="d-flex">
             <div className={styles.icon}>{getSocialIcon(props.channel.social)}</div>
-            <strong>{props.channel.poolHandle}</strong>
+            <strong>
+              {props.channel.poolHandle.length > 30 ? getWalletShorthand(props.channel.poolHandle) : props.channel.poolHandle}
+            </strong>
           </div>
         </div>
         <div className={styles.tableItem}>

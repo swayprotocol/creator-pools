@@ -11,7 +11,7 @@ import ReactGA from 'react-ga';
 import { getSwayPrice } from '../helpers/getSwayPrice';
 import Stakes from '../components/Stakes';
 import Modal from '../components/Modal';
-import { Distribution, ModalData, StakedEvent } from '../shared/interfaces';
+import { DistributionT, ModalData, StakedEvent } from '../shared/interfaces';
 import { Contract, ethers } from 'ethers';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
@@ -42,10 +42,11 @@ const initialAppState = {
   swayUserTotal: 0,
   plans: availablePlans,
   distribution: {
-    total: 0,
     TikTok: 0,
-    Instagram: 0
-  } as Distribution,
+    Instagram: 0,
+    ENS: 0,
+    Wallet: 0,
+  } as DistributionT,
   totalRewardsFarmed: 0
 };
 
@@ -123,10 +124,11 @@ const Home: NextPage = () => {
       let allCreators: any = {};
       let topPositions: any = {};
       let totalLocked = 0;
-      const distribution: Distribution = {
-        total: stakedData.length,
+      const distribution: DistributionT = {
         Instagram: 0,
-        TikTok: 0
+        TikTok: 0,
+        ENS: 0,
+        Wallet: 0
       };
       let totalRewardsFarmed = 0;
 
@@ -225,6 +227,7 @@ const Home: NextPage = () => {
                   plans={appState.plans}
                   distribution={appState.distribution}
                   totalRewards={appState.totalRewardsFarmed}
+                  totalStakes={appState.latestPools.length}
         />
         <Pools top={appState.topPools.slice(0, 10)}
                latest={appState.latestPools.slice(0, 10)}

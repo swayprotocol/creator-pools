@@ -7,6 +7,8 @@ import SWAY_TOKEN_ABI from '../../shared/abis/token-abi.json';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { filterPlans } from '../../helpers/filterPlans';
+import { setSocialPrefix } from '../../helpers/getSocialType';
+import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 
 type ModalProps = {
   onClose: (reload?: boolean) => any,
@@ -91,7 +93,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
       // convert amount to eth value
       stakeData.amount = ethers.utils.parseEther(stakeData.amount.toString(10));
       // set social prefix
-      stakeData.poolHandle = `${formData.social === StakedEventSocialType.IG ? 'ig-' : 'tt-'}` + stakeData.poolHandle;
+      stakeData.poolHandle = setSocialPrefix(formData.poolHandle, formData.social);
 
       try {
         // check allowance and give permissions
@@ -129,7 +131,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
       setLoading(true);
 
       // set social prefix
-      stakeData.poolHandle = `${formData.social === StakedEventSocialType.IG ? 'ig-' : 'tt-'}` + stakeData.poolHandle;
+      stakeData.poolHandle = setSocialPrefix(formData.poolHandle, formData.social);
 
       try {
         const stakeTx = await props.contract.unstake(stakeData.poolHandle, { gasLimit: 500000 });
@@ -185,17 +187,28 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
           {getSocialIcon(formData.social)}
         </div>
         <div className={styles.socialName}>
-          <strong>{formData.poolHandle}</strong>
+          <strong>
+            {formData.poolHandle.length > 30 ? getWalletShorthand(formData.poolHandle) : formData.poolHandle}
+          </strong>
         </div>
         <div className={styles.socialLink}>
-          {formData.social === StakedEventSocialType.IG ? (
-            <a href={`https://www.instagram.com/${formData.poolHandle}`} rel="noreferrer" target="_blank">visit</a>
-          ) : (
-            <a href={`https://www.tiktok.com/@${formData.poolHandle}`} rel="noreferrer" target="_blank">visit</a>
-          )}
+          <a href={getSocialUrl()} rel="noreferrer" target="_blank">visit</a>
         </div>
       </div>
     )
+  }
+
+  const getSocialUrl = (): string => {
+    switch (formData.social) {
+      case StakedEventSocialType.IG:
+        return `https://www.instagram.com/${formData.poolHandle}`;
+      case StakedEventSocialType.TT:
+        return `https://www.tiktok.com/@${formData.poolHandle}`;
+      case StakedEventSocialType.ENS:
+        return `https://app.ens.domains/name/${formData.poolHandle}`;
+      case StakedEventSocialType.W:
+        return `https://polygonscan.com/address/${formData.poolHandle}`;
+    }
   }
 
   const getStakingMonthsDuration = (planId: string) => {
@@ -223,6 +236,8 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                     {/*<option hidden={true} value={undefined}>Select</option>*/}
                     <option value={StakedEventSocialType.IG}>Instagram</option>
                     <option value={StakedEventSocialType.TT}>TikTok</option>
+                    <option value={StakedEventSocialType.ENS}>Ethereum Name Service</option>
+                    <option value={StakedEventSocialType.W}>Wallet</option>
                   </select>
                 </div>
               </div>
@@ -234,10 +249,10 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                          id="poolHandle"
                          placeholder="Enter identificator"
                          value={formData.poolHandle}
-                         onChange={(e) => handleChange('poolHandle', e.target.value)}
+                         onChange={(e) => handleChange('poolHandle', e.target.value.toLowerCase())}
                          disabled={disableEditing}/>
                 </div>
-                <div className={`${styles.midText} ${styles.lightText} col-sm-5`}>ie. leomessi, banksy ...</div>
+                <div className={`${styles.midText} ${styles.lightText} col-sm-5`}>ie. leomessi, banksy.eth ...</div>
                 {props.modalData.type === ModalType.STAKE && (
                   <div className="col-sm-9 offset-sm-3 mt-3">
                     <p className={`${styles.smallText} mb-0`}>NOTE: We don't validate entries, so make sure there are no typos.</p>
