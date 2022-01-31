@@ -14,7 +14,7 @@ type StakesType = {
   openModal: (modalData: ModalData) => any,
   contract: any,
   swayUsd: number,
-  swayUserTotal: number,
+  swayUserTotal: string,
   refreshData: number,
   plans: Plan[]
 }
@@ -143,7 +143,7 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
             <div className={styles.connectWrapper}>
               <div className={styles.swayAvailable}>
                 <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
-                <span>{props.swayUserTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                <span>{(+props.swayUserTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
               <button className="btn" onClick={() => props.openModal({ type: ModalType.STAKE })}>
                 Stake

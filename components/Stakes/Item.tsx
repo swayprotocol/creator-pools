@@ -9,7 +9,7 @@ type StakedItem = {
   openModal: (modalData: ModalData) => any,
   channel: Channel,
   swayUsd: number,
-  swayUserTotal: number,
+  swayUserTotal: string,
 }
 
 const StakedItem: FC<StakedItem> = (props: StakedItem) => {
