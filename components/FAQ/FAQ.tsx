@@ -51,7 +51,7 @@ const FAQ: FC<FAQProps> = (props: FAQProps) => {
                 <>
                   <p>Staking with a creator's pool means you support the creator and his work. You also become part of his subDAO (more to follow).</p>
                   <p>With every NFT sale, the creator sends a small portion of his revenue back to his pool as rewards.</p>
-                  <p className="mb-5">All pools and creators are also subject to additionally mined tokens through creator adoption mining mechnism. (more to follow)</p>
+                  <p className="mb-5">All pools and creators are also subject to additionally mined tokens through creator adoption mining mechanism. (more to follow)</p>
                 </>
               )}
             </div>
@@ -76,7 +76,7 @@ const FAQ: FC<FAQProps> = (props: FAQProps) => {
               {openQuestions.whyStake && (
                 <>
                   <p>Every pool needs to be claimed by the original creator in order to start paying out rewards. However, here's two reasons why you should start staking today.</p>
-                  <p>1) PROMOTIONAL PERIOD. The first generation staking pool offers a promotional APR of up to 444% instead of direct returns from NFT sales.</p>
+                  <p>1) PROMOTIONAL PERIOD. The first generation staking pool offers a promotional APR of up to 444% instead of direct returns from NFT sales. <a target="_blank" rel="noopener noreferrer" href="https://medium.com/cloutdotart/444-apr-promotion-alert-stake-in-the-new-creator-pools-a42e44f8ce4c">Read more</a>.</p>
                   <p>2) BEING FIRST PAYS OFF. The first position in the pool gets the most favorable terms and yields better rewards. You can sit at the top position forever. Might be a smart idea to be the first to stake with @garyvee or beeple.eth...?</p>
                   <p>If a creator doesn't claim his pool, you can simply withdraw your stake after the promotional period. Click on Unstake to begin the withdrawal process.</p>
                 </>
