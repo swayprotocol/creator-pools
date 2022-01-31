@@ -14,7 +14,7 @@ type ModalProps = {
   onClose: (reload?: boolean) => any,
   modalData: ModalData,
   contract: any,
-  swayUserTotal: number,
+  swayUserTotal: string,
   plans: Plan[]
 }
 
@@ -99,7 +99,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
         // check allowance and give permissions
         const tokenContract = new Contract(process.env.NEXT_PUBLIC_SWAY_TOKEN_ADDRESS, SWAY_TOKEN_ABI, library.getSigner());
         const allowance = await tokenContract.allowance(account, process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS);
-        if (BigNumber.from(allowance).lte(BigNumber.from(stakeData.amount))) {
+        if (allowance.lte(stakeData.amount)) {
           const allowUnlimited = BigNumber.from(2).pow(256).sub(1);
           const awaitTx = await tokenContract.approve(process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS, allowUnlimited, { gasLimit: 100000 });
           await awaitTx.wait();
@@ -156,10 +156,10 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     let formIsValid = true;
 
     if (props.modalData.type === ModalType.STAKE || props.modalData.type === ModalType.ADD) {
-      if (!data.amount || +data.amount > props.swayUserTotal) {
+      if (!data.amount || ethers.utils.parseEther(data.amount).gt(ethers.utils.parseEther(props.swayUserTotal))) {
         errors['amount'] = true;
         formIsValid = false;
-        if (+data.amount > props.swayUserTotal) {
+        if (data.amount && ethers.utils.parseEther(data.amount).gt(ethers.utils.parseEther(props.swayUserTotal))) {
           setCallError('Amount exceeds total available.')
         }
       }
@@ -287,15 +287,15 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                            className={`form-control ${formError['amount'] ? 'error' : ''}`}
                            id="amount"
                            min={1}
-                           step={0.00000000000001}
+                           step={0.000000000000000001}
                            value={formData.amount}
                            onChange={(e) => handleChange('amount', e.target.value)}
                            placeholder="1000"/>
-                    <div className="after-element" onClick={() => handleChange('amount', props.swayUserTotal.toString())}>MAX</div>
+                    <div className="after-element" onClick={() => handleChange('amount', props.swayUserTotal)}>MAX</div>
                   </div>
                   <div className={`${styles.swayAvailable} col-sm-5`}>
                     <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
-                    <span>{props.swayUserTotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} available</span>
+                    <span>{(+props.swayUserTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} available</span>
                   </div>
                 </div>
               )}

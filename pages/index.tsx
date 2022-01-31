@@ -39,7 +39,7 @@ const initialAppState = {
   topPositions: [],
   swayLockedTotal: 0,
   swayUsd: 0,
-  swayUserTotal: 0,
+  swayUserTotal: '0',
   plans: availablePlans,
   distribution: {
     TikTok: 0,
