@@ -49,8 +49,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
       }
     }
     if (props.modalData.type === ModalType.CLAIM) {
-      const longPoolhandle = setSocialPrefix(props.modalData.channel.poolHandle, props.modalData.channel.social);
-      calculateReward(longPoolhandle);
+      setReward(parseFloat(props.modalData.amount))
     }
   }, [props.modalData]);
 
@@ -167,12 +166,6 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     }
   }
 
-  const calculateReward = async (poolHandle) => {
-    const rewardBigNumber = await props.contract.calculateReward(poolHandle,account)
-    const reward = ethers.utils.formatEther(rewardBigNumber);
-    setReward(parseFloat(reward))
-  } 
-
   const handleChange = (type: string, value: string) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -273,7 +266,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                     <div className={`col-sm-5 ${styles.swayAvailable}`}> 
                       <div className={styles.socialIcon}></div>
                       <span>
-                        {reward.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {props.modalData.amount}
                       </span>
                     </div>
                   </div>
@@ -390,7 +383,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                         <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
                       </div>
                       <span>
-                        {reward.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {props.modalData.amount}
                       </span>
                     </div>
                   </div>
@@ -408,7 +401,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                     )}
                   </div>
                   <div className="col-sm-8 offset-sm-3">
-                    <p className={styles.smallText}>After clicking on Stake, Metamask will pop-up to complete the transaction.</p>
+                    <p className={styles.smallText}>After clicking on {props.modalData.type === ModalType.CLAIM ? 'Claim' : 'Stake'}, Metamask will pop-up to complete the transaction.</p>
                     {props.modalData.type === ModalType.ADD && (
                       <p className={styles.smallText}>NOTE: Adding additional positions with promotional APR extend the lockup duration of the total stake.</p>
                     )}

@@ -10,6 +10,7 @@ type StakedItem = {
   channel: Channel,
   swayUsd: number,
   swayUserTotal: string,
+  contract: any,
 }
 
 const StakedItem: FC<StakedItem> = (props: StakedItem) => {
@@ -52,6 +53,7 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
                        swayUsd={props.swayUsd}
                        swayUserTotal={props.swayUserTotal}
                        channel={props.channel}
+                       contract={props.contract}
         />
       )}
     </div>
