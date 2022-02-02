@@ -24,7 +24,8 @@ export enum StakedEventSocialType {
 export enum ModalType {
   STAKE = 'Stake',
   UNSTAKE = 'Unstake',
-  ADD = 'Stake additional position'
+  ADD = 'Stake additional position',
+  CLAIM = 'Claim'
 }
 
 export interface Channel {
