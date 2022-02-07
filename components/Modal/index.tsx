@@ -246,8 +246,8 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
             <button type="button" className="close-btn" onClick={handleCloseClick}>X</button>
           </div>
           <div className="modal-body">
-            {(props.modalData.type !== ModalType.CLAIM || reward !== 0) &&
-              (<form onSubmit={formSubmit}>
+            {(props.modalData.type !== ModalType.CLAIM || props.modalData.type === ModalType.CLAIM && reward) && (
+              <form onSubmit={formSubmit}>
                 {props.modalData.type === ModalType.CLAIM && (
                   <div className="form-group row">
                     <label htmlFor="social" className="col-sm-3">Farmed rewards</label>
@@ -265,49 +265,49 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                     </div>
                     <div className={`col-sm-5 ${styles.swayAvailable}`}> 
                       <div className={styles.socialIcon}></div>
-                      <span>
+                      <span className={styles.amount}>
                         {props.modalData.amount}
                       </span>
                     </div>
                   </div>
                 )}
                 {(props.modalData.type === ModalType.STAKE || props.modalData.type === ModalType.UNSTAKE || props.modalData.type === ModalType.ADD) && (
-                  <div className="form-group row">
-                    <label htmlFor="social" className="col-sm-3">Channel</label>
-                    <div className="col-sm-4">
-                      <select className="form-control"
-                              id="social"
-                              value={formData.social}
-                              onChange={(e) => handleChange('social', e.target.value)}
-                              disabled={disableEditing}>
-                        {/*<option hidden={true} value={undefined}>Select</option>*/}
-                        <option value={StakedEventSocialType.IG}>Instagram</option>
-                        <option value={StakedEventSocialType.TT}>TikTok</option>
-                        <option value={StakedEventSocialType.ENS}>Ethereum Name Service</option>
-                        <option value={StakedEventSocialType.W}>Wallet</option>
-                      </select>
-                    </div>
-                  </div>
-                )}
-                {(props.modalData.type === ModalType.STAKE || props.modalData.type === ModalType.UNSTAKE || props.modalData.type === ModalType.ADD) && (
-                  <div className="form-group row">
-                    <label htmlFor="poolHandle" className="col-sm-3">Identificator</label>
-                    <div className="col-sm-4">
-                      <input type="text"
-                            className={`form-control ${formError['poolHandle'] ? 'error' : ''}`}
-                            id="poolHandle"
-                            placeholder="Enter identificator"
-                            value={formData.poolHandle}
-                            onChange={(e) => handleChange('poolHandle', e.target.value.toLowerCase())}
-                            disabled={disableEditing}/>
-                    </div>
-                    <div className={`${styles.midText} ${styles.lightText} col-sm-5`}>ie. leomessi, banksy.eth ...</div>
-                    {props.modalData.type === ModalType.STAKE && (
-                      <div className="col-sm-9 offset-sm-3 mt-3">
-                        <p className={`${styles.smallText} mb-0`}>NOTE: We don't validate entries, so make sure there are no typos.</p>
+                  <>
+                    <div className="form-group row">
+                      <label htmlFor="social" className="col-sm-3">Channel</label>
+                      <div className="col-sm-4">
+                        <select className="form-control"
+                                id="social"
+                                value={formData.social}
+                                onChange={(e) => handleChange('social', e.target.value)}
+                                disabled={disableEditing}>
+                          {/*<option hidden={true} value={undefined}>Select</option>*/}
+                          <option value={StakedEventSocialType.IG}>Instagram</option>
+                          <option value={StakedEventSocialType.TT}>TikTok</option>
+                          <option value={StakedEventSocialType.ENS}>Ethereum Name Service</option>
+                          <option value={StakedEventSocialType.W}>Wallet</option>
+                        </select>
                       </div>
-                    )}
-                  </div>
+                    </div>
+                    <div className="form-group row">
+                      <label htmlFor="poolHandle" className="col-sm-3">Identificator</label>
+                      <div className="col-sm-4">
+                        <input type="text"
+                              className={`form-control ${formError['poolHandle'] ? 'error' : ''}`}
+                              id="poolHandle"
+                              placeholder="Enter identificator"
+                              value={formData.poolHandle}
+                              onChange={(e) => handleChange('poolHandle', e.target.value.toLowerCase())}
+                              disabled={disableEditing}/>
+                      </div>
+                      <div className={`${styles.midText} ${styles.lightText} col-sm-5`}>ie. leomessi, banksy.eth ...</div>
+                      {props.modalData.type === ModalType.STAKE && (
+                        <div className="col-sm-9 offset-sm-3 mt-3">
+                          <p className={`${styles.smallText} mb-0`}>NOTE: We don't validate entries, so make sure there are no typos.</p>
+                        </div>
+                      )}
+                    </div>
+                  </>
                 )}
                 {(props.modalData.type === ModalType.UNSTAKE || props.modalData.type === ModalType.ADD) && (
                   <div className="form-group row">
@@ -332,40 +332,40 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                   </div>
                 )}
                 {(props.modalData.type === ModalType.STAKE || props.modalData.type === ModalType.ADD) && (
-                  <div className="form-group row">
-                    <label htmlFor="amount" className="col-sm-3">Amount</label>
-                    <div className="col-sm-4 extended-input">
-                      <input type="number"
-                            className={`form-control ${formError['amount'] ? 'error' : ''}`}
-                            id="amount"
-                            min={1}
-                            step={0.000000000000000001}
-                            value={formData.amount}
-                            onChange={(e) => handleChange('amount', e.target.value)}
-                            placeholder="1000"/>
-                      <div className="after-element" onClick={() => handleChange('amount', props.swayUserTotal)}>MAX</div>
+                  <>
+                    <div className="form-group row">
+                      <label htmlFor="amount" className="col-sm-3">Amount</label>
+                      <div className="col-sm-4 extended-input">
+                        <input type="number"
+                              className={`form-control ${formError['amount'] ? 'error' : ''}`}
+                              id="amount"
+                              min={1}
+                              step={0.000000000000000001}
+                              value={formData.amount}
+                              onChange={(e) => handleChange('amount', e.target.value)}
+                              placeholder="1000"/>
+                        <div className="after-element" onClick={() => handleChange('amount', props.swayUserTotal)}>MAX</div>
+                      </div>
+                      <div className={`${styles.swayAvailable} col-sm-5`}>
+                        <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
+                        <span>{(+props.swayUserTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} available</span>
+                      </div>
                     </div>
-                    <div className={`${styles.swayAvailable} col-sm-5`}>
-                      <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
-                      <span>{(+props.swayUserTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} available</span>
+                    <div className="form-group row">
+                      <label htmlFor="planId" className="col-sm-3">Promotional APR</label>
+                      <div className="col-sm-3">
+                        <select className={`form-control ${formError['planId'] ? 'error' : ''}`}
+                                id="planId"
+                                value={formData.planId}
+                                onChange={(e) => handleChange('planId', e.target.value)}>
+                          {activePlans.map(plan => (
+                            <option value={plan.planId} key={plan.planId}>{plan.apy}%</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className={`${styles.midText} col-sm-6`}>Position will be locked for {getStakingMonthsDuration(formData.planId)} months.</div>
                     </div>
-                  </div>
-                )}
-                {(props.modalData.type === ModalType.STAKE || props.modalData.type === ModalType.ADD) && (
-                  <div className="form-group row">
-                    <label htmlFor="planId" className="col-sm-3">Promotional APR</label>
-                    <div className="col-sm-3">
-                      <select className={`form-control ${formError['planId'] ? 'error' : ''}`}
-                              id="planId"
-                              value={formData.planId}
-                              onChange={(e) => handleChange('planId', e.target.value)}>
-                        {activePlans.map(plan => (
-                          <option value={plan.planId} key={plan.planId}>{plan.apy}%</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className={`${styles.midText} col-sm-6`}>Position will be locked for {getStakingMonthsDuration(formData.planId)} months.</div>
-                  </div>
+                  </>
                 )}
                 {props.modalData.type === ModalType.CLAIM && ( 
                   <div className="form-group row">
@@ -379,9 +379,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                       </div>
                     </div>
                     <div className={`col-sm-5 ${styles.swayAvailable}`}> 
-                      <div className={styles.socialIcon}>
-                        <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
-                      </div>
+                      <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>   
                       <span>
                         {props.modalData.amount}
                       </span>
@@ -390,7 +388,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                 )}
                 <div className="row">
                   <div className="col-sm-4 offset-sm-3 mb-3 mt-2">
-                    {(props.modalData.type !== ModalType.UNSTAKE && props.modalData.type !== ModalType.CLAIM) && (
+                    {(props.modalData.type === ModalType.STAKE || props.modalData.type === ModalType.ADD) && (
                       <button type="submit" className={`btn btn-primary ${loading ? 'btn-pending' : ''}`}><span/>Stake</button>
                     )}
                     {props.modalData.type === ModalType.UNSTAKE && (

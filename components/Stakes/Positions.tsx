@@ -36,10 +36,13 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
   }
 
   const calculateReward = async (poolHandle) => {
-    const rewardBigNumber = await props.contract.calculateReward(poolHandle,account)
-    const reward = ethers.utils.formatEther(rewardBigNumber);
-    setReward(parseFloat(reward))
-    console.log(reward)
+    try {
+      const rewardBigNumber = await props.contract.calculateReward(poolHandle,account)
+      const reward = ethers.utils.formatEther(rewardBigNumber);
+      setReward(parseFloat(reward));  
+    } catch (error) {
+      console.error(error);
+    }
   } 
 
   return (
@@ -109,7 +112,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
         </div>
         <div className={styles.tableItem}>
           {(reward !== 0) ? (
-              <button className="btn btn-secondary" onClick={() => openStakeModal(ModalType.CLAIM, reward.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }))}>
+              <button className="btn btn-secondary" onClick={() => openStakeModal(ModalType.CLAIM, reward.toString())}>
                 Claim
               </button>
             ) : (
