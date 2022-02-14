@@ -24,8 +24,8 @@ export function getContract(stakingContract: Contract): any {
     getPoolQueue: async (poolHandle: string) => {
       return stakingContract.getPoolQueue(poolHandle);
     },
-    getReward: async (addr: string) => {
-      return stakingContract.getReward(addr);
+    getReward: async (poolHandle: string) => {
+      return stakingContract.getReward(poolHandle);
     },
     getUserQueue: async (address: string) => {
       return stakingContract.getUserQueue(address);

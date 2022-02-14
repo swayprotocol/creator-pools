@@ -1,7 +1,11 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
+import { useWeb3React } from '@web3-react/core';
+import { Web3Provider } from '@ethersproject/providers';
+import { ethers } from 'ethers';
+import Moment from 'react-moment';
 import styles from './Positions.module.scss';
 import { Channel, ChannelPosition, ModalData, ModalType } from '../../shared/interfaces';
-import Moment from 'react-moment';
+import { setSocialPrefix } from '../../helpers/getSocialType';
 
 type ItemPositions = {
   openModal: (modalData: ModalData) => any
@@ -9,10 +13,19 @@ type ItemPositions = {
   swayUsd: number,
   swayUserTotal: string,
   channel: Channel,
+  contract: any
 }
 
 const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
   const [amountToStake, setAmountToStake] = useState('');
+  const [reward, setReward] = useState(0);
+
+  const { account } = useWeb3React<Web3Provider>();
+
+  useEffect(() => {
+    const longPoolhandle = setSocialPrefix(props.channel.poolHandle,props.channel.social);
+    calculateReward(longPoolhandle)
+  }, [])
 
   const openStakeModal = (type: ModalType, amount: string) => {
     props.openModal({
@@ -21,6 +34,16 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
       amount: amount
     })
   }
+
+  const calculateReward = async (poolHandle) => {
+    try {
+      const rewardBigNumber = await props.contract.calculateReward(poolHandle,account)
+      const reward = ethers.utils.formatEther(rewardBigNumber);
+      setReward(parseFloat(reward));  
+    } catch (error) {
+      console.error(error);
+    }
+  } 
 
   return (
     <div className={styles.positionWrapper}>
@@ -88,9 +111,15 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
           </button>
         </div>
         <div className={styles.tableItem}>
-          <a target="_blank" rel="noopener noreferrer" href="https://quickswap.exchange/#/swap?outputCurrency=0x262b8aa7542004f023b0eb02bc6b96350a02b728">
-            Get SWAY
-          </a>
+          {(reward !== 0) ? (
+              <button className="btn btn-secondary" onClick={() => openStakeModal(ModalType.CLAIM, reward.toString())}>
+                Claim
+              </button>
+            ) : (
+              <a target="_blank" rel="noopener noreferrer" href="https://quickswap.exchange/#/swap?outputCurrency=0x262b8aa7542004f023b0eb02bc6b96350a02b728">
+                Get SWAY
+              </a>
+          )}
         </div>
       </div>
 

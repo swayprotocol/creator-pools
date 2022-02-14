@@ -193,6 +193,7 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
                       channel={channelItem}
                       swayUsd={props.swayUsd}
                       swayUserTotal={props.swayUserTotal}
+                      contract={props.contract}
                 />
               )) : (
                 <div className={styles.inactive}>
