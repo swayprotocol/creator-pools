@@ -23,8 +23,9 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
   const { account } = useWeb3React<Web3Provider>();
 
   useEffect(() => {
-    const longPoolhandle = setSocialPrefix(props.channel.poolHandle,props.channel.social);
-    calculateReward(longPoolhandle)
+    const longPoolhandle = setSocialPrefix(props.channel.poolHandle, props.channel.social);
+    calculateReward(longPoolhandle);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const openStakeModal = (type: ModalType, amount: string) => {
@@ -39,11 +40,11 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
     try {
       const rewardBigNumber = await props.contract.calculateReward(poolHandle,account)
       const reward = ethers.utils.formatEther(rewardBigNumber);
-      setReward(parseFloat(reward));  
+      setReward(parseFloat(reward));
     } catch (error) {
       console.error(error);
     }
-  } 
+  }
 
   return (
     <div className={styles.positionWrapper}>
