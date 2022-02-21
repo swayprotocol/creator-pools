@@ -23,8 +23,9 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
   const { account } = useWeb3React<Web3Provider>();
 
   useEffect(() => {
-    const longPoolhandle = setSocialPrefix(props.channel.poolHandle,props.channel.social);
-    calculateReward(longPoolhandle)
+    const longPoolhandle = setSocialPrefix(props.channel.poolHandle, props.channel.social);
+    calculateReward(longPoolhandle);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const openStakeModal = (type: ModalType, amount: string) => {
