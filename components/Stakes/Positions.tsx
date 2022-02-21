@@ -39,11 +39,11 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
     try {
       const rewardBigNumber = await props.contract.calculateReward(poolHandle,account)
       const reward = ethers.utils.formatEther(rewardBigNumber);
-      setReward(parseFloat(reward));  
+      setReward(parseFloat(reward));
     } catch (error) {
       console.error(error);
     }
-  } 
+  }
 
   return (
     <div className={styles.positionWrapper}>

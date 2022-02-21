@@ -263,7 +263,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                         </div>
                       </div>
                     </div>
-                    <div className={`col-sm-5 ${styles.swayAvailable}`}> 
+                    <div className={`col-sm-5 ${styles.swayAvailable}`}>
                       <div className={styles.socialIcon}></div>
                       <span className={styles.amount}>
                         {props.modalData.amount}
@@ -367,7 +367,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                     </div>
                   </>
                 )}
-                {props.modalData.type === ModalType.CLAIM && ( 
+                {props.modalData.type === ModalType.CLAIM && (
                   <div className="form-group row">
                     <div className="col-sm-4 offset-sm-3">
                       <div className={styles.socialLinkWrapper}>
@@ -378,8 +378,8 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                         </div>
                       </div>
                     </div>
-                    <div className={`col-sm-5 ${styles.swayAvailable}`}> 
-                      <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>   
+                    <div className={`col-sm-5 ${styles.swayAvailable}`}>
+                      <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
                       <span>
                         {props.modalData.amount}
                       </span>

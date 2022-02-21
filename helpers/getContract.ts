@@ -1,8 +1,4 @@
-import { JsonRpcProvider } from '@ethersproject/providers';
-import { Contract, ethers } from 'ethers';
-import STAKING_ABI from '../shared/abis/staking-abi.json';
-import { Event } from '@ethersproject/contracts';
-import { StakedEvent, StakedEventSocialType } from '../shared/interfaces';
+import { Contract } from 'ethers';
 
 export function getContract(stakingContract: Contract): any {
   return {
