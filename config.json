@@ -1,5 +1,6 @@
 {
   "site": {
+    "author": "Sway Social",
     "heading": "Creator Pools",
     "sub_heading": "v0.2 Beta",
     "meta": {
@@ -10,7 +11,28 @@
       "favicon": "/assets/favicon.png",
       "apple_touch_icon": "/assets/favicon-137x137.png"
     },
-    "powered_by": true
+    "powered_by": true,
+    "footer": {
+      "links": [
+        {
+          "title": "https://swaysocial.org",
+          "url": "https://swaysocial.org"
+        },
+        {
+          "title": "Github",
+          "url": "https://github.com/swayprotocol"
+        },
+        {
+          "title": "Telegram",
+          "url": "https://t.me/swayprotocol"
+        },
+        {
+          "title": "Twitter",
+          "url": "https://twitter.com/swayprotocol"
+        }
+      ],
+      "colophon": "The website is maintained by 721Labs Technology Group Limited. The website is maintained solely to enable analytical insight and allow interaction with the Sway Social protocol. An indication of any creator on this website does not implicate that a particular creator is anyhow affiliated with 721Labs or that 721Labs has anyhow endorsed such creator. Neither does an indication of any creator on the website suggest that a particular creator has endorsed 721Labs, any project of 721Labs or Sway Social."
+    }
   },
   "theme": {
     "font_url": "https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500&display=swap",
