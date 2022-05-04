@@ -13,10 +13,7 @@ const Layout = ({ children }: Props) => {
   return (
     <>
       <Head>
-        <meta httpEquiv="content-type" content="text/html; charset=UTF-8"/>
         <meta name="viewport" content="initial-scale=1.0, width=device-width"/>
-        <link rel="icon" href={site.meta.favicon} type="image/png"/>
-        <link rel="apple-touch-icon" sizes="137x137" href={site.meta.apple_touch_icon}/>
 
         <title>{site.meta.title}</title>
         <meta name="description" content={site.meta.description}/>

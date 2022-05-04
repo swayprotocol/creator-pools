@@ -10,7 +10,7 @@
     }
   },
   "theme": {
-    "main_color": ""
+    "font_url": "https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500&display=swap"
   },
   "token": {
     "stakingContract": "",
