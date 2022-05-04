@@ -1,17 +1,17 @@
 import React, { FC } from 'react';
 
 type BarType = {
-  swayUsd: number,
-  swayLockedTotal: number,
+  tokenUsd: number,
+  tokenLockedTotal: number,
 }
 
 const InfoBar: FC<BarType> = (props: BarType) => (
   <div className="info-bar">
-    {(props.swayUsd * props.swayLockedTotal > 0) && (
+    {(props.tokenUsd * props.tokenLockedTotal > 0) && (
       <div className="container">
         <div className="row">
           <p>
-            <strong>{(props.swayLockedTotal).toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong> TVL
+            <strong>{(props.tokenLockedTotal).toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong> TVL
             - total SWAY locked in creator pools
           </p>
         </div>

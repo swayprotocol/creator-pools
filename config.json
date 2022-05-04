@@ -75,8 +75,8 @@
   "token": {
     "stakingContract": "",
     "tokenContract": "",
-    "ticker": "SWAY"
+    "ticker": "SWAY",
+    "coingecko_coin_ticker": "sway-social"
   },
-  "coingecko_ticker": "sway-social",
   "supportedChainIds": [137, 80001]
 }

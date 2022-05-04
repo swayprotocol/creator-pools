@@ -8,7 +8,7 @@ import Moment from 'react-moment';
 type Item = {
   index: number,
   item: StakedEvent,
-  swayUsd: number,
+  tokenUsd: number,
   type: PoolItemType,
   openModal: (modalData: ModalData) => any,
 }
@@ -36,7 +36,7 @@ const Item: FC<Item> = (props: Item) => (
           <div className={styles.mainText}>{props.item.amount.toLocaleString('en-US', {maximumFractionDigits: 0})}</div>
         )}
         {props.type === PoolItemType.TOP && (
-          <div className={styles.mainText}>${(props.item.amount * props.swayUsd).toLocaleString('en-US', {maximumFractionDigits: 0})}</div>
+          <div className={styles.mainText}>${(props.item.amount * props.tokenUsd).toLocaleString('en-US', {maximumFractionDigits: 0})}</div>
         )}
       </div>
     </div>

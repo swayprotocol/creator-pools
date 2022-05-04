@@ -14,7 +14,7 @@ type ModalProps = {
   onClose: (reload?: boolean) => any,
   modalData: ModalData,
   contract: any,
-  swayUserTotal: string,
+  tokenUserTotal: string,
   plans: Plan[]
 }
 
@@ -178,10 +178,10 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     let formIsValid = true;
 
     if (props.modalData.type === ModalType.STAKE || props.modalData.type === ModalType.ADD) {
-      if (!data.amount || ethers.utils.parseEther(data.amount).gt(ethers.utils.parseEther(props.swayUserTotal))) {
+      if (!data.amount || ethers.utils.parseEther(data.amount).gt(ethers.utils.parseEther(props.tokenUserTotal))) {
         errors['amount'] = true;
         formIsValid = false;
-        if (data.amount && ethers.utils.parseEther(data.amount).gt(ethers.utils.parseEther(props.swayUserTotal))) {
+        if (data.amount && ethers.utils.parseEther(data.amount).gt(ethers.utils.parseEther(props.tokenUserTotal))) {
           setCallError('Amount exceeds total available.')
         }
       }
@@ -263,7 +263,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                         </div>
                       </div>
                     </div>
-                    <div className={`col-sm-5 ${styles.swayAvailable}`}>
+                    <div className={`col-sm-5 ${styles.tokenAvailable}`}>
                       <div className={styles.socialIcon}></div>
                       <span className={styles.amount}>
                         {props.modalData.amount}
@@ -312,7 +312,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                 {(props.modalData.type === ModalType.UNSTAKE || props.modalData.type === ModalType.ADD) && (
                   <div className="form-group row">
                     <label className="col-sm-3">Staked</label>
-                    <div className={`${styles.swayAvailable} col-sm-9`}>
+                    <div className={`${styles.tokenAvailable} col-sm-9`}>
                       <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
                       <span>{props.modalData.channel?.userTotalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         {' '}staked in {props.modalData.channel?.positions.length} positions</span>
@@ -344,11 +344,11 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                               value={formData.amount}
                               onChange={(e) => handleChange('amount', e.target.value)}
                               placeholder="1000"/>
-                        <div className="after-element" onClick={() => handleChange('amount', props.swayUserTotal)}>MAX</div>
+                        <div className="after-element" onClick={() => handleChange('amount', props.tokenUserTotal)}>MAX</div>
                       </div>
-                      <div className={`${styles.swayAvailable} col-sm-5`}>
+                      <div className={`${styles.tokenAvailable} col-sm-5`}>
                         <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
-                        <span>{(+props.swayUserTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} available</span>
+                        <span>{(+props.tokenUserTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} available</span>
                       </div>
                     </div>
                     <div className="form-group row">
@@ -378,7 +378,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                         </div>
                       </div>
                     </div>
-                    <div className={`col-sm-5 ${styles.swayAvailable}`}>
+                    <div className={`col-sm-5 ${styles.tokenAvailable}`}>
                       <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
                       <span>
                         {props.modalData.amount}

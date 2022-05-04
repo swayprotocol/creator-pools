@@ -8,7 +8,7 @@ import Pools from '../components/Pools';
 import { getStakedData } from '../helpers/getStakedData';
 import { getContract } from '../helpers/getContract';
 import ReactGA from 'react-ga';
-import { getSwayPrice } from '../helpers/getSwayPrice';
+import { getTokenPrice } from '../helpers/getTokenPrice';
 import Stakes from '../components/Stakes';
 import Modal from '../components/Modal';
 import { DistributionT, ModalData, StakedEvent } from '../shared/interfaces';
@@ -26,6 +26,7 @@ import Newsletter from '../components/Newsletter/Newsletter';
 import { availablePlans } from '../shared/constants';
 import { getFarmedAmount } from '../helpers/getFarmedAmount';
 import { getMaxPlanByDate } from '../helpers/getMaxPlanByDate';
+import { useConfig } from '../contexts/Config';
 
 declare global {
   interface Window {
@@ -37,9 +38,9 @@ const initialAppState = {
   topPools: [],
   latestPools: [],
   topPositions: [],
-  swayLockedTotal: 0,
-  swayUsd: 0,
-  swayUserTotal: '0',
+  tokenLockedTotal: 0,
+  tokenUsd: 0,
+  tokenUserTotal: '0',
   plans: availablePlans,
   distribution: {
     TikTok: 0,
@@ -67,6 +68,7 @@ const Home: NextPage = () => {
   const [modalData, setModalData] = useState<ModalData>({});
   const [dataLoadError, setDataLoadError] = useState(false);
   const [refreshData, doRefreshData] = useState(0);
+  const { token } = useConfig();
 
   useEffect(() => {
     initialiseAnalytics();
@@ -77,11 +79,11 @@ const Home: NextPage = () => {
   }, []);
 
   useEffect(() => {
-    async function getUserSwayAmount() {
+    async function getUserTokenAmount() {
       const availableTokens = await getUserAvailableTokens(walletId);
-      setAppState(prevState => ({...prevState, swayUserTotal: availableTokens}))
+      setAppState(prevState => ({...prevState, tokenUserTotal: availableTokens}))
     }
-    if (walletId) getUserSwayAmount();
+    if (walletId) getUserTokenAmount();
   }, [walletId, refreshData]);
 
   async function loadWallet(connector: AbstractConnector, library: Web3Provider) {
@@ -117,7 +119,7 @@ const Home: NextPage = () => {
   async function getGeneralData() {
     try {
       const stakedData = await getStakedData();
-      const swayPriceUsd = await getSwayPrice();
+      const tokenPriceUsd = await getTokenPrice(token.coingecko_coin_ticker);
       getAvailablePlans();
 
       // calculate data for different columns
@@ -162,8 +164,8 @@ const Home: NextPage = () => {
         topPools: allCreators,
         latestPools: latestPools,
         topPositions: topPositions,
-        swayUsd: swayPriceUsd,
-        swayLockedTotal: totalLocked,
+        tokenUsd: tokenPriceUsd,
+        tokenLockedTotal: totalLocked,
         distribution: distribution,
         totalRewardsFarmed: totalRewardsFarmed
       }));
@@ -218,21 +220,21 @@ const Home: NextPage = () => {
           appLoaded={!loading}
           loadWallet={loadWallet}
         />
-        <InfoBar swayUsd={appState.swayUsd}
-                 swayLockedTotal={appState.swayLockedTotal}
+        <InfoBar tokenUsd={appState.tokenUsd}
+                 tokenLockedTotal={appState.tokenLockedTotal}
         />
         <Header disconnectWallet={resetAccount}/>
         {walletLoaded && (
           <Stakes openModal={openStakeModal}
                   contract={contractData}
-                  swayUsd={appState.swayUsd}
-                  swayUserTotal={appState.swayUserTotal}
+                  tokenUsd={appState.tokenUsd}
+                  tokenUserTotal={appState.tokenUserTotal}
                   refreshData={refreshData}
                   plans={appState.plans}
           />
         )}
-        <Overview swayLockedTotal={appState.swayLockedTotal}
-                  swayUsd={appState.swayUsd}
+        <Overview tokenLockedTotal={appState.tokenLockedTotal}
+                  tokenUsd={appState.tokenUsd}
                   plans={appState.plans}
                   distribution={appState.distribution}
                   totalRewards={appState.totalRewardsFarmed}
@@ -241,7 +243,7 @@ const Home: NextPage = () => {
         <Pools top={appState.topPools.slice(0, 10)}
                latest={appState.latestPools.slice(0, 10)}
                positions={appState.topPositions.slice(0, 10)}
-               swayUsd={appState.swayUsd}
+               tokenUsd={appState.tokenUsd}
                loadError={dataLoadError}
                openModal={openStakeModal}
         />
@@ -249,7 +251,7 @@ const Home: NextPage = () => {
         {showModal === 'STAKE' && (
           <Modal modalData={modalData}
                  contract={contractData}
-                 swayUserTotal={appState.swayUserTotal}
+                 tokenUserTotal={appState.tokenUserTotal}
                  onClose={(reload) => {
                    setShowModal('');
                    setModalData({});

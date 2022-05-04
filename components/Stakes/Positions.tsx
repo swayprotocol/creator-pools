@@ -10,8 +10,8 @@ import { setSocialPrefix } from '../../helpers/getSocialType';
 type ItemPositions = {
   openModal: (modalData: ModalData) => any
   positions: ChannelPosition[],
-  swayUsd: number,
-  swayUserTotal: string,
+  tokenUsd: number,
+  tokenUserTotal: string,
   channel: Channel,
   contract: any
 }
@@ -103,7 +103,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
                    step={0.000000000000000001}
                    value={amountToStake}
                    onChange={(e) => setAmountToStake(e.target.value)}/>
-            <div className="after-element" onClick={() => setAmountToStake(props.swayUserTotal)}>MAX</div>
+            <div className="after-element" onClick={() => setAmountToStake(props.tokenUserTotal)}>MAX</div>
           </div>
         </div>
         <div className={styles.tableItem}>

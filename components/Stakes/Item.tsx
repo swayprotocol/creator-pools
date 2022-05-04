@@ -8,8 +8,8 @@ import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 type StakedItem = {
   openModal: (modalData: ModalData) => any,
   channel: Channel,
-  swayUsd: number,
-  swayUserTotal: string,
+  tokenUsd: number,
+  tokenUserTotal: string,
   contract: any,
 }
 
@@ -34,7 +34,7 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
         </div>
         <div className={styles.tableItem}>
           <strong>{props.channel.userTotalAmount.toLocaleString('en-US', { maximumFractionDigits: 0 })} SWAY</strong>
-          <div>{(props.channel.userTotalAmount * props.swayUsd).toLocaleString('en-US', { maximumFractionDigits: 0 })} USD</div>
+          <div>{(props.channel.userTotalAmount * props.tokenUsd).toLocaleString('en-US', { maximumFractionDigits: 0 })} USD</div>
         </div>
         <div className={styles.tableItem}>
           {props.channel.averageAPR}%
@@ -50,8 +50,8 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
       {isExpanded && (
         <ItemPositions openModal={props.openModal}
                        positions={props.channel.positions}
-                       swayUsd={props.swayUsd}
-                       swayUserTotal={props.swayUserTotal}
+                       tokenUsd={props.tokenUsd}
+                       tokenUserTotal={props.tokenUserTotal}
                        channel={props.channel}
                        contract={props.contract}
         />

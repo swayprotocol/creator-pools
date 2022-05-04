@@ -13,8 +13,8 @@ import { getSocialType } from '../../helpers/getSocialType';
 type StakesType = {
   openModal: (modalData: ModalData) => any,
   contract: any,
-  swayUsd: number,
-  swayUserTotal: string,
+  tokenUsd: number,
+  tokenUserTotal: string,
   refreshData: number,
   plans: Plan[]
 }
@@ -141,9 +141,9 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
               </div>
             </div>
             <div className={styles.connectWrapper}>
-              <div className={styles.swayAvailable}>
+              <div className={styles.tokenAvailable}>
                 <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
-                <span>{(+props.swayUserTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                <span>{(+props.tokenUserTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
               <button className="btn" onClick={() => props.openModal({ type: ModalType.STAKE })}>
                 Stake
@@ -191,8 +191,8 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
                 <Item key={i}
                       openModal={props.openModal}
                       channel={channelItem}
-                      swayUsd={props.swayUsd}
-                      swayUserTotal={props.swayUserTotal}
+                      tokenUsd={props.tokenUsd}
+                      tokenUserTotal={props.tokenUserTotal}
                       contract={props.contract}
                 />
               )) : (

@@ -4,8 +4,8 @@ import { filterPlans } from '../helpers/filterPlans';
 import { circulatingSupplSway } from '../shared/constants';
 
 type OverviewProps = {
-  swayLockedTotal: number,
-  swayUsd: number,
+  tokenLockedTotal: number,
+  tokenUsd: number,
   plans: Plan[],
   distribution: DistributionT,
   totalRewards: number,
@@ -43,10 +43,10 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
             <div className="overview-item">
               <div className="overview-item-name">TVL</div>
               <div className="overview-item-value">
-                {props.swayLockedTotal.toLocaleString('en-US', { maximumFractionDigits: 0 })} SWAY
+                {props.tokenLockedTotal.toLocaleString('en-US', { maximumFractionDigits: 0 })} SWAY
               </div>
               <div className="overview-item-name">
-                {getSupplyLocked(props.swayLockedTotal)}% of circulating supply
+                {getSupplyLocked(props.tokenLockedTotal)}% of circulating supply
               </div>
             </div>
             <div className="overview-item">
