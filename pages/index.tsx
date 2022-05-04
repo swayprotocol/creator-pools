@@ -28,9 +28,9 @@ import { getFarmedAmount } from '../helpers/getFarmedAmount';
 import { getMaxPlanByDate } from '../helpers/getMaxPlanByDate';
 
 declare global {
-    interface Window {
-        ethereum: any;
-    }
+  interface Window {
+    ethereum: any;
+  }
 }
 
 const initialAppState = {
@@ -190,6 +190,15 @@ const Home: NextPage = () => {
 
   async function getAvailablePlans() {
     const plans = await getPlans(planIds);
+
+    // add a planId: 0, that doesn't expire, but it's unstakeable
+    plans.push({
+      planId: 0,
+      apy: 0,
+      availableUntil: new Date('2099-12-31'),
+      lockMonths: 0,
+      createdAt: new Date('1970-01-01')
+    })
 
     setAppState((prevState) => ({
       ...prevState,
