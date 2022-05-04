@@ -44,12 +44,8 @@
 }
 
 .activeStakes {
-  background-color: #f2fcff;
+  background-color: var(--active-stakes-bg);
   padding: 40px 40px 40px 50px;
-
-  :global(.dark) & {
-    background-color: #1f2426;
-  }
 }
 
 .tableHead {

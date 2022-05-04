@@ -1,5 +1,7 @@
 {
   "site": {
+    "heading": "Creator Pools",
+    "sub_heading": "v0.2 Beta",
     "meta": {
       "title": "Creator Pools | Sway Social",
       "description": "Creator pools introduce a new metaverse-ready social capital concept by staking with your creators and sharing in their success.",
@@ -7,10 +9,28 @@
       "og_image": "/assets/og-image.jpg",
       "favicon": "/assets/favicon.png",
       "apple_touch_icon": "/assets/favicon-137x137.png"
-    }
+    },
+    "powered_by": true
   },
   "theme": {
-    "font_url": "https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500&display=swap"
+    "font_url": "https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500&display=swap",
+    "main": {
+      "--bs-body-color": "#232323",
+      "--bs-body-bg": "#fff",
+      "--text-dark": "#000",
+      "--bs-body-font-family": "Chakra Petch",
+      "--active-stakes-bg": "#f2fcff",
+      "--active-stakes-item-bg": "#e6f8fb"
+    },
+    "alt": {
+      "--bs-body-color": "#fff",
+      "--bs-body-bg": "#0c0c0c",
+      "--text-dark": "#eeeeee",
+      "--bs-body-font-family": "Chakra Petch",
+      "--active-stakes-bg": "#1f2426",
+      "--active-stakes-item-bg": "#242d30"
+    },
+    "hasAltTheme": true
   },
   "token": {
     "stakingContract": "",
