@@ -73,13 +73,33 @@
     "hasAltTheme": true
   },
   "token": {
-    "stakingContract": "",
-    "tokenContract": "",
+    "contract": "0x6868D94721886d590CCfD5BE186FC0098a24ceC6",
     "ticker": "SWAY",
     "logo": "/assets/favicon-137x137.png",
     "coingecko_coin_ticker": "sway-social",
     "exchange_url": "https://quickswap.exchange/#/swap?outputCurrency=0x262b8aa7542004f023b0eb02bc6b96350a02b728",
     "circulating_supply": 10917462
+  },
+  "staking": {
+    "contract": "0x2938c3D6F64cAE349c81CaEaE5bd0cDc5715921a",
+    "channels": [
+      {
+        "name": "Instagram",
+        "prefix": "ig"
+      },
+      {
+        "name": "TikTok",
+        "prefix": "tt"
+      },
+      {
+        "name": "Ethereum Name Service",
+        "prefix": "ens"
+      },
+      {
+        "name": "Wallet",
+        "prefix": "w"
+      }
+    ]
   },
   "supportedChainIds": [137, 80001]
 }

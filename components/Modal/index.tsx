@@ -8,7 +8,7 @@ import SWAY_TOKEN_ABI from '../../shared/abis/token-abi.json';
 import { filterPlans } from '../../helpers/filterPlans';
 import { setSocialPrefix } from '../../helpers/getSocialType';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
-import { ModalData, ModalType, Plan, StakeData, StakedEventSocialType } from '../../shared/interfaces';
+import { ModalData, ModalType, Plan, StakeData } from '../../shared/interfaces';
 import { useConfig } from '../../contexts/Config';
 
 type ModalProps = {
@@ -20,7 +20,7 @@ type ModalProps = {
 }
 
 const initialModalData: StakeData = {
-  social: StakedEventSocialType.IG,
+  social: '',
   poolHandle: '',
   amount: '',
   planId: ''
@@ -36,13 +36,13 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
   const [reward, setReward] = useState(0);
 
   const { library, account } = useWeb3React<Web3Provider>();
-  const { token } = useConfig();
+  const { token, staking } = useConfig();
 
   useEffect(() => {
     if (props.modalData.channel) {
       setFormData((prevState) => ({
         ...prevState,
-        social: props.modalData.channel.social || StakedEventSocialType.IG,
+        social: props.modalData.channel.social,
         poolHandle: props.modalData.channel.poolHandle || '',
         amount: props.modalData.amount || '',
       }));
@@ -52,6 +52,12 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     }
     if (props.modalData.type === ModalType.CLAIM) {
       setReward(parseFloat(props.modalData.amount))
+    }
+    if (!props.modalData.channel?.social) {
+      setFormData((prevState) => ({
+        ...prevState,
+        social: staking.channels[0].prefix
+      }));
     }
   }, [props.modalData]);
 
@@ -224,13 +230,13 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
 
   const getSocialUrl = (): string => {
     switch (formData.social) {
-      case StakedEventSocialType.IG:
+      case'ig':
         return `https://www.instagram.com/${formData.poolHandle}`;
-      case StakedEventSocialType.TT:
+      case 'tt':
         return `https://www.tiktok.com/@${formData.poolHandle}`;
-      case StakedEventSocialType.ENS:
+      case 'ens':
         return `https://app.ens.domains/name/${formData.poolHandle}`;
-      case StakedEventSocialType.W:
+      case 'w':
         return `https://polygonscan.com/address/${formData.poolHandle}`;
     }
   }
@@ -283,11 +289,9 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                                 value={formData.social}
                                 onChange={(e) => handleChange('social', e.target.value)}
                                 disabled={disableEditing}>
-                          {/*<option hidden={true} value={undefined}>Select</option>*/}
-                          <option value={StakedEventSocialType.IG}>Instagram</option>
-                          <option value={StakedEventSocialType.TT}>TikTok</option>
-                          <option value={StakedEventSocialType.ENS}>Ethereum Name Service</option>
-                          <option value={StakedEventSocialType.W}>Wallet</option>
+                          {staking.channels.map(channel => (
+                            <option value={channel.prefix} key={channel.prefix}>{channel.name}</option>
+                          ))}
                         </select>
                       </div>
                     </div>

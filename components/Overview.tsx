@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import { DistributionT, Plan } from '../shared/interfaces';
+import { IChannelDistributionItem, Plan } from '../shared/interfaces';
 import { filterPlans } from '../helpers/filterPlans';
 import { useConfig } from '../contexts/Config';
 
@@ -7,7 +7,7 @@ type OverviewProps = {
   tokenLockedTotal: number,
   tokenUsd: number,
   plans: Plan[],
-  distribution: DistributionT,
+  distribution: IChannelDistributionItem[],
   totalRewards: number,
   totalStakes: number
 }
@@ -53,9 +53,6 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
             <div className="overview-item">
               <div className="overview-item-name">APY MAX</div>
               <div className="overview-item-value">{maxPlan.apy}%</div>
-              {maxPlan.planId === 3 && (
-                <div className="overview-item-name">*promotional</div>
-              )}
             </div>
             <div className="overview-item">
               <div className="overview-item-name">TOTAL REWARDS EARNED</div>
@@ -68,9 +65,9 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
                 CHANNEL DISTRIBUTION
               </div>
               <div className="overview-item-channels col-5">
-                {Object.keys(props.distribution).map((item,index) => (
-                  <div className="overview-item-channels-item" key={index}>
-                    {item} {calcPercentage(props.distribution[item], props.totalStakes)}%
+                {props.distribution.map((item) => (
+                  <div className="overview-item-channels-item" key={item.prefix}>
+                    {item.name} {calcPercentage(item.count, props.totalStakes)}%
                   </div>
                 ))}
               </div>

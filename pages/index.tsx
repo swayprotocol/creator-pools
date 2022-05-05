@@ -11,7 +11,7 @@ import ReactGA from 'react-ga';
 import { getTokenPrice } from '../helpers/getTokenPrice';
 import Stakes from '../components/Stakes';
 import Modal from '../components/Modal';
-import { DistributionT, ModalData, StakedEvent } from '../shared/interfaces';
+import { IChannelDistributionItem, ModalData, StakedEvent } from '../shared/interfaces';
 import { Contract, ethers } from 'ethers';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
@@ -42,12 +42,7 @@ const initialAppState = {
   tokenUsd: 0,
   tokenUserTotal: '0',
   plans: availablePlans,
-  distribution: {
-    TikTok: 0,
-    Instagram: 0,
-    ENS: 0,
-    Wallet: 0,
-  } as DistributionT,
+  distribution: [],
   totalRewardsFarmed: 0
 };
 
@@ -68,7 +63,7 @@ const Home: NextPage = () => {
   const [modalData, setModalData] = useState<ModalData>({});
   const [dataLoadError, setDataLoadError] = useState(false);
   const [refreshData, doRefreshData] = useState(0);
-  const { token } = useConfig();
+  const { token, staking } = useConfig();
 
   useEffect(() => {
     initialiseAnalytics();
@@ -126,12 +121,7 @@ const Home: NextPage = () => {
       let allCreators: any = {};
       let topPositions: any = {};
       let totalLocked = 0;
-      const distribution: DistributionT = {
-        Instagram: 0,
-        TikTok: 0,
-        ENS: 0,
-        Wallet: 0
-      };
+      const distribution = staking.channels.map(channel => ({ ...channel, count: 0 }));
       let totalRewardsFarmed = 0;
 
       stakedData.forEach(event => {
@@ -144,7 +134,8 @@ const Home: NextPage = () => {
           ...event,
           amount: topPositions[event.poolHandle]?.amount + event.amount || event.amount
         }
-        distribution[event.social] += 1;
+        const distributionItem = distribution.find(channel => channel.prefix === event.social) as IChannelDistributionItem;
+        distributionItem.count += 1;
         // prefill plan and unlockTime for farmed calculations
         event.plan = getMaxPlanByDate(event.date);
         event.unlockTime = new Date(new Date(event.date).setMonth(new Date(event.date).getMonth() + event.plan.lockMonths));
@@ -156,6 +147,7 @@ const Home: NextPage = () => {
       allCreators.sort((a: { amount: number; }, b: { amount: number; }) => (b.amount - a.amount));
       topPositions = Object.values(topPositions);
       topPositions.sort((a: { amount: number; }, b: { amount: number; }) => (b.amount - a.amount));
+      distribution.sort((a: { count: number; }, b: { count: number; }) => (b.count - a.count));
 
       const latestPools = stakedData.sort((a, b) => { return b.date.getTime() - a.date.getTime() });
       // set state

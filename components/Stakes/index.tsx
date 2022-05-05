@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import styles from './index.module.scss';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import Item from './Item';
-import { Channel, ChannelPosition, ModalData, ModalType, Plan, StakedEventSocialType } from '../../shared/interfaces';
+import { Channel, ChannelPosition, ModalData, ModalType, Plan } from '../../shared/interfaces';
 import { ethers } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
