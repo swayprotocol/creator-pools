@@ -73,7 +73,7 @@
     "hasAltTheme": true
   },
   "token": {
-    "contract": "0x6868D94721886d590CCfD5BE186FC0098a24ceC6",
+    "address": "0x262b8aa7542004f023b0eb02bc6b96350a02b728",
     "ticker": "SWAY",
     "logo": "/assets/favicon-137x137.png",
     "coingecko_coin_ticker": "sway-social",
@@ -81,7 +81,7 @@
     "circulating_supply": 10917462
   },
   "staking": {
-    "contract": "0x2938c3D6F64cAE349c81CaEaE5bd0cDc5715921a",
+    "address": "0x538Bdc460119Bb95F8ee51E46D22Eee5e7a6cC4e",
     "channels": [
       {
         "name": "Instagram",
@@ -101,5 +101,9 @@
       }
     ]
   },
-  "supportedChainIds": [137, 80001]
+  "network": {
+    "web3_provider_url": "https://polygon-mainnet.g.alchemy.com/v2/6kkkcccOr3uJck57CliIomFbHt9eSYu5",
+    "supportedChainIds": [137, 80001]
+  },
+  "ga_tracking_id": "UA-196047216-2"
 }

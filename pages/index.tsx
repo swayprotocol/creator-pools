@@ -48,9 +48,8 @@ const initialAppState = {
 
 const planIds = [1, 2, 3, 4, 5, 6]; // hardcoded plans
 
-function initialiseAnalytics() {
-  const TRACKING_ID = process.env.NEXT_PUBLIC_GA_TRACKING_ID;
-  ReactGA.initialize(TRACKING_ID);
+function initialiseAnalytics(trackingId: string) {
+  ReactGA.initialize(trackingId);
 }
 
 const Home: NextPage = () => {
@@ -63,10 +62,10 @@ const Home: NextPage = () => {
   const [modalData, setModalData] = useState<ModalData>({});
   const [dataLoadError, setDataLoadError] = useState(false);
   const [refreshData, doRefreshData] = useState(0);
-  const { token, staking } = useConfig();
+  const { token, staking, network, ga_tracking_id } = useConfig();
 
   useEffect(() => {
-    initialiseAnalytics();
+    initialiseAnalytics(ga_tracking_id);
     ReactGA.pageview('/index');
     getGeneralData();
     setLoading(false);
@@ -75,7 +74,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     async function getUserTokenAmount() {
-      const availableTokens = await getUserAvailableTokens(walletId);
+      const availableTokens = await getUserAvailableTokens(walletId, token.address, network.web3_provider_url);
       setAppState(prevState => ({...prevState, tokenUserTotal: availableTokens}))
     }
     if (walletId) getUserTokenAmount();
@@ -92,7 +91,7 @@ const Home: NextPage = () => {
     })
 
     let signer = library.getSigner();
-    const stakingContract = new ethers.Contract(process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+    const stakingContract = new ethers.Contract(staking.address, STAKING_ABI, signer);
     const walletId = await connector.getAccount();
 
     setContractData(getContract(stakingContract));
@@ -113,7 +112,7 @@ const Home: NextPage = () => {
 
   async function getGeneralData() {
     try {
-      const stakedData = await getStakedData();
+      const stakedData = await getStakedData(staking.address, network.web3_provider_url);
       const tokenPriceUsd = await getTokenPrice(token.coingecko_coin_ticker);
       getAvailablePlans();
 
@@ -183,7 +182,7 @@ const Home: NextPage = () => {
   }
 
   async function getAvailablePlans() {
-    const plans = await getPlans(planIds);
+    const plans = await getPlans(planIds, staking.address, network.web3_provider_url);
 
     // add a planId: 0, that doesn't expire, but it's unstakeable
     plans.push({

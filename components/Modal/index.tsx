@@ -4,7 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import styles from './Modal.module.scss';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
-import SWAY_TOKEN_ABI from '../../shared/abis/token-abi.json';
+import TOKEN_ABI from '../../shared/abis/token-abi.json';
 import { filterPlans } from '../../helpers/filterPlans';
 import { setSocialPrefix } from '../../helpers/getSocialType';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
@@ -112,11 +112,11 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
 
       try {
         // check allowance and give permissions
-        const tokenContract = new Contract(process.env.NEXT_PUBLIC_SWAY_TOKEN_ADDRESS, SWAY_TOKEN_ABI, library.getSigner());
-        const allowance = await tokenContract.allowance(account, process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS);
+        const tokenContract = new Contract(token.address, TOKEN_ABI, library.getSigner());
+        const allowance = await tokenContract.allowance(account, staking.address);
         if (allowance.lte(stakeData.amount)) {
           const allowUnlimited = BigNumber.from(2).pow(256).sub(1);
-          const awaitTx = await tokenContract.approve(process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS, allowUnlimited, { gasLimit: 100000 });
+          const awaitTx = await tokenContract.approve(staking.address, allowUnlimited, { gasLimit: 100000 });
           await awaitTx.wait();
         }
 
