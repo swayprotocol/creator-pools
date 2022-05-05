@@ -5,9 +5,6 @@ const supportedChainIds = [137, 80001];
 
 export const injected = new InjectedConnector({ supportedChainIds });
 
-// hardcoding SWAY circulating supply
-export const circulatingSupplSway = 10917462;
-
 // hardcoding available and past staking plans
 export const availablePlans: Plan[] = [
   {

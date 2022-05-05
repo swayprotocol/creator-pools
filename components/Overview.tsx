@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { DistributionT, Plan } from '../shared/interfaces';
 import { filterPlans } from '../helpers/filterPlans';
-import { circulatingSupplSway } from '../shared/constants';
+import { useConfig } from '../contexts/Config';
 
 type OverviewProps = {
   tokenLockedTotal: number,
@@ -16,6 +16,7 @@ const defaultPlan = { apy: 0, planId: 0 } as Plan;
 
 const Overview: FC<OverviewProps> = (props: OverviewProps) => {
   const [maxPlan, setMaxPlan] = useState<Plan>(defaultPlan);
+  const { token } = useConfig();
 
   useEffect(() => {
     if (props.plans.length) {
@@ -26,7 +27,7 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
   }, [props.plans.length]);
 
   const getSupplyLocked = (amount: number): string => {
-    return (amount / circulatingSupplSway * 100).toFixed(2);
+    return (amount / token.circulating_supply * 100).toFixed(2);
   }
 
   const calcPercentage = (value: number, total: number): string | number => {
@@ -43,7 +44,7 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
             <div className="overview-item">
               <div className="overview-item-name">TVL</div>
               <div className="overview-item-value">
-                {props.tokenLockedTotal.toLocaleString('en-US', { maximumFractionDigits: 0 })} SWAY
+                {props.tokenLockedTotal.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token.ticker}
               </div>
               <div className="overview-item-name">
                 {getSupplyLocked(props.tokenLockedTotal)}% of circulating supply
@@ -58,7 +59,7 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
             </div>
             <div className="overview-item">
               <div className="overview-item-name">TOTAL REWARDS EARNED</div>
-              <div className="overview-item-value">{props.totalRewards.toLocaleString('en-US', { maximumFractionDigits: 2 })} SWAY</div>
+              <div className="overview-item-value">{props.totalRewards.toLocaleString('en-US', { maximumFractionDigits: 2 })} {token.ticker}</div>
             </div>
           </div>
           <div className="col-12 col-sm-4">

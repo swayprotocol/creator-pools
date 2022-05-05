@@ -76,7 +76,10 @@
     "stakingContract": "",
     "tokenContract": "",
     "ticker": "SWAY",
-    "coingecko_coin_ticker": "sway-social"
+    "logo": "/assets/favicon-137x137.png",
+    "coingecko_coin_ticker": "sway-social",
+    "exchange_url": "https://quickswap.exchange/#/swap?outputCurrency=0x262b8aa7542004f023b0eb02bc6b96350a02b728",
+    "circulating_supply": 10917462
   },
   "supportedChainIds": [137, 80001]
 }

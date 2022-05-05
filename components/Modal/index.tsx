@@ -9,6 +9,7 @@ import { filterPlans } from '../../helpers/filterPlans';
 import { setSocialPrefix } from '../../helpers/getSocialType';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import { ModalData, ModalType, Plan, StakeData, StakedEventSocialType } from '../../shared/interfaces';
+import { useConfig } from '../../contexts/Config';
 
 type ModalProps = {
   onClose: (reload?: boolean) => any,
@@ -35,6 +36,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
   const [reward, setReward] = useState(0);
 
   const { library, account } = useWeb3React<Web3Provider>();
+  const { token } = useConfig();
 
   useEffect(() => {
     if (props.modalData.channel) {
@@ -313,7 +315,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                   <div className="form-group row">
                     <label className="col-sm-3">Staked</label>
                     <div className={`${styles.tokenAvailable} col-sm-9`}>
-                      <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
+                      <img src={token.logo} alt={token.ticker} height="20"/>
                       <span>{props.modalData.channel?.userTotalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         {' '}staked in {props.modalData.channel?.positions.length} positions</span>
                     </div>
@@ -347,7 +349,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                         <div className="after-element" onClick={() => handleChange('amount', props.tokenUserTotal)}>MAX</div>
                       </div>
                       <div className={`${styles.tokenAvailable} col-sm-5`}>
-                        <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
+                        <img src={token.logo} alt={token.ticker} height="20"/>
                         <span>{(+props.tokenUserTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} available</span>
                       </div>
                     </div>
@@ -379,7 +381,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                       </div>
                     </div>
                     <div className={`col-sm-5 ${styles.tokenAvailable}`}>
-                      <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
+                      <img src={token.logo} alt={token.ticker} height="20"/>
                       <span>
                         {props.modalData.amount}
                       </span>
@@ -411,7 +413,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
               </form>
             )}
             {(props.modalData.type === ModalType.CLAIM && reward === 0) && (
-              <p>You currently have no SWAY rewards available for claiming.</p>
+              <p>You currently have no {token.ticker} rewards available for claiming.</p>
             )}
           </div>
         </div>
