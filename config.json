@@ -13,6 +13,7 @@
     },
     "show_powered_by": true,
     "show_newsletter": true,
+    "show_tvl_bar": true,
     "faq": [
       {
         "title": "What are creator pools?",

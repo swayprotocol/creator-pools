@@ -201,9 +201,11 @@ const Home: NextPage = () => {
           appLoaded={!loading}
           loadWallet={loadWallet}
         />
-        <InfoBar tokenUsd={appState.tokenUsd}
-                 tokenLockedTotal={appState.tokenLockedTotal}
-        />
+        {site.show_tvl_bar && (
+          <InfoBar tokenUsd={appState.tokenUsd}
+                   tokenLockedTotal={appState.tokenLockedTotal}
+          />
+        )}
         <Header disconnectWallet={resetAccount}/>
         {walletLoaded && (
           <Stakes openModal={openStakeModal}
