@@ -62,7 +62,7 @@ const Home: NextPage = () => {
   const [modalData, setModalData] = useState<ModalData>({});
   const [dataLoadError, setDataLoadError] = useState(false);
   const [refreshData, doRefreshData] = useState(0);
-  const { token, staking, network, ga_tracking_id } = useConfig();
+  const { token, staking, network, ga_tracking_id, site } = useConfig();
 
   useEffect(() => {
     initialiseAnalytics(ga_tracking_id);
@@ -248,7 +248,9 @@ const Home: NextPage = () => {
                    setModalData({});
                    if (reload) {
                      doRefreshData((prev) => prev + 1);
-                     setShowModal('NEWSLETTER');
+                     if (site.show_newsletter) {
+                       setShowModal('NEWSLETTER');
+                     }
                    }
                  }}
                  plans={appState.plans}

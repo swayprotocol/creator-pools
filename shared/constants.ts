@@ -1,9 +1,8 @@
 import { InjectedConnector } from '@web3-react/injected-connector';
 import { Plan } from './interfaces';
+import globalConfigData from '../config.json';
 
-const supportedChainIds = [137, 80001];
-
-export const injected = new InjectedConnector({ supportedChainIds });
+export const injected = new InjectedConnector({ supportedChainIds: globalConfigData.network.supported_chain_ids });
 
 // hardcoding available and past staking plans
 export const availablePlans: Plan[] = [

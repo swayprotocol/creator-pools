@@ -72,18 +72,12 @@ const Header = (props: HeaderProps) => {
               <span>{site.sub_heading}</span>
             </div>
             <div className="d-flex">
-              <div className={styles.networkItem}>
-                <div className={`${styles.networkItemStatus} ${styles.active}`}/>
-                <div className={styles.networkItemName}>Polygon</div>
-              </div>
-              <div className={styles.networkItem}>
-                <div className={styles.networkItemStatus}/>
-                <div className={styles.networkItemName}>BSC</div>
-              </div>
-              <div className={styles.networkItem}>
-                <div className={styles.networkItemStatus}/>
-                <div className={styles.networkItemName}>Polkadot</div>
-              </div>
+              {site.networks.map(network => (
+                <div className={styles.networkItem} key={network.name}>
+                  <div className={`${styles.networkItemStatus} ${network.active ? styles.active : ''}`}/>
+                  <div className={styles.networkItemName}>{network.name}</div>
+                </div>
+              ))}
               {theme.hasAltTheme && (
                 <div className={styles.themeButtonWrapper}>
                   <button className={styles.themeButton} onClick={() => setTheme(colorTheme)}>
@@ -97,7 +91,7 @@ const Header = (props: HeaderProps) => {
           </div>
 
           <div className={`${styles.topSection} my-1`}>
-            {site.powered_by && (
+            {site.show_powered_by && (
               <div className="d-flex align-items-center">
                 <h5 className="d-inline-block me-2 mb-0">Powered by</h5>
                 <a href="https://swaysocial.org/" rel="noreferrer" target="_blank" title="Sway Social">

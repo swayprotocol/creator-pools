@@ -11,7 +11,8 @@
       "favicon": "/assets/favicon.png",
       "apple_touch_icon": "/assets/favicon-137x137.png"
     },
-    "powered_by": true,
+    "show_powered_by": true,
+    "show_newsletter": true,
     "faq": [
       {
         "title": "What are creator pools?",
@@ -50,7 +51,21 @@
         }
       ],
       "colophon": "The website is maintained by 721Labs Technology Group Limited. The website is maintained solely to enable analytical insight and allow interaction with the Sway Social protocol. An indication of any creator on this website does not implicate that a particular creator is anyhow affiliated with 721Labs or that 721Labs has anyhow endorsed such creator. Neither does an indication of any creator on the website suggest that a particular creator has endorsed 721Labs, any project of 721Labs or Sway Social."
-    }
+    },
+    "networks": [
+      {
+        "name": "Polygon",
+        "active": true
+      },
+      {
+        "name": "BSC",
+        "active": false
+      },
+      {
+        "name": "Polkadot",
+        "active": false
+      }
+    ]
   },
   "theme": {
     "font_url": "https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500&display=swap",
@@ -103,7 +118,7 @@
   },
   "network": {
     "web3_provider_url": "https://polygon-mainnet.g.alchemy.com/v2/6kkkcccOr3uJck57CliIomFbHt9eSYu5",
-    "supportedChainIds": [137, 80001]
+    "supported_chain_ids": [137, 80001]
   },
   "ga_tracking_id": "UA-196047216-2"
 }
