@@ -11,7 +11,7 @@ import ReactGA from 'react-ga';
 import { getTokenPrice } from '../helpers/getTokenPrice';
 import Stakes from '../components/Stakes';
 import Modal from '../components/Modal';
-import { IChannelDistributionItem, ModalData, StakedEvent } from '../shared/interfaces';
+import { IChannelDistributionItem, ModalData, Plan, StakedEvent } from '../shared/interfaces';
 import { Contract, ethers } from 'ethers';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
@@ -23,7 +23,6 @@ import { getUserAvailableTokens } from '../helpers/getUserAvailableTokens';
 import { getPlans } from '../helpers/getPlans';
 import InfoBar from '../components/InfoBar';
 import Newsletter from '../components/Newsletter/Newsletter';
-import { availablePlans } from '../shared/constants';
 import { getFarmedAmount } from '../helpers/getFarmedAmount';
 import { getMaxPlanByDate } from '../helpers/getMaxPlanByDate';
 import { useConfig } from '../contexts/Config';
@@ -41,12 +40,10 @@ const initialAppState = {
   tokenLockedTotal: 0,
   tokenUsd: 0,
   tokenUserTotal: '0',
-  plans: availablePlans,
+  plans: [],
   distribution: [],
   totalRewardsFarmed: 0
 };
-
-const planIds = [1, 2, 3, 4, 5, 6]; // hardcoded plans
 
 function initialiseAnalytics(trackingId: string) {
   ReactGA.initialize(trackingId);
@@ -114,7 +111,7 @@ const Home: NextPage = () => {
     try {
       const stakedData = await getStakedData(staking.address, network.web3_provider_url);
       const tokenPriceUsd = await getTokenPrice(token.coingecko_coin_ticker);
-      getAvailablePlans();
+      const plans = await getAvailablePlans();
 
       // calculate data for different columns
       let allCreators: any = {};
@@ -136,7 +133,7 @@ const Home: NextPage = () => {
         const distributionItem = distribution.find(channel => channel.prefix === event.social) as IChannelDistributionItem;
         distributionItem.count += 1;
         // prefill plan and unlockTime for farmed calculations
-        event.plan = getMaxPlanByDate(event.date);
+        event.plan = getMaxPlanByDate(event.date, plans);
         event.unlockTime = new Date(new Date(event.date).setMonth(new Date(event.date).getMonth() + event.plan.lockMonths));
         totalRewardsFarmed += getFarmedAmount(event.amount, event.date, event.unlockTime, event.plan)
       });
@@ -181,22 +178,15 @@ const Home: NextPage = () => {
     }, reloadInterval);
   }
 
-  async function getAvailablePlans() {
-    const plans = await getPlans(planIds, staking.address, network.web3_provider_url);
-
-    // add a planId: 0, that doesn't expire, but it's unstakeable
-    plans.push({
-      planId: 0,
-      apy: 0,
-      availableUntil: new Date('2099-12-31'),
-      lockMonths: 0,
-      createdAt: new Date('1970-01-01')
-    })
+  async function getAvailablePlans(): Promise<Plan[]> {
+    const plans = await getPlans(staking.plan_ids, staking.address, network.web3_provider_url);
 
     setAppState((prevState) => ({
       ...prevState,
       plans: plans
     }));
+
+    return plans;
   }
 
   function openStakeModal(modalData: ModalData) {
