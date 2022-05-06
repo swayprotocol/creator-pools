@@ -1,6 +1,6 @@
-# Sway Social - Creator Pools
+# Creator Pools
 
-Landing page for Creator Pools by Sway Social
+Landing page for Creator Pools, build with Next.js and Web3.
 
 ## Getting Started
 
@@ -19,6 +19,8 @@ npm run dev
 # or
 yarn dev
 ```
+
+Edit `config.json` to configure global site settings.
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
