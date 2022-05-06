@@ -1,12 +1,16 @@
 {
   "projects": {
-    "default": "swaysocial-one-pager"
+    "default": "swaysocial-one-pager",
+    "swaysocial-one-pager": "swaysocial-one-pager"
   },
   "targets": {
     "swaysocial-one-pager": {
       "hosting": {
         "creatorpools": [
           "creatorpools"
+        ],
+        "creatorpools-staging": [
+          "creatorpools-staging"
         ]
       }
     }
