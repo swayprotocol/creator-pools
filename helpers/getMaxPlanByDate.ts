@@ -1,7 +1,6 @@
 import { Plan } from '../shared/interfaces';
-import { availablePlans } from '../shared/constants';
 
-export const getMaxPlanByDate = (stakedAt: Date): Plan => {
-  const possiblePlans = availablePlans.filter(plan => (+plan.availableUntil > +stakedAt) && (+plan.createdAt < +stakedAt));
+export const getMaxPlanByDate = (stakedAt: Date, plans: Plan[]): Plan => {
+  const possiblePlans = plans.filter(plan => (+plan.availableUntil > +stakedAt) && ((+plan.availableUntil - plan.lockMonths*30*24*60*60*1000) < +stakedAt));
   return possiblePlans.reduce((prev, current)=> prev.apy > current.apy ? prev : current);
 }

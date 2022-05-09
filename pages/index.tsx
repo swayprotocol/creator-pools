@@ -8,10 +8,10 @@ import Pools from '../components/Pools';
 import { getStakedData } from '../helpers/getStakedData';
 import { getContract } from '../helpers/getContract';
 import ReactGA from 'react-ga';
-import { getSwayPrice } from '../helpers/getSwayPrice';
+import { getTokenPrice } from '../helpers/getTokenPrice';
 import Stakes from '../components/Stakes';
 import Modal from '../components/Modal';
-import { DistributionT, ModalData, StakedEvent } from '../shared/interfaces';
+import { IChannelDistributionItem, ModalData, Plan, StakedEvent } from '../shared/interfaces';
 import { Contract, ethers } from 'ethers';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
@@ -23,38 +23,30 @@ import { getUserAvailableTokens } from '../helpers/getUserAvailableTokens';
 import { getPlans } from '../helpers/getPlans';
 import InfoBar from '../components/InfoBar';
 import Newsletter from '../components/Newsletter/Newsletter';
-import { availablePlans } from '../shared/constants';
 import { getFarmedAmount } from '../helpers/getFarmedAmount';
 import { getMaxPlanByDate } from '../helpers/getMaxPlanByDate';
+import { useConfig } from '../contexts/Config';
 
 declare global {
-    interface Window {
-        ethereum: any;
-    }
+  interface Window {
+    ethereum: any;
+  }
 }
 
 const initialAppState = {
   topPools: [],
   latestPools: [],
   topPositions: [],
-  swayLockedTotal: 0,
-  swayUsd: 0,
-  swayUserTotal: '0',
-  plans: availablePlans,
-  distribution: {
-    TikTok: 0,
-    Instagram: 0,
-    ENS: 0,
-    Wallet: 0,
-  } as DistributionT,
+  tokenLockedTotal: 0,
+  tokenUsd: 0,
+  tokenUserTotal: '0',
+  plans: [],
+  distribution: [],
   totalRewardsFarmed: 0
 };
 
-const planIds = [1, 2, 3, 4, 5, 6]; // hardcoded plans
-
-function initialiseAnalytics() {
-  const TRACKING_ID = process.env.NEXT_PUBLIC_GA_TRACKING_ID;
-  ReactGA.initialize(TRACKING_ID);
+function initialiseAnalytics(trackingId: string) {
+  ReactGA.initialize(trackingId);
 }
 
 const Home: NextPage = () => {
@@ -67,9 +59,10 @@ const Home: NextPage = () => {
   const [modalData, setModalData] = useState<ModalData>({});
   const [dataLoadError, setDataLoadError] = useState(false);
   const [refreshData, doRefreshData] = useState(0);
+  const { token, staking, network, ga_tracking_id, site } = useConfig();
 
   useEffect(() => {
-    initialiseAnalytics();
+    initialiseAnalytics(ga_tracking_id);
     ReactGA.pageview('/index');
     getGeneralData();
     setLoading(false);
@@ -77,11 +70,11 @@ const Home: NextPage = () => {
   }, []);
 
   useEffect(() => {
-    async function getUserSwayAmount() {
-      const availableTokens = await getUserAvailableTokens(walletId);
-      setAppState(prevState => ({...prevState, swayUserTotal: availableTokens}))
+    async function getUserTokenAmount() {
+      const availableTokens = await getUserAvailableTokens(walletId, token.address, network.web3_provider_url);
+      setAppState(prevState => ({...prevState, tokenUserTotal: availableTokens}))
     }
-    if (walletId) getUserSwayAmount();
+    if (walletId) getUserTokenAmount();
   }, [walletId, refreshData]);
 
   async function loadWallet(connector: AbstractConnector, library: Web3Provider) {
@@ -95,7 +88,7 @@ const Home: NextPage = () => {
     })
 
     let signer = library.getSigner();
-    const stakingContract = new ethers.Contract(process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS, STAKING_ABI, signer);
+    const stakingContract = new ethers.Contract(staking.address, STAKING_ABI, signer);
     const walletId = await connector.getAccount();
 
     setContractData(getContract(stakingContract));
@@ -116,20 +109,15 @@ const Home: NextPage = () => {
 
   async function getGeneralData() {
     try {
-      const stakedData = await getStakedData();
-      const swayPriceUsd = await getSwayPrice();
-      getAvailablePlans();
+      const stakedData = await getStakedData(staking.address, network.web3_provider_url);
+      const tokenPriceUsd = await getTokenPrice(token.coingecko_coin_ticker);
+      const plans = await getAvailablePlans();
 
       // calculate data for different columns
       let allCreators: any = {};
       let topPositions: any = {};
       let totalLocked = 0;
-      const distribution: DistributionT = {
-        Instagram: 0,
-        TikTok: 0,
-        ENS: 0,
-        Wallet: 0
-      };
+      const distribution = staking.channels.map(channel => ({ ...channel, count: 0 }));
       let totalRewardsFarmed = 0;
 
       stakedData.forEach(event => {
@@ -142,9 +130,10 @@ const Home: NextPage = () => {
           ...event,
           amount: topPositions[event.poolHandle]?.amount + event.amount || event.amount
         }
-        distribution[event.social] += 1;
+        const distributionItem = distribution.find(channel => channel.prefix === event.social) as IChannelDistributionItem;
+        distributionItem.count += 1;
         // prefill plan and unlockTime for farmed calculations
-        event.plan = getMaxPlanByDate(event.date);
+        event.plan = getMaxPlanByDate(event.date, plans);
         event.unlockTime = new Date(new Date(event.date).setMonth(new Date(event.date).getMonth() + event.plan.lockMonths));
         totalRewardsFarmed += getFarmedAmount(event.amount, event.date, event.unlockTime, event.plan)
       });
@@ -154,6 +143,7 @@ const Home: NextPage = () => {
       allCreators.sort((a: { amount: number; }, b: { amount: number; }) => (b.amount - a.amount));
       topPositions = Object.values(topPositions);
       topPositions.sort((a: { amount: number; }, b: { amount: number; }) => (b.amount - a.amount));
+      distribution.sort((a: { count: number; }, b: { count: number; }) => (b.count - a.count));
 
       const latestPools = stakedData.sort((a, b) => { return b.date.getTime() - a.date.getTime() });
       // set state
@@ -162,8 +152,8 @@ const Home: NextPage = () => {
         topPools: allCreators,
         latestPools: latestPools,
         topPositions: topPositions,
-        swayUsd: swayPriceUsd,
-        swayLockedTotal: totalLocked,
+        tokenUsd: tokenPriceUsd,
+        tokenLockedTotal: totalLocked,
         distribution: distribution,
         totalRewardsFarmed: totalRewardsFarmed
       }));
@@ -188,13 +178,15 @@ const Home: NextPage = () => {
     }, reloadInterval);
   }
 
-  async function getAvailablePlans() {
-    const plans = await getPlans(planIds);
+  async function getAvailablePlans(): Promise<Plan[]> {
+    const plans = await getPlans(staking.plan_ids, staking.address, network.web3_provider_url);
 
     setAppState((prevState) => ({
       ...prevState,
       plans: plans
     }));
+
+    return plans;
   }
 
   function openStakeModal(modalData: ModalData) {
@@ -209,21 +201,23 @@ const Home: NextPage = () => {
           appLoaded={!loading}
           loadWallet={loadWallet}
         />
-        <InfoBar swayUsd={appState.swayUsd}
-                 swayLockedTotal={appState.swayLockedTotal}
-        />
+        {site.show_tvl_bar && (
+          <InfoBar tokenUsd={appState.tokenUsd}
+                   tokenLockedTotal={appState.tokenLockedTotal}
+          />
+        )}
         <Header disconnectWallet={resetAccount}/>
         {walletLoaded && (
           <Stakes openModal={openStakeModal}
                   contract={contractData}
-                  swayUsd={appState.swayUsd}
-                  swayUserTotal={appState.swayUserTotal}
+                  tokenUsd={appState.tokenUsd}
+                  tokenUserTotal={appState.tokenUserTotal}
                   refreshData={refreshData}
                   plans={appState.plans}
           />
         )}
-        <Overview swayLockedTotal={appState.swayLockedTotal}
-                  swayUsd={appState.swayUsd}
+        <Overview tokenLockedTotal={appState.tokenLockedTotal}
+                  tokenUsd={appState.tokenUsd}
                   plans={appState.plans}
                   distribution={appState.distribution}
                   totalRewards={appState.totalRewardsFarmed}
@@ -232,21 +226,23 @@ const Home: NextPage = () => {
         <Pools top={appState.topPools.slice(0, 10)}
                latest={appState.latestPools.slice(0, 10)}
                positions={appState.topPositions.slice(0, 10)}
-               swayUsd={appState.swayUsd}
+               tokenUsd={appState.tokenUsd}
                loadError={dataLoadError}
                openModal={openStakeModal}
         />
-        <FAQ openModal={openStakeModal}/>
+        <FAQ/>
         {showModal === 'STAKE' && (
           <Modal modalData={modalData}
                  contract={contractData}
-                 swayUserTotal={appState.swayUserTotal}
+                 tokenUserTotal={appState.tokenUserTotal}
                  onClose={(reload) => {
                    setShowModal('');
                    setModalData({});
                    if (reload) {
                      doRefreshData((prev) => prev + 1);
-                     setShowModal('NEWSLETTER');
+                     if (site.show_newsletter) {
+                       setShowModal('NEWSLETTER');
+                     }
                    }
                  }}
                  plans={appState.plans}

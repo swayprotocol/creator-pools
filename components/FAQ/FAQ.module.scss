@@ -8,6 +8,17 @@
   transform: rotate(90deg);
 }
 
+.questionItem {
+  p {
+    &:first-of-type {
+      margin-top: 8px;
+    }
+    &:last-of-type {
+      margin-bottom: 48px;
+    }
+  }
+}
+
 .questionItemTitle {
   cursor: pointer;
   display: inline-flex;

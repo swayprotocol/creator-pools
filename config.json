@@ -1,0 +1,126 @@
+{
+  "site": {
+    "author": "Sway Social",
+    "heading": "Creator Pools",
+    "sub_heading": "v0.2 Beta",
+    "meta": {
+      "title": "Creator Pools | Sway Social",
+      "description": "Creator pools introduce a new metaverse-ready social capital concept by staking with your creators and sharing in their success.",
+      "url": "https://creatorpools.live",
+      "og_image": "/assets/og-image.jpg",
+      "favicon": "/assets/favicon.png",
+      "apple_touch_icon": "/assets/favicon-137x137.png"
+    },
+    "show_powered_by": true,
+    "show_newsletter": true,
+    "show_tvl_bar": true,
+    "faq": [
+      {
+        "title": "What are creator pools?",
+        "content": "<p>Creator pools introduce a new metaverse-ready social capital concept by staking with your creators and sharing in their success.</p><p>Just like with the more familiar liquidity pools, they require value to be locked in a form of a stake that will later yield rewards.</p><p>But instead of deriving value from pool’s performance, they use the performance of the creator’s NFTs as the generator of value.</p>"
+      },
+      {
+        "title": "How is value generated through NFTs?",
+        "content": "<p>Staking with a creator's pool means you support the creator and his work. You also become part of his subDAO (more to follow).</p><p>With every NFT sale, the creator sends a small portion of his revenue back to his pool as rewards.</p><p>All pools and creators are also subject to additionally mined tokens through creator adoption mining mechanism. (more to follow)</p>"
+      },
+      {
+        "title": "How can I stake with a creator?",
+        "content": "<p>Easy. First, make sure you own some $SWAY in your Metamask wallet. <a target='_blank' rel='noopener noreferrer' href='https://quickswap.exchange/#/swap?outputCurrency=0x262b8aa7542004f023b0eb02bc6b96350a02b728'>Get $SWAY here &gt;</a> NOTE: Currently we only support creator pools on Polygon network.</p><p>Click on Stake and a pop-up will appear. Select the channel and provide the creator's identificator. Ie. on channel 'Instagram' you can stake with a creator with the handle @metaverse. We don't validate entries, so make sure there's no typos.</p><p>And yes, that means you get to stake with any account you wish -- even if the creator hasn't claimed his pool yet.</p>"
+      },
+      {
+        "title": "Why should I stake?",
+        "content": "<p>Every pool needs to be claimed by the original creator in order to start paying out rewards. However, here's two reasons why you should start staking today.</p><p>1) PROMOTIONAL PERIOD. The first generation staking pool offers a promotional APR of up to 444% instead of direct returns from NFT sales. <a target='_blank' rel='noopener noreferrer' href='https://medium.com/cloutdotart/444-apr-promotion-alert-stake-in-the-new-creator-pools-a42e44f8ce4c'>Read more</a>.</p><p>2) BEING FIRST PAYS OFF. The first position in the pool gets the most favorable terms and yields better rewards. You can sit at the top position forever. Might be a smart idea to be the first to stake with @garyvee or beeple.eth...?</p><p>If a creator doesn't claim his pool, you can simply withdraw your stake after the promotional period. Click on Unstake to begin the withdrawal process.</p>"
+      }
+    ],
+    "footer": {
+      "links": [
+        {
+          "title": "https://swaysocial.org",
+          "url": "https://swaysocial.org"
+        },
+        {
+          "title": "Github",
+          "url": "https://github.com/swayprotocol"
+        },
+        {
+          "title": "Telegram",
+          "url": "https://t.me/swayprotocol"
+        },
+        {
+          "title": "Twitter",
+          "url": "https://twitter.com/swayprotocol"
+        }
+      ],
+      "colophon": "The website is maintained by 721Labs Technology Group Limited. The website is maintained solely to enable analytical insight and allow interaction with the Sway Social protocol. An indication of any creator on this website does not implicate that a particular creator is anyhow affiliated with 721Labs or that 721Labs has anyhow endorsed such creator. Neither does an indication of any creator on the website suggest that a particular creator has endorsed 721Labs, any project of 721Labs or Sway Social."
+    },
+    "networks": [
+      {
+        "name": "Polygon",
+        "active": true
+      },
+      {
+        "name": "BSC",
+        "active": false
+      },
+      {
+        "name": "Polkadot",
+        "active": false
+      }
+    ]
+  },
+  "theme": {
+    "font_url": "https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500&display=swap",
+    "main": {
+      "--bs-body-color": "#232323",
+      "--bs-body-bg": "#fff",
+      "--text-dark": "#000",
+      "--bs-body-font-family": "Chakra Petch",
+      "--active-stakes-bg": "#f2fcff",
+      "--active-stakes-item-bg": "#e6f8fb"
+    },
+    "alt": {
+      "--bs-body-color": "#fff",
+      "--bs-body-bg": "#0c0c0c",
+      "--text-dark": "#eeeeee",
+      "--bs-body-font-family": "Chakra Petch",
+      "--active-stakes-bg": "#1f2426",
+      "--active-stakes-item-bg": "#242d30"
+    },
+    "hasAltTheme": true
+  },
+  "token": {
+    "address": "0x262b8aa7542004f023b0eb02bc6b96350a02b728",
+    "ticker": "SWAY",
+    "logo": "/assets/favicon-137x137.png",
+    "coingecko_coin_ticker": "sway-social",
+    "exchange_url": "https://quickswap.exchange/#/swap?outputCurrency=0x262b8aa7542004f023b0eb02bc6b96350a02b728",
+    "circulating_supply": 10917462
+  },
+  "staking": {
+    "address": "0x538Bdc460119Bb95F8ee51E46D22Eee5e7a6cC4e",
+    "channels": [
+      {
+        "name": "Instagram",
+        "prefix": "ig"
+      },
+      {
+        "name": "TikTok",
+        "prefix": "tt"
+      },
+      {
+        "name": "Ethereum Name Service",
+        "prefix": "ens"
+      },
+      {
+        "name": "Wallet",
+        "prefix": "w"
+      }
+    ],
+    "plan_ids": [1, 2, 3, 4, 5, 6]
+  },
+  "network": {
+    "web3_provider_url": "https://polygon-mainnet.g.alchemy.com/v2/6kkkcccOr3uJck57CliIomFbHt9eSYu5",
+    "supported_chain_ids": [137, 80001]
+  },
+  "ga_tracking_id": "UA-196047216-2"
+}

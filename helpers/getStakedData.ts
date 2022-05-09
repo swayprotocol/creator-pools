@@ -5,9 +5,9 @@ import { Event } from '@ethersproject/contracts';
 import { StakedEvent } from '../shared/interfaces';
 import { getSocialType } from './getSocialType';
 
-export function getStakedData(): Promise<StakedEvent[]> {
-  const provider = new JsonRpcProvider(process.env.NEXT_PUBLIC_WEB3_HTTP_PROVIDER);
-  const stakingContract = new Contract(process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS!, STAKING_ABI, provider);
+export function getStakedData(address: string, provider: string): Promise<StakedEvent[]> {
+  const rpcProvider = new JsonRpcProvider(provider);
+  const stakingContract = new Contract(address!, STAKING_ABI, rpcProvider);
 
   // filter by 'Staked' event only
   const filter = stakingContract.filters.Staked();

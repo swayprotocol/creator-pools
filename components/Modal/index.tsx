@@ -4,22 +4,23 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import styles from './Modal.module.scss';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
-import SWAY_TOKEN_ABI from '../../shared/abis/token-abi.json';
+import TOKEN_ABI from '../../shared/abis/token-abi.json';
 import { filterPlans } from '../../helpers/filterPlans';
 import { setSocialPrefix } from '../../helpers/getSocialType';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
-import { ModalData, ModalType, Plan, StakeData, StakedEventSocialType } from '../../shared/interfaces';
+import { ModalData, ModalType, Plan, StakeData } from '../../shared/interfaces';
+import { useConfig } from '../../contexts/Config';
 
 type ModalProps = {
   onClose: (reload?: boolean) => any,
   modalData: ModalData,
   contract: any,
-  swayUserTotal: string,
+  tokenUserTotal: string,
   plans: Plan[]
 }
 
 const initialModalData: StakeData = {
-  social: StakedEventSocialType.IG,
+  social: '',
   poolHandle: '',
   amount: '',
   planId: ''
@@ -35,12 +36,13 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
   const [reward, setReward] = useState(0);
 
   const { library, account } = useWeb3React<Web3Provider>();
+  const { token, staking } = useConfig();
 
   useEffect(() => {
     if (props.modalData.channel) {
       setFormData((prevState) => ({
         ...prevState,
-        social: props.modalData.channel.social || StakedEventSocialType.IG,
+        social: props.modalData.channel.social,
         poolHandle: props.modalData.channel.poolHandle || '',
         amount: props.modalData.amount || '',
       }));
@@ -50,6 +52,12 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     }
     if (props.modalData.type === ModalType.CLAIM) {
       setReward(parseFloat(props.modalData.amount))
+    }
+    if (!props.modalData.channel?.social) {
+      setFormData((prevState) => ({
+        ...prevState,
+        social: staking.channels[0].prefix
+      }));
     }
   }, [props.modalData]);
 
@@ -104,11 +112,11 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
 
       try {
         // check allowance and give permissions
-        const tokenContract = new Contract(process.env.NEXT_PUBLIC_SWAY_TOKEN_ADDRESS, SWAY_TOKEN_ABI, library.getSigner());
-        const allowance = await tokenContract.allowance(account, process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS);
+        const tokenContract = new Contract(token.address, TOKEN_ABI, library.getSigner());
+        const allowance = await tokenContract.allowance(account, staking.address);
         if (allowance.lte(stakeData.amount)) {
           const allowUnlimited = BigNumber.from(2).pow(256).sub(1);
-          const awaitTx = await tokenContract.approve(process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS, allowUnlimited, { gasLimit: 100000 });
+          const awaitTx = await tokenContract.approve(staking.address, allowUnlimited, { gasLimit: 100000 });
           await awaitTx.wait();
         }
 
@@ -178,10 +186,10 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     let formIsValid = true;
 
     if (props.modalData.type === ModalType.STAKE || props.modalData.type === ModalType.ADD) {
-      if (!data.amount || ethers.utils.parseEther(data.amount).gt(ethers.utils.parseEther(props.swayUserTotal))) {
+      if (!data.amount || ethers.utils.parseEther(data.amount).gt(ethers.utils.parseEther(props.tokenUserTotal))) {
         errors['amount'] = true;
         formIsValid = false;
-        if (data.amount && ethers.utils.parseEther(data.amount).gt(ethers.utils.parseEther(props.swayUserTotal))) {
+        if (data.amount && ethers.utils.parseEther(data.amount).gt(ethers.utils.parseEther(props.tokenUserTotal))) {
           setCallError('Amount exceeds total available.')
         }
       }
@@ -222,13 +230,13 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
 
   const getSocialUrl = (): string => {
     switch (formData.social) {
-      case StakedEventSocialType.IG:
+      case'ig':
         return `https://www.instagram.com/${formData.poolHandle}`;
-      case StakedEventSocialType.TT:
+      case 'tt':
         return `https://www.tiktok.com/@${formData.poolHandle}`;
-      case StakedEventSocialType.ENS:
+      case 'ens':
         return `https://app.ens.domains/name/${formData.poolHandle}`;
-      case StakedEventSocialType.W:
+      case 'w':
         return `https://polygonscan.com/address/${formData.poolHandle}`;
     }
   }
@@ -263,7 +271,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                         </div>
                       </div>
                     </div>
-                    <div className={`col-sm-5 ${styles.swayAvailable}`}>
+                    <div className={`col-sm-5 ${styles.tokenAvailable}`}>
                       <div className={styles.socialIcon}></div>
                       <span className={styles.amount}>
                         {props.modalData.amount}
@@ -281,11 +289,9 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                                 value={formData.social}
                                 onChange={(e) => handleChange('social', e.target.value)}
                                 disabled={disableEditing}>
-                          {/*<option hidden={true} value={undefined}>Select</option>*/}
-                          <option value={StakedEventSocialType.IG}>Instagram</option>
-                          <option value={StakedEventSocialType.TT}>TikTok</option>
-                          <option value={StakedEventSocialType.ENS}>Ethereum Name Service</option>
-                          <option value={StakedEventSocialType.W}>Wallet</option>
+                          {staking.channels.map(channel => (
+                            <option value={channel.prefix} key={channel.prefix}>{channel.name}</option>
+                          ))}
                         </select>
                       </div>
                     </div>
@@ -312,8 +318,8 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                 {(props.modalData.type === ModalType.UNSTAKE || props.modalData.type === ModalType.ADD) && (
                   <div className="form-group row">
                     <label className="col-sm-3">Staked</label>
-                    <div className={`${styles.swayAvailable} col-sm-9`}>
-                      <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
+                    <div className={`${styles.tokenAvailable} col-sm-9`}>
+                      <img src={token.logo} alt={token.ticker} height="20"/>
                       <span>{props.modalData.channel?.userTotalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         {' '}staked in {props.modalData.channel?.positions.length} positions</span>
                     </div>
@@ -344,11 +350,11 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                               value={formData.amount}
                               onChange={(e) => handleChange('amount', e.target.value)}
                               placeholder="1000"/>
-                        <div className="after-element" onClick={() => handleChange('amount', props.swayUserTotal)}>MAX</div>
+                        <div className="after-element" onClick={() => handleChange('amount', props.tokenUserTotal)}>MAX</div>
                       </div>
-                      <div className={`${styles.swayAvailable} col-sm-5`}>
-                        <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
-                        <span>{(+props.swayUserTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} available</span>
+                      <div className={`${styles.tokenAvailable} col-sm-5`}>
+                        <img src={token.logo} alt={token.ticker} height="20"/>
+                        <span>{(+props.tokenUserTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} available</span>
                       </div>
                     </div>
                     <div className="form-group row">
@@ -378,8 +384,8 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                         </div>
                       </div>
                     </div>
-                    <div className={`col-sm-5 ${styles.swayAvailable}`}>
-                      <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
+                    <div className={`col-sm-5 ${styles.tokenAvailable}`}>
+                      <img src={token.logo} alt={token.ticker} height="20"/>
                       <span>
                         {props.modalData.amount}
                       </span>
@@ -411,7 +417,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
               </form>
             )}
             {(props.modalData.type === ModalType.CLAIM && reward === 0) && (
-              <p>You currently have no SWAY rewards available for claiming.</p>
+              <p>You currently have no {token.ticker} rewards available for claiming.</p>
             )}
           </div>
         </div>

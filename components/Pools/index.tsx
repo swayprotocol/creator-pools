@@ -6,12 +6,12 @@ type PoolsProps = {
   top: StakedEvent[],
   latest: StakedEvent[],
   positions: StakedEvent[],
-  swayUsd: number,
+  tokenUsd: number,
   loadError: boolean
   openModal: (modalData: ModalData) => any,
 }
 
-function renderItems(items: StakedEvent[], swayUsd: number, type: PoolItemType, props: PoolsProps) {
+function renderItems(items: StakedEvent[], tokenUsd: number, type: PoolItemType, props: PoolsProps) {
   return (
     <>
       {items.length ?
@@ -19,7 +19,7 @@ function renderItems(items: StakedEvent[], swayUsd: number, type: PoolItemType, 
           return <Item key={i}
                        index={i}
                        item={stakedEvent}
-                       swayUsd={swayUsd}
+                       tokenUsd={tokenUsd}
                        type={type}
                        openModal={props.openModal}
           />;
@@ -41,17 +41,17 @@ const Pools: FC<PoolsProps> = (props: PoolsProps) => (
         <div className="col-md-4 mb-5">
           <h4>Top creator pools</h4>
           <hr/>
-          {!props.loadError && renderItems(props.top, props.swayUsd, PoolItemType.TOP, props)}
+          {!props.loadError && renderItems(props.top, props.tokenUsd, PoolItemType.TOP, props)}
         </div>
         <div className="col-md-4 mb-5">
           <h4>Latest stakes</h4>
           <hr/>
-          {!props.loadError && renderItems(props.latest, props.swayUsd, PoolItemType.LATEST, props)}
+          {!props.loadError && renderItems(props.latest, props.tokenUsd, PoolItemType.LATEST, props)}
         </div>
         <div className="col-md-4 mb-5">
           <h4>Highest positions</h4>
           <hr/>
-          {!props.loadError && renderItems(props.positions, props.swayUsd, PoolItemType.INDIVIDUAL, props)}
+          {!props.loadError && renderItems(props.positions, props.tokenUsd, PoolItemType.INDIVIDUAL, props)}
         </div>
       </div>
       {props.loadError && (
