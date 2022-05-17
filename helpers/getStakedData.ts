@@ -1,13 +1,14 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { Contract, ethers } from 'ethers';
-import STAKING_ABI from '../shared/abis/staking-abi.json';
 import { Event } from '@ethersproject/contracts';
 import { StakedEvent } from '../shared/interfaces';
 import { getSocialType } from './getSocialType';
+import getStakingAbi from './getStakingAbi';
 
 export function getStakedData(address: string, provider: string): Promise<StakedEvent[]> {
   const rpcProvider = new JsonRpcProvider(provider);
-  const stakingContract = new Contract(address!, STAKING_ABI, rpcProvider);
+  const stakingAbi = getStakingAbi();
+  const stakingContract = new Contract(address!, stakingAbi, rpcProvider);
 
   // filter by 'Staked' event only
   const filter = stakingContract.filters.Staked();
