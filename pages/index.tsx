@@ -18,7 +18,6 @@ import { Web3Provider } from '@ethersproject/providers';
 import WalletConnect from '../components/WalletConnect';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 
-import STAKING_ABI from '../shared/abis/staking-abi.json';
 import { getUserAvailableTokens } from '../helpers/getUserAvailableTokens';
 import { getPlans } from '../helpers/getPlans';
 import InfoBar from '../components/InfoBar';
@@ -26,6 +25,7 @@ import Newsletter from '../components/Newsletter/Newsletter';
 import { getFarmedAmount } from '../helpers/getFarmedAmount';
 import { getMaxPlanByDate } from '../helpers/getMaxPlanByDate';
 import { useConfig } from '../contexts/Config';
+import getStakingAbi from '../helpers/getStakingAbi';
 
 declare global {
   interface Window {
@@ -88,7 +88,8 @@ const Home: NextPage = () => {
     })
 
     let signer = library.getSigner();
-    const stakingContract = new ethers.Contract(staking.address, STAKING_ABI, signer);
+    const stakingAbi = getStakingAbi();
+    const stakingContract = new ethers.Contract(staking.address, stakingAbi, signer);
     const walletId = await connector.getAccount();
 
     setContractData(getContract(stakingContract));

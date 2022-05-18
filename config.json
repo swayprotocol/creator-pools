@@ -98,6 +98,7 @@
   },
   "staking": {
     "address": "0x538Bdc460119Bb95F8ee51E46D22Eee5e7a6cC4e",
+    "abi": "staking-abi.json",
     "channels": [
       {
         "name": "Instagram",
