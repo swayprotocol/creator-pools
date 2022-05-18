@@ -1,23 +1,24 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useConfig } from '../contexts/Config';
+import { setGlobalStyles } from './setGlobalStyles';
 
-const initialTheme = typeof window !== 'undefined' ? localStorage.theme || 'light' : 'light';
+const initialTheme = typeof window !== 'undefined' ? localStorage.themeStyle || 'main' : 'main';
 
 function useDarkMode(): [string, Dispatch<SetStateAction<string>>] {
-  const [theme, setTheme] = useState(initialTheme);
-  const colorTheme = theme === 'dark' ? 'light' : 'dark';
+  const [themeStyle, setThemeStyle] = useState(initialTheme);
+  const colorTheme = themeStyle === 'alt' ? 'main' : 'alt';
+  const { theme } = useConfig();
 
   useEffect(() => {
-    const root = window.document.documentElement;
-    root.classList.remove(colorTheme);
-    root.classList.add(theme);
+    setGlobalStyles(theme.hasAltTheme ? theme[themeStyle] : theme['main']);
 
     if (typeof window !== 'undefined') {
-      localStorage.setItem('theme', theme);
+      localStorage.setItem('themeStyle', themeStyle);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [theme]);
+  }, [themeStyle]);
 
-  return [colorTheme, setTheme];
+  return [colorTheme, setThemeStyle];
 }
 
 export default useDarkMode;

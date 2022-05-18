@@ -1,38 +1,9 @@
-import { StakedEventSocialType } from '../shared/interfaces';
-
-export const getSocialType = (poolHandle: string): StakedEventSocialType => {
-  const socialString = poolHandle.split('-')[0];
-
-  switch(socialString) {
-    case 'ig':
-      return StakedEventSocialType.IG;
-    case 'tt':
-      return StakedEventSocialType.TT;
-    case 'ens':
-      return StakedEventSocialType.ENS;
-    case 'w':
-      return StakedEventSocialType.W;
-  }
+export const getSocialType = (poolHandle: string): string => {
+  // e.g. ig
+  return poolHandle.split('-')[0];
 }
 
-export const setSocialPrefix = (poolHandle: string, socialType: StakedEventSocialType): string => {
-  let socialString;
-
-  switch(socialType) {
-    case StakedEventSocialType.IG:
-      socialString = 'ig';
-      break;
-    case StakedEventSocialType.TT:
-      socialString = 'tt';
-      break;
-    case StakedEventSocialType.ENS:
-      socialString = 'ens';
-      break;
-    case StakedEventSocialType.W:
-      socialString = 'w';
-      break;
-  }
-
+export const setSocialPrefix = (poolHandle: string, socialType: string): string => {
   // e.g. ig-cloutdotart
-  return `${socialString}-${poolHandle}`;
+  return `${socialType}-${poolHandle}`;
 }

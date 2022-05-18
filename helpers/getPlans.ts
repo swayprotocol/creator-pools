@@ -1,11 +1,12 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { Contract, ethers } from 'ethers';
-import STAKING_ABI from '../shared/abis/staking-abi.json';
 import { Plan } from '../shared/interfaces';
+import getStakingAbi from './getStakingAbi';
 
-export async function getPlans(planIds: number[]): Promise<Plan[]> {
-  const provider = new JsonRpcProvider(process.env.NEXT_PUBLIC_WEB3_HTTP_PROVIDER);
-  const stakingContract = new Contract(process.env.NEXT_PUBLIC_STAKING_CONTRACT_ADDRESS!, STAKING_ABI, provider);
+export async function getPlans(planIds: number[], address: string, provider: string): Promise<Plan[]> {
+  const rpcProvider = new JsonRpcProvider(provider);
+  const stakingAbi = getStakingAbi();
+  const stakingContract = new Contract(address!, stakingAbi, rpcProvider);
 
   return Promise.all(planIds.map(planId => {
     return stakingContract.plans(planId).then(res => ({

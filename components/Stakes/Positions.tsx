@@ -6,12 +6,13 @@ import Moment from 'react-moment';
 import styles from './Positions.module.scss';
 import { Channel, ChannelPosition, ModalData, ModalType } from '../../shared/interfaces';
 import { setSocialPrefix } from '../../helpers/getSocialType';
+import { useConfig } from '../../contexts/Config';
 
 type ItemPositions = {
   openModal: (modalData: ModalData) => any
   positions: ChannelPosition[],
-  swayUsd: number,
-  swayUserTotal: string,
+  tokenUsd: number,
+  tokenUserTotal: string,
   channel: Channel,
   contract: any
 }
@@ -21,6 +22,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
   const [reward, setReward] = useState(0);
 
   const { account } = useWeb3React<Web3Provider>();
+  const { token } = useConfig();
 
   useEffect(() => {
     const longPoolhandle = setSocialPrefix(props.channel.poolHandle, props.channel.social);
@@ -63,7 +65,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
             <strong>#{position.indexInPool + 1}</strong>
           </div>
           <div className={styles.tableItem}>
-            <strong>{position.amount.toLocaleString('en-US', { maximumFractionDigits: 0 })} SWAY</strong>
+            <strong>{position.amount.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token.ticker}</strong>
           </div>
           <div className={styles.tableItem}>
             {position.plan.apy}%
@@ -103,7 +105,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
                    step={0.000000000000000001}
                    value={amountToStake}
                    onChange={(e) => setAmountToStake(e.target.value)}/>
-            <div className="after-element" onClick={() => setAmountToStake(props.swayUserTotal)}>MAX</div>
+            <div className="after-element" onClick={() => setAmountToStake(props.tokenUserTotal)}>MAX</div>
           </div>
         </div>
         <div className={styles.tableItem}>
@@ -117,8 +119,8 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
                 Claim
               </button>
             ) : (
-              <a target="_blank" rel="noopener noreferrer" href="https://quickswap.exchange/#/swap?outputCurrency=0x262b8aa7542004f023b0eb02bc6b96350a02b728">
-                Get SWAY
+              <a target="_blank" rel="noopener noreferrer" href={token.exchange_url}>
+                Get {token.ticker}
               </a>
           )}
         </div>

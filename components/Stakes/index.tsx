@@ -2,19 +2,20 @@ import React, { FC, useEffect, useState } from 'react';
 import styles from './index.module.scss';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import Item from './Item';
-import { Channel, ChannelPosition, ModalData, ModalType, Plan, StakedEventSocialType } from '../../shared/interfaces';
+import { Channel, ChannelPosition, ModalData, ModalType, Plan } from '../../shared/interfaces';
 import { ethers } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { getFarmedAmount } from '../../helpers/getFarmedAmount';
 import { getPlanById } from '../../helpers/getPlanById';
 import { getSocialType } from '../../helpers/getSocialType';
+import { useConfig } from '../../contexts/Config';
 
 type StakesType = {
   openModal: (modalData: ModalData) => any,
   contract: any,
-  swayUsd: number,
-  swayUserTotal: string,
+  tokenUsd: number,
+  tokenUserTotal: string,
   refreshData: number,
   plans: Plan[]
 }
@@ -23,6 +24,7 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
   const [channels, setChannels] = useState<Channel[]>([]);
 
   const { account } = useWeb3React<Web3Provider>();
+  const { token } = useConfig();
 
   useEffect(() => {
     if (account) loadData();
@@ -141,9 +143,9 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
               </div>
             </div>
             <div className={styles.connectWrapper}>
-              <div className={styles.swayAvailable}>
-                <img src="assets/favicon.png" alt="Sway" height="20" width="20"/>
-                <span>{(+props.swayUserTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              <div className={styles.tokenAvailable}>
+                <img src={token.logo} alt={token.ticker} height="20"/>
+                <span>{(+props.tokenUserTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
               </div>
               <button className="btn" onClick={() => props.openModal({ type: ModalType.STAKE })}>
                 Stake
@@ -191,14 +193,14 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
                 <Item key={i}
                       openModal={props.openModal}
                       channel={channelItem}
-                      swayUsd={props.swayUsd}
-                      swayUserTotal={props.swayUserTotal}
+                      tokenUsd={props.tokenUsd}
+                      tokenUserTotal={props.tokenUserTotal}
                       contract={props.contract}
                 />
               )) : (
                 <div className={styles.inactive}>
                   <p className="mb-2">No active positions yet. <a className="btn-link" onClick={() => props.openModal({ type: ModalType.STAKE })}>Click here</a> to get started.</p>
-                  <p className="mb-4">You will need SWAY to get started. <a target="_blank" rel="noopener noreferrer" href="https://quickswap.exchange/#/swap?outputCurrency=0x262b8aa7542004f023b0eb02bc6b96350a02b728">Get it now</a>.</p>
+                  <p className="mb-4">You will need {token.ticker} to get started. <a target="_blank" rel="noopener noreferrer" href={token.exchange_url}>Get it now</a>.</p>
                   <p className="mb-0">Don’t know where to stake? Stake with <a className="btn-link" onClick={() => props.openModal({ type: ModalType.STAKE, channel: { poolHandle: 'cloutdotart'} })}>cloutdotart</a>.</p>
                 </div>
               )}

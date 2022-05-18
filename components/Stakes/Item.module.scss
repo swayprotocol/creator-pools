@@ -3,11 +3,7 @@
 }
 
 .itemWrapperActive {
-  background-color: #e6f8fb;
-
-  :global(.dark) & {
-    background-color: #242d30;
-  }
+  background-color: var(--active-stakes-item-bg);
 }
 
 .item {
@@ -17,11 +13,7 @@
   position: relative;
 
   &:hover {
-    background-color: #e6f8fb;
-
-    :global(.dark) & {
-      background-color: #242d30;
-    }
+    background-color: var(--active-stakes-item-bg);
   }
 }
 

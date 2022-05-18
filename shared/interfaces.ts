@@ -3,7 +3,7 @@ export interface StakedEvent {
   poolHandle: string;
   sender: string;
   date: Date;
-  social: StakedEventSocialType;
+  social: string;
   plan?: Plan;
   unlockTime?: Date;
 }
@@ -12,13 +12,6 @@ export enum PoolItemType {
   TOP = 'Top',
   LATEST = 'Latest',
   INDIVIDUAL = 'Individual',
-}
-
-export enum StakedEventSocialType {
-  IG = 'Instagram',
-  TT = 'TikTok',
-  ENS = 'ENS',
-  W = 'Wallet'
 }
 
 export enum ModalType {
@@ -31,7 +24,7 @@ export enum ModalType {
 export interface Channel {
   poolHandle: string;
   userTotalAmount: number;
-  social: StakedEventSocialType;
+  social: string;
   totalFarmed: number;
   positions: ChannelPosition[];
   creator: string;
@@ -49,7 +42,7 @@ export interface ChannelPosition {
   poolHandle: string;
   stakedAt: Date;
   unlockTime: Date;
-  social: StakedEventSocialType;
+  social: string;
   farmed: number;
 }
 
@@ -57,7 +50,7 @@ export interface StakeData {
   poolHandle: string;
   planId: string;
   amount: string;
-  social: StakedEventSocialType;
+  social: string;
 }
 
 export interface ModalData {
@@ -74,6 +67,8 @@ export interface Plan {
   createdAt?: Date;
 }
 
-export type DistributionT = {
-  [key in StakedEventSocialType]: number;
+export interface IChannelDistributionItem {
+  name: string;
+  prefix: string;
+  count?: number;
 }

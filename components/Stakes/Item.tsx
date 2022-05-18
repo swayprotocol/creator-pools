@@ -4,17 +4,19 @@ import { getSocialIcon } from '../../helpers/getSocialIcon';
 import { Channel, ModalData } from '../../shared/interfaces';
 import ItemPositions from './Positions';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
+import { useConfig } from '../../contexts/Config';
 
 type StakedItem = {
   openModal: (modalData: ModalData) => any,
   channel: Channel,
-  swayUsd: number,
-  swayUserTotal: string,
+  tokenUsd: number,
+  tokenUserTotal: string,
   contract: any,
 }
 
 const StakedItem: FC<StakedItem> = (props: StakedItem) => {
   const [isExpanded, setExpanded] = useState(false);
+  const { token } = useConfig();
 
   return (
     <div className={`${styles.itemWrapper} ${isExpanded ? styles.itemWrapperActive : ''}`}>
@@ -33,8 +35,8 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
           <strong>{props.channel.totalAmount.toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong>
         </div>
         <div className={styles.tableItem}>
-          <strong>{props.channel.userTotalAmount.toLocaleString('en-US', { maximumFractionDigits: 0 })} SWAY</strong>
-          <div>{(props.channel.userTotalAmount * props.swayUsd).toLocaleString('en-US', { maximumFractionDigits: 0 })} USD</div>
+          <strong>{props.channel.userTotalAmount.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token.ticker}</strong>
+          <div>{(props.channel.userTotalAmount * props.tokenUsd).toLocaleString('en-US', { maximumFractionDigits: 0 })} USD</div>
         </div>
         <div className={styles.tableItem}>
           {props.channel.averageAPR}%
@@ -50,8 +52,8 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
       {isExpanded && (
         <ItemPositions openModal={props.openModal}
                        positions={props.channel.positions}
-                       swayUsd={props.swayUsd}
-                       swayUserTotal={props.swayUserTotal}
+                       tokenUsd={props.tokenUsd}
+                       tokenUserTotal={props.tokenUserTotal}
                        channel={props.channel}
                        contract={props.contract}
         />
