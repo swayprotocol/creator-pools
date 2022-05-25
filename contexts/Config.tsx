@@ -2,20 +2,17 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 
 const Config = createContext({} as any);
 
-function GlobalConfigProvider({ children }) {
+function GlobalConfigProvider({ children, props }) {
   const [globalConfigData, setGlobalConfigData] = useState({});
   const [isLoading, setLoading] = useState(true);
 
   // load global config data
   useEffect(() => {
-    fetch(process.env.NEXT_PUBLIC_CONFIG_URL, {
-      method: 'GET'
-    }).then((res) => res.json())
-      .then((data) => {
-        setGlobalConfigData(data);
-        setLoading(false);
-      });
-  }, []);
+    if (props.globalConfig) {
+      setGlobalConfigData(props.globalConfig);
+      setLoading(false);
+    }
+  }, [props]);
 
   return (
     <Config.Provider value={{ ...globalConfigData, isLoading }}>
