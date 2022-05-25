@@ -27,7 +27,8 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
   }, [props.plans.length]);
 
   const getSupplyLocked = (amount: number): string => {
-    return (amount / token.circulating_supply * 100).toFixed(2);
+    if (!token?.circulating_supply) return (0).toFixed(2);
+    return (amount / token?.circulating_supply * 100).toFixed(2);
   }
 
   const calcPercentage = (value: number, total: number): string | number => {
@@ -44,7 +45,7 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
             <div className="overview-item">
               <div className="overview-item-name">TVL</div>
               <div className="overview-item-value">
-                {props.tokenLockedTotal.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token.ticker}
+                {props.tokenLockedTotal.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token?.ticker}
               </div>
               <div className="overview-item-name">
                 {getSupplyLocked(props.tokenLockedTotal)}% of circulating supply
@@ -56,7 +57,7 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
             </div>
             <div className="overview-item">
               <div className="overview-item-name">TOTAL REWARDS EARNED</div>
-              <div className="overview-item-value">{props.totalRewards.toLocaleString('en-US', { maximumFractionDigits: 2 })} {token.ticker}</div>
+              <div className="overview-item-value">{props.totalRewards.toLocaleString('en-US', { maximumFractionDigits: 2 })} {token?.ticker}</div>
             </div>
           </div>
           <div className="col-12 col-sm-4">

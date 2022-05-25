@@ -1,11 +1,5 @@
-import config from '../config.json';
-
-function getStakingAbi(){
-  const { staking } = config; 
-
-  const filename = staking.abi;
-  const abi = require(`../shared/abis/${filename}`)
-  return abi;
+function getStakingAbi(abiFile: string) {
+  return require(`../shared/abis/${abiFile}`);
 }
 
 export default getStakingAbi;

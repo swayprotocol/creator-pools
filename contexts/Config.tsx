@@ -1,11 +1,25 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+
 const Config = createContext({} as any);
 
-import globalConfigData from '../config.json';
-
 function GlobalConfigProvider({ children }) {
+  const [globalConfigData, setGlobalConfigData] = useState({});
+  const [isLoading, setLoading] = useState(true);
+
+  // load global config data
+  useEffect(() => {
+    fetch(process.env.NEXT_PUBLIC_CONFIG_URL, {
+      method: 'GET'
+    }).then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setGlobalConfigData(data);
+        setLoading(false);
+      });
+  }, []);
+
   return (
-    <Config.Provider value={globalConfigData}>
+    <Config.Provider value={{ ...globalConfigData, isLoading }}>
       {children}
     </Config.Provider>
   );

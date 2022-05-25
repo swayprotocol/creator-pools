@@ -10,9 +10,9 @@ const Footer = () => {
         <div className="row">
           <ul>
             <li>
-              (c) {(new Date).getFullYear()} {site.author}
+              (c) {(new Date).getFullYear()} {site?.author}
             </li>
-            {site.footer.links?.map(link => (
+            {site?.footer.links?.map(link => (
               <li key={link.url}>
                 <a href={link.url} rel="noreferrer" target="_blank">
                   {link.title}
@@ -23,7 +23,7 @@ const Footer = () => {
         </div>
         <div className="row mt-3">
           <div className="col-12 footer-tos">
-            {site.footer.colophon}
+            {site?.footer.colophon}
           </div>
         </div>
       </div>

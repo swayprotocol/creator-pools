@@ -3,9 +3,9 @@ import { Contract, ethers } from 'ethers';
 import { Plan } from '../shared/interfaces';
 import getStakingAbi from './getStakingAbi';
 
-export async function getPlans(planIds: number[], address: string, provider: string): Promise<Plan[]> {
+export async function getPlans(planIds: number[], address: string, provider: string, abiFile: string): Promise<Plan[]> {
   const rpcProvider = new JsonRpcProvider(provider);
-  const stakingAbi = getStakingAbi();
+  const stakingAbi = getStakingAbi(abiFile);
   const stakingContract = new Contract(address!, stakingAbi, rpcProvider);
 
   return Promise.all(planIds.map(planId => {

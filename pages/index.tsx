@@ -53,21 +53,23 @@ const Home: NextPage = () => {
   const [appState, setAppState] = useState(initialAppState);
   const [showModal, setShowModal] = useState<'STAKE' | 'NEWSLETTER' | ''>('');
   const [walletId, setWalletId] = useState('');
-  const [loading, setLoading] = useState(true);
   const [contractData, setContractData] = useState<Contract>();
   const [walletLoaded, setWalletLoaded] = useState(false);
   const [modalData, setModalData] = useState<ModalData>({});
   const [dataLoadError, setDataLoadError] = useState(false);
   const [refreshData, doRefreshData] = useState(0);
-  const { token, staking, network, ga_tracking_id, site } = useConfig();
+  const { token, staking, network, ga_tracking_id, site, isLoading } = useConfig();
 
   useEffect(() => {
-    initialiseAnalytics(ga_tracking_id);
-    ReactGA.pageview('/index');
-    getGeneralData();
-    setLoading(false);
+    if (!isLoading) {
+      getGeneralData();
+    }
+    if (ga_tracking_id) {
+      initialiseAnalytics(ga_tracking_id);
+      ReactGA.pageview('/index');
+    }
     // eslint-disable-next-line
-  }, []);
+  }, [isLoading, ga_tracking_id]);
 
   useEffect(() => {
     async function getUserTokenAmount() {
@@ -88,7 +90,7 @@ const Home: NextPage = () => {
     })
 
     let signer = library.getSigner();
-    const stakingAbi = getStakingAbi();
+    const stakingAbi = getStakingAbi(staking.abi);
     const stakingContract = new ethers.Contract(staking.address, stakingAbi, signer);
     const walletId = await connector.getAccount();
 
@@ -110,7 +112,7 @@ const Home: NextPage = () => {
 
   async function getGeneralData() {
     try {
-      const stakedData = await getStakedData(staking.address, network.web3_provider_url);
+      const stakedData = await getStakedData(staking.address, network.web3_provider_url, staking.abi);
       const tokenPriceUsd = await getTokenPrice(token.coingecko_coin_ticker);
       const plans = await getAvailablePlans();
 
@@ -180,7 +182,7 @@ const Home: NextPage = () => {
   }
 
   async function getAvailablePlans(): Promise<Plan[]> {
-    const plans = await getPlans(staking.plan_ids, staking.address, network.web3_provider_url);
+    const plans = await getPlans(staking.plan_ids, staking.address, network.web3_provider_url, staking.abi);
 
     setAppState((prevState) => ({
       ...prevState,
@@ -199,10 +201,10 @@ const Home: NextPage = () => {
     <Layout>
       <Web3ReactProvider getLibrary={getLibrary}>
         <WalletConnect
-          appLoaded={!loading}
+          appLoaded={!isLoading}
           loadWallet={loadWallet}
         />
-        {site.show_tvl_bar && (
+        {site?.show_tvl_bar && (
           <InfoBar tokenUsd={appState.tokenUsd}
                    tokenLockedTotal={appState.tokenLockedTotal}
           />
