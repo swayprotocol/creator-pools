@@ -59,6 +59,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
         social: staking.channels[0].prefix
       }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.modalData]);
 
   useEffect(() => {

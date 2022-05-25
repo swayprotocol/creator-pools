@@ -26,11 +26,16 @@ import { getFarmedAmount } from '../helpers/getFarmedAmount';
 import { getMaxPlanByDate } from '../helpers/getMaxPlanByDate';
 import { useConfig } from '../contexts/Config';
 import getStakingAbi from '../helpers/getStakingAbi';
+import { GetStaticProps } from 'next';
 
 declare global {
   interface Window {
     ethereum: any;
   }
+}
+
+type Props = {
+  globalConfig: any
 }
 
 const initialAppState = {
@@ -49,7 +54,7 @@ function initialiseAnalytics(trackingId: string) {
   ReactGA.initialize(trackingId);
 }
 
-const Home: NextPage = () => {
+const Home: NextPage<Props> = ({ globalConfig }) => {
   const [appState, setAppState] = useState(initialAppState);
   const [showModal, setShowModal] = useState<'STAKE' | 'NEWSLETTER' | ''>('');
   const [walletId, setWalletId] = useState('');
@@ -77,6 +82,7 @@ const Home: NextPage = () => {
       setAppState(prevState => ({...prevState, tokenUserTotal: availableTokens}))
     }
     if (walletId) getUserTokenAmount();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletId, refreshData]);
 
   async function loadWallet(connector: AbstractConnector, library: Web3Provider) {
@@ -198,7 +204,7 @@ const Home: NextPage = () => {
   }
 
   return (
-    <Layout>
+    <Layout config={globalConfig}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <WalletConnect
           appLoaded={!isLoading}
@@ -260,3 +266,14 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
+export const getStaticProps: GetStaticProps = async () => {
+  const res = await fetch(process.env.NEXT_PUBLIC_CONFIG_URL);
+  const data = await res.json()
+
+  return {
+    props: {
+      globalConfig: data
+    }
+  }
+}
