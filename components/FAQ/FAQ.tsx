@@ -21,24 +21,8 @@ const FAQ: FC = () => {
     <section className="mt-5 mb-4">
       <div className="container">
         <div className="row">
-          <div className="col-12 col-md-10">
-            <h2 className="mb-4">FAQ</h2>
-
-            {site.faq.map(question => (
-              <div className={styles.questionItem} key={question.title}>
-                <h4 className={styles.questionItemTitle} onClick={() => expandQuestion(question.title)}>
-                  <div className={`${styles.questionList} ${openQuestions[question.title] ? styles.questionOpened : ''}`}>▶</div>
-                  {question.title}
-                </h4>
-                {openQuestions[question.title] && (
-                  <div dangerouslySetInnerHTML={{ __html: question.content }}/>
-                )}
-              </div>
-            ))}
-
-          </div>
+            <h2 className="questionTitle">What is staking?</h2>
         </div>
-        <hr className="mt-5"/>
       </div>
     </section>
   );

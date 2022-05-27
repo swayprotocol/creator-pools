@@ -7,18 +7,31 @@ type BarType = {
 }
 
 const InfoBar: FC<BarType> = (props: BarType) => {
-  const { token } = useConfig();
+  const { token1 } = useConfig();
 
   return (
     <div className="info-bar">
       {(props.tokenUsd * props.tokenLockedTotal > 0) && (
-        <div className="container">
-          <div className="row">
-            <p>
-              <strong>{(props.tokenLockedTotal).toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong> TVL
-              - total {token.ticker} locked in creator pools
-            </p>
-          </div>
+        <div className="d-flex">
+            <div className="info-column d-inline-block border border-white col-6">
+              <div>
+                <ul className={"d-inline"}>
+                  <li>TokenTraxx</li>
+                  <li>Discover</li>
+                  <li>Artists</li>
+                  <li>My NFTs</li>
+                  <li>Creator Hub</li>
+                </ul>
+              </div>
+            </div>
+            <div className="info-column d-inline-block border border-white col-6">
+              <div className={"myWallet"}>
+                <a>
+                  My wallet
+                </a>
+              </div>
+            </div>
+
         </div>
       )}
     </div>

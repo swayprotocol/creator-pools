@@ -16,7 +16,7 @@ type StakedItem = {
 
 const StakedItem: FC<StakedItem> = (props: StakedItem) => {
   const [isExpanded, setExpanded] = useState(false);
-  const { token } = useConfig();
+  const { token1 } = useConfig();
 
   return (
     <div className={`${styles.itemWrapper} ${isExpanded ? styles.itemWrapperActive : ''}`}>
@@ -35,7 +35,7 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
           <strong>{props.channel.totalAmount.toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong>
         </div>
         <div className={styles.tableItem}>
-          <strong>{props.channel.userTotalAmount.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token.ticker}</strong>
+          <strong>{props.channel.userTotalAmount.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token1.ticker}</strong>
           <div>{(props.channel.userTotalAmount * props.tokenUsd).toLocaleString('en-US', { maximumFractionDigits: 0 })} USD</div>
         </div>
         <div className={styles.tableItem}>

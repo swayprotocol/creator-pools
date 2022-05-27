@@ -22,7 +22,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
   const [reward, setReward] = useState(0);
 
   const { account } = useWeb3React<Web3Provider>();
-  const { token } = useConfig();
+  const { token1 } = useConfig();
 
   useEffect(() => {
     const longPoolhandle = setSocialPrefix(props.channel.poolHandle, props.channel.social);
@@ -65,7 +65,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
             <strong>#{position.indexInPool + 1}</strong>
           </div>
           <div className={styles.tableItem}>
-            <strong>{position.amount.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token.ticker}</strong>
+            <strong>{position.amount.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token1.ticker}</strong>
           </div>
           <div className={styles.tableItem}>
             {position.plan.apy}%
@@ -119,8 +119,8 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
                 Claim
               </button>
             ) : (
-              <a target="_blank" rel="noopener noreferrer" href={token.exchange_url}>
-                Get {token.ticker}
+              <a target="_blank" rel="noopener noreferrer" href={token1.exchange_url}>
+                Get {token1.ticker}
               </a>
           )}
         </div>

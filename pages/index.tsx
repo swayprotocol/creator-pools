@@ -59,7 +59,7 @@ const Home: NextPage = () => {
   const [modalData, setModalData] = useState<ModalData>({});
   const [dataLoadError, setDataLoadError] = useState(false);
   const [refreshData, doRefreshData] = useState(0);
-  const { token, staking, network, ga_tracking_id, site } = useConfig();
+  const { token1, staking, network, ga_tracking_id, site } = useConfig();
 
   useEffect(() => {
     initialiseAnalytics(ga_tracking_id);
@@ -71,7 +71,7 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     async function getUserTokenAmount() {
-      const availableTokens = await getUserAvailableTokens(walletId, token.address, network.web3_provider_url);
+      const availableTokens = await getUserAvailableTokens(walletId, token1.address, network.web3_provider_url);
       setAppState(prevState => ({...prevState, tokenUserTotal: availableTokens}))
     }
     if (walletId) getUserTokenAmount();
@@ -111,7 +111,7 @@ const Home: NextPage = () => {
   async function getGeneralData() {
     try {
       const stakedData = await getStakedData(staking.address, network.web3_provider_url);
-      const tokenPriceUsd = await getTokenPrice(token.coingecko_coin_ticker);
+      const tokenPriceUsd = await getTokenPrice(token1.coingecko_coin_ticker);
       const plans = await getAvailablePlans();
 
       // calculate data for different columns

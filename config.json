@@ -1,7 +1,7 @@
 {
   "site": {
     "author": "Sway Social",
-    "heading": "Creator Pools",
+    "heading": "Creator Hub",
     "sub_heading": "v0.2 Beta",
     "meta": {
       "title": "Creator Pools | Sway Social",
@@ -33,6 +33,11 @@
       }
     ],
     "footer": {
+      "twitter_logo": "/assets/twitter-logo.svg",
+      "telegram_logo": "/assets/telegram-logo.svg",
+      "discord_logo": "/assets/discord-logo.svg",
+      "medium_logo": "/assets/medium-logo.svg",
+
       "links": [
         {
           "title": "https://swaysocial.org",
@@ -69,7 +74,7 @@
     ]
   },
   "theme": {
-    "font_url": "https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500&display=swap",
+    "font_url": "https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap",
     "main": {
       "--bs-body-color": "#232323",
       "--bs-body-bg": "#fff",
@@ -82,13 +87,21 @@
       "--bs-body-color": "#fff",
       "--bs-body-bg": "#0c0c0c",
       "--text-dark": "#eeeeee",
-      "--bs-body-font-family": "Chakra Petch",
+      "--bs-body-font-family": "Inter",
       "--active-stakes-bg": "#1f2426",
       "--active-stakes-item-bg": "#242d30"
     },
     "hasAltTheme": true
   },
-  "token": {
+  "token1": {
+    "address": "0x262b8aa7542004f023b0eb02bc6b96350a02b728",
+    "ticker": "TRAXX",
+    "logo": "/assets/favicon-137x137.png",
+    "coingecko_coin_ticker": "sway-social",
+    "exchange_url": "https://quickswap.exchange/#/swap?outputCurrency=0x262b8aa7542004f023b0eb02bc6b96350a02b728",
+    "circulating_supply": 10917462
+  },
+  "token2": {
     "address": "0x262b8aa7542004f023b0eb02bc6b96350a02b728",
     "ticker": "SWAY",
     "logo": "/assets/favicon-137x137.png",

@@ -60,7 +60,6 @@ const Pools: FC<PoolsProps> = (props: PoolsProps) => (
           <p>Please try again in a few minutes.</p>
         </div>
       )}
-      <hr/>
     </div>
   </section>
 );

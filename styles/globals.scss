@@ -22,16 +22,40 @@ hr {
   --bs-gutter-x: 4rem;
 }
 
+.connect {
+  margin-left: auto;
+  text-align: right;
+}
+
+.red-text {
+  color: #FF1246;
+  text-decoration: none;
+  cursor: pointer;
+}
+
 .overview-item {
   margin-bottom: 0.5rem;
   .overview-item-name {
+    margin-right: 20px;
+    font-weight: 700;
+    font-size: 16px;
+    color: #FF1246;
+  }
+  .overview-item-token-ticker{
+    font-weight: 700;
+    font-size: 24px;
+    display: inline-block;
+  }
+  .overview-item-inline {
     display: inline-block;
     margin-right: 20px;
+    font-weight: 400;
+    font-size: 18px;
   }
 
   .overview-item-value {
-    font-weight: 600;
-    font-size: 24px;
+    font-weight: 500;
+    font-size: 32px;
     display: inline-block;
     margin-right: 20px;
   }
@@ -253,9 +277,12 @@ select {
     }
   }
 }
-
+.info-column {
+  border: 1px solid #FFFFFF;
+  backdrop-filter: blur(50px);
+}
 .info-bar {
-  background-color: #606060;
+
   color: #fff;
   text-align: center;
   font-size: 15px;
@@ -263,7 +290,92 @@ select {
   p {
     margin: 5px 0;
   }
+
+  .myWallet {
+    text-align: right;
+  }
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333333;
+  }
+
+
+  li {
+    float: left;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 16px;
+    text-decoration: none;
+  }
+
 }
+
+footer {
+  ul {
+    list-style-type: none;
+    margin-bottom: 24px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    padding: 0;
+  }
+
+  .footer-paragraph {
+    margin-left: 18px;
+
+  }
+
+  .footer-copyright {
+    margin: 15px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+  }
+
+  .footer-column {
+    border: 1px solid #FFFFFF;
+
+  }
+
+  .footer-heading {
+    margin-top: 12px;
+    margin-left: 18px;
+    font-weight: 400;
+    font-size: 60px;
+    line-height: 60px;
+  }
+
+  .footer-subheading {
+    margin-top: 16px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 83px;
+  }
+
+  .footer-description {
+    margin-top: 5px;
+    margin-left: 18px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+  }
+  img {
+    margin-bottom: 15px;
+    margin-right: 18px;
+  }
+}
+
 
 .modal {
   display: block;
@@ -282,4 +394,8 @@ select {
 
 .error-text {
   color: #ED4337;
+}
+
+.questionTitle {
+  text-align: center;
 }

@@ -36,7 +36,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
   const [reward, setReward] = useState(0);
 
   const { library, account } = useWeb3React<Web3Provider>();
-  const { token, staking } = useConfig();
+  const { token1, staking } = useConfig();
 
   useEffect(() => {
     if (props.modalData.channel) {
@@ -112,7 +112,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
 
       try {
         // check allowance and give permissions
-        const tokenContract = new Contract(token.address, TOKEN_ABI, library.getSigner());
+        const tokenContract = new Contract(token1.address, TOKEN_ABI, library.getSigner());
         const allowance = await tokenContract.allowance(account, staking.address);
         if (allowance.lte(stakeData.amount)) {
           const allowUnlimited = BigNumber.from(2).pow(256).sub(1);
@@ -319,7 +319,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                   <div className="form-group row">
                     <label className="col-sm-3">Staked</label>
                     <div className={`${styles.tokenAvailable} col-sm-9`}>
-                      <img src={token.logo} alt={token.ticker} height="20"/>
+                      <img src={token1.logo} alt={token1.ticker} height="20"/>
                       <span>{props.modalData.channel?.userTotalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         {' '}staked in {props.modalData.channel?.positions.length} positions</span>
                     </div>
@@ -353,7 +353,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                         <div className="after-element" onClick={() => handleChange('amount', props.tokenUserTotal)}>MAX</div>
                       </div>
                       <div className={`${styles.tokenAvailable} col-sm-5`}>
-                        <img src={token.logo} alt={token.ticker} height="20"/>
+                        <img src={token1.logo} alt={token1.ticker} height="20"/>
                         <span>{(+props.tokenUserTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} available</span>
                       </div>
                     </div>
@@ -385,7 +385,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                       </div>
                     </div>
                     <div className={`col-sm-5 ${styles.tokenAvailable}`}>
-                      <img src={token.logo} alt={token.ticker} height="20"/>
+                      <img src={token1.logo} alt={token1.ticker} height="20"/>
                       <span>
                         {props.modalData.amount}
                       </span>
@@ -417,7 +417,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
               </form>
             )}
             {(props.modalData.type === ModalType.CLAIM && reward === 0) && (
-              <p>You currently have no {token.ticker} rewards available for claiming.</p>
+              <p>You currently have no {token1.ticker} rewards available for claiming.</p>
             )}
           </div>
         </div>

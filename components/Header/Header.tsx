@@ -64,57 +64,30 @@ const Header = (props: HeaderProps) => {
   return (
     <section className="mb-5">
       <div className="container">
-        <div>
+        <div className="pt-5">
+          <div className={"d-flex justify-content-between"}>
 
-          <div className={`${styles.topSection} my-3`}>
-            <div className="header-title">
-              <h1 className="d-inline me-3">{site.heading}</h1>
-              <span>{site.sub_heading}</span>
-            </div>
-            <div className="d-flex">
-              {site.networks.map(network => (
-                <div className={styles.networkItem} key={network.name}>
-                  <div className={`${styles.networkItemStatus} ${network.active ? styles.active : ''}`}/>
-                  <div className={styles.networkItemName}>{network.name}</div>
-                </div>
-              ))}
-              {theme.hasAltTheme && (
-                <div className={styles.themeButtonWrapper}>
-                  <button className={styles.themeButton} onClick={() => setTheme(colorTheme)}>
-                    <svg width="20" height="20" viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                      <path d="m275.4 500.7c-135 0-244.7-109.8-244.7-244.7s109.8-244.7 244.7-244.7c8.2 0 16.4.4 24.6 1.2 7.2.7 13.5 5.2 16.5 11.7s2.4 14.2-1.6 20.2c-23 33.8-35.2 73.3-35.2 114.2 0 105 78.7 192.2 183.2 202.6 7.2.7 13.5 5.2 16.5 11.7 3.1 6.5 2.4 14.2-1.6 20.2-45.8 67.4-121.4 107.6-202.4 107.6zm-12.5-448c-106.5 6.5-191.2 95.2-191.2 203.3 0 112.3 91.4 203.7 203.7 203.7 56.4 0 109.6-23.4 147.8-63.7-46.2-11.7-88.1-36.8-120.8-72.6-41.1-45.2-63.8-103.6-63.8-164.6.1-37.1 8.4-73.2 24.3-106.1z"/>
-                    </svg>
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className={`${styles.topSection} my-1`}>
-            {site.show_powered_by && (
-              <div className="d-flex align-items-center">
-                <h5 className="d-inline-block me-2 mb-0">Powered by</h5>
-                <a href="https://swaysocial.org/" rel="noreferrer" target="_blank" title="Sway Social">
-                  <img src="/assets/logo.svg" width="100" alt="Sway Social"/>
-                </a>
+            <div className={"d-inline-block col-sm-8"}>
+              <div className="header-title">
+                <h1 className="d-inline d-flex py-3">{site.heading}</h1>
               </div>
-            )}
-            <div className="connect ms-auto">
-              {!active ? (
-                <button className="btn" onClick={connectWallet}>
-                  Connect
-                </button>
-              ) : (
-                <button className="btn btn-secondary" onClick={async () => {
-                  await deactivate();
-                  props.disconnectWallet();
-                }}>
-                  {getWalletShorthand(account)}
-                </button>
-              )}
             </div>
-          </div>
 
+            <div className={"d-inline-flex col-sm-2 text-right"}>
+
+              <div className="connect d-inline d-flex py-3">
+                {!active ? (
+                    <div>You need to <a className={"red-text"} id="text" onClick={connectWallet}> connect your wallet</a> to start staking.</div>
+                ) : (
+                    <div>Your wallet <a className={"red-text"} id="text" onClick={async () => {
+                      await deactivate();
+                      props.disconnectWallet();
+                    }}> {getWalletShorthand(account)}</a> is connected.</div>
+                    )}
+              </div>
+            </div>
+
+        </div>
           <hr/>
 
         </div>

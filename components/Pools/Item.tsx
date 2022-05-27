@@ -15,7 +15,7 @@ type Item = {
 }
 
 const Item: FC<Item> = (props: Item) => {
-  const { token } = useConfig();
+  const { token1 } = useConfig();
 
   return (
     <div className={styles.itemWrap}>
@@ -54,7 +54,7 @@ const Item: FC<Item> = (props: Item) => {
         </div>
         <div>
           {props.type === PoolItemType.TOP && (
-            <div className={styles.subText}>{props.item.amount.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token.ticker}</div>
+            <div className={styles.subText}>{props.item.amount.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token1.ticker}</div>
           )}
           {props.type === PoolItemType.LATEST && (
             <div className={styles.subText}>
