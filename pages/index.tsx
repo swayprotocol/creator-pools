@@ -96,7 +96,7 @@ const Home: NextPage<Props> = ({ globalConfig }) => {
     })
 
     let signer = library.getSigner();
-    const stakingAbi = await getStakingAbi(process.env.NEXT_PUBLIC_ENV || 'PRODUCTION');
+    const stakingAbi = await getStakingAbi();
     const stakingContract = new ethers.Contract(staking.address, stakingAbi, signer);
     const walletId = await connector.getAccount();
 
@@ -118,7 +118,7 @@ const Home: NextPage<Props> = ({ globalConfig }) => {
 
   async function getGeneralData() {
     try {
-      const stakedData = await getStakedData(staking.address, network.web3_provider_url, process.env.NEXT_PUBLIC_ENV || 'PRODUCTION');
+      const stakedData = await getStakedData(staking.address, network.web3_provider_url);
       const tokenPriceUsd = await getTokenPrice(token.coingecko_coin_ticker);
       const plans = await getAvailablePlans();
 
@@ -188,7 +188,7 @@ const Home: NextPage<Props> = ({ globalConfig }) => {
   }
 
   async function getAvailablePlans(): Promise<Plan[]> {
-    const plans = await getPlans(staking.plan_ids, staking.address, network.web3_provider_url, process.env.NEXT_PUBLIC_ENV || 'PRODUCTION');
+    const plans = await getPlans(staking.plan_ids, staking.address, network.web3_provider_url);
 
     setAppState((prevState) => ({
       ...prevState,
