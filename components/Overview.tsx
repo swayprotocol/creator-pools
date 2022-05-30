@@ -1,19 +1,37 @@
-import React, { FC } from 'react';
-import { IChannelDistributionItem, IPlan } from '../shared/interfaces';
+import React, { FC, useEffect, useState } from 'react';
 import { useConfig } from '../contexts/Config';
+import CommonService from '../services/Common';
 
 type OverviewProps = {
-  tokenLockedTotal: number,
-  distribution: IChannelDistributionItem[],
-  totalRewards: number,
-  totalStakes: number,
-  maxApyPlan: IPlan
+  tokenLockedTotal: number
 }
+
+const initialOverviewState = {
+  distribution: [],
+  totalRewards: 0,
+  maxApyPlan: undefined
+};
 
 const Overview: FC<OverviewProps> = (props: OverviewProps) => {
   const { token } = useConfig();
+  const [overviewState, setOverviewState] = useState(initialOverviewState);
 
-  const getSupplyLocked = (amount: number): string => {
+  useEffect(() => {
+    getOverviewData();
+  }, []);
+
+  async function getOverviewData() {
+    const maxApyPlan = await CommonService.getMaxApyPlan();
+    const totalRewards = await CommonService.getTotalRewards();
+
+    setOverviewState((prevState) => ({
+      ...prevState,
+      totalRewards: totalRewards,
+      maxApyPlan: maxApyPlan
+    }));
+  }
+
+  const getSupplyLockedPercentage = (amount: number): string => {
     if (!token?.circulating_supply) return (0).toFixed(2);
     return (amount / token?.circulating_supply * 100).toFixed(2);
   }
@@ -35,16 +53,16 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
                 {props.tokenLockedTotal.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token?.ticker}
               </div>
               <div className="overview-item-name">
-                {getSupplyLocked(props.tokenLockedTotal)}% of circulating supply
+                {getSupplyLockedPercentage(props.tokenLockedTotal)}% of circulating supply
               </div>
             </div>
             <div className="overview-item">
               <div className="overview-item-name">APY MAX</div>
-              <div className="overview-item-value">{props.maxApyPlan?.apy || 0}%</div>
+              <div className="overview-item-value">{overviewState.maxApyPlan?.apy || 0}%</div>
             </div>
             <div className="overview-item">
               <div className="overview-item-name">TOTAL REWARDS EARNED</div>
-              <div className="overview-item-value">{props.totalRewards.toLocaleString('en-US', { maximumFractionDigits: 2 })} {token?.ticker}</div>
+              <div className="overview-item-value">{overviewState.totalRewards.toLocaleString('en-US', { maximumFractionDigits: 2 })} {token?.ticker}</div>
             </div>
           </div>
           <div className="col-12 col-sm-4">
@@ -53,9 +71,9 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
                 CHANNEL DISTRIBUTION
               </div>
               <div className="overview-item-channels col-5">
-                {props.distribution.map((item) => (
+                {overviewState.distribution.map((item) => (
                   <div className="overview-item-channels-item" key={item.prefix}>
-                    {item.name} {calcPercentage(item.count, props.totalStakes)}%
+                    {item.name} {calcPercentage(item.count, 10)}%
                   </div>
                 ))}
               </div>

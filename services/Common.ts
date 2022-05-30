@@ -113,6 +113,26 @@ const CommonService = {
         throw Error(error);
       });
   },
+
+  getTotalCurrentlyStaked: (): Promise<number> => {
+    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/stake/totalCurrentlyStaked`, {
+      method: 'GET',
+      headers,
+    }).then(handleResponse)
+      .catch(error => {
+        throw Error(error);
+      });
+  },
+
+  getTotalRewards: (): Promise<number> => {
+    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/claim/totalRewards`, {
+      method: 'GET',
+      headers,
+    }).then(handleResponse)
+      .catch(error => {
+        throw Error(error);
+      });
+  },
 };
 
 export default CommonService;

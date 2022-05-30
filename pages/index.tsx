@@ -129,7 +129,7 @@ const Home: NextPage<Props> = ({ globalConfig }) => {
         topPositions: topPositions,
         tokenUsd: tokenPriceUsd
       }));
-      getActivePlans();
+      await getActivePlans();
     } catch (err) {
       setDataLoadError(true);
     }
@@ -139,12 +139,12 @@ const Home: NextPage<Props> = ({ globalConfig }) => {
     let activePlans = await CommonService.getActivePlans();
     // sort by high to low APY
     activePlans.sort((a: { apy: number; }, b: { apy: number; }) => (b.apy - a.apy));
-    const maxApyPlan = await CommonService.getMaxApyPlan();
+    const totalLocked = await CommonService.getTotalCurrentlyStaked();
 
     setAppState((prevState) => ({
       ...prevState,
       activePlans: activePlans,
-      maxApyPlan: maxApyPlan
+      tokenLockedTotal: totalLocked
     }));
   }
 
@@ -175,13 +175,7 @@ const Home: NextPage<Props> = ({ globalConfig }) => {
                   plans={appState.activePlans}
           />
         )}
-        <Overview tokenLockedTotal={appState.tokenLockedTotal}
-                  maxApyPlan={appState.maxApyPlan}
-                  distribution={appState.distribution}
-                  totalRewards={appState.totalRewardsFarmed}
-                  // todo
-                  totalStakes={appState.latestStakes.length}
-        />
+        <Overview tokenLockedTotal={appState.tokenLockedTotal}/>
         <Pools top={appState.topPools.slice(0, 10)}
                latest={appState.latestStakes}
                positions={appState.topPositions.slice(0, 10)}
