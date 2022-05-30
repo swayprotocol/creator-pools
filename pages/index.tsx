@@ -172,7 +172,6 @@ const Home: NextPage<Props> = ({ globalConfig }) => {
                   tokenUsd={appState.tokenUsd}
                   tokenUserTotal={appState.tokenUserTotal}
                   refreshData={refreshData}
-                  plans={appState.activePlans}
           />
         )}
         <Overview tokenLockedTotal={appState.tokenLockedTotal}/>

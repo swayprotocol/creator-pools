@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import styles from './index.module.scss';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import Item from './Item';
-import { IChannel, IStake, ModalData, ModalType, Plan } from '../../shared/interfaces';
+import { IChannel, IStake, ModalData, ModalType } from '../../shared/interfaces';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { useConfig } from '../../contexts/Config';
@@ -13,8 +13,7 @@ type StakesType = {
   contract: any,
   tokenUsd: number,
   tokenUserTotal: string,
-  refreshData: number,
-  plans: Plan[]
+  refreshData: number
 }
 
 const Stakes: FC<StakesType> = (props: StakesType) => {
