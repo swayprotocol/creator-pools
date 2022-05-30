@@ -5,9 +5,9 @@ import { StakedEvent } from '../shared/interfaces';
 import { getSocialType } from './getSocialType';
 import getStakingAbi from './getStakingAbi';
 
-export function getStakedData(address: string, provider: string, abiFile: string): Promise<StakedEvent[]> {
+export async function getStakedData(address: string, provider: string): Promise<StakedEvent[]> {
   const rpcProvider = new JsonRpcProvider(provider);
-  const stakingAbi = getStakingAbi(abiFile);
+  const stakingAbi = await getStakingAbi();
   const stakingContract = new Contract(address!, stakingAbi, rpcProvider);
 
   // filter by 'Staked' event only

@@ -96,7 +96,7 @@ const Home: NextPage<Props> = ({ globalConfig }) => {
     })
 
     let signer = library.getSigner();
-    const stakingAbi = getStakingAbi(staking.abi);
+    const stakingAbi = await getStakingAbi();
     const stakingContract = new ethers.Contract(staking.address, stakingAbi, signer);
     const walletId = await connector.getAccount();
 
