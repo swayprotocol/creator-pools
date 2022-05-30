@@ -4,16 +4,16 @@ import { Web3Provider } from '@ethersproject/providers';
 import { ethers } from 'ethers';
 import Moment from 'react-moment';
 import styles from './Positions.module.scss';
-import { Channel, ChannelPosition, ModalData, ModalType } from '../../shared/interfaces';
+import { IChannel, IStake, ModalData, ModalType } from '../../shared/interfaces';
 import { setSocialPrefix } from '../../helpers/getSocialType';
 import { useConfig } from '../../contexts/Config';
 
 type ItemPositions = {
   openModal: (modalData: ModalData) => any
-  positions: ChannelPosition[],
+  stakes: IStake[],
   tokenUsd: number,
   tokenUserTotal: string,
-  channel: Channel,
+  channel: IChannel,
   contract: any
 }
 
@@ -58,29 +58,29 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
         </div>
       </div>
 
-      {props.positions.map((position, i) => (
+      {props.stakes.map((stake, i) => (
         <div className={styles.item} key={i}>
           <div className={styles.spacing}/>
           <div className={`${styles.tableItem} ${styles.textRight}`}>
-            <strong>#{position.indexInPool + 1}</strong>
+            <strong>#{i + 1}</strong>
           </div>
           <div className={styles.tableItem}>
-            <strong>{position.amount.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token.ticker}</strong>
+            <strong>{stake.amount.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token.ticker}</strong>
           </div>
           <div className={styles.tableItem}>
-            {position.plan.apy}%
+            {stake.plan.apy}%
           </div>
           <div className={styles.tableItem}>
-            {+position.unlockTime < +new Date() ? (
+            {+new Date(stake.stakedUntil) < +new Date() ? (
               <button className="btn btn-secondary" onClick={() => openStakeModal(ModalType.UNSTAKE, '')}>
                 Unstake
               </button>
             ) : (
-              <Moment to={position.unlockTime} withTitle titleFormat="D MMM YYYY hh:mm:ss"/>
+              <Moment to={stake.stakedUntil} withTitle titleFormat="D MMM YYYY hh:mm:ss"/>
             )}
           </div>
           <div className={styles.tableItem}>
-            <strong>{position.farmed.toLocaleString('en-US', { maximumFractionDigits: 2 })}</strong>
+            {/*<strong>{stake.farmed.toLocaleString('en-US', { maximumFractionDigits: 2 })}</strong>*/}
           </div>
         </div>
       ))}

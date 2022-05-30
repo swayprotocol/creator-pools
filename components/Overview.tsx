@@ -1,30 +1,17 @@
-import React, { FC, useEffect, useState } from 'react';
-import { IChannelDistributionItem, Plan } from '../shared/interfaces';
-import { filterPlans } from '../helpers/filterPlans';
+import React, { FC } from 'react';
+import { IChannelDistributionItem, IPlan } from '../shared/interfaces';
 import { useConfig } from '../contexts/Config';
 
 type OverviewProps = {
   tokenLockedTotal: number,
-  tokenUsd: number,
-  plans: Plan[],
   distribution: IChannelDistributionItem[],
   totalRewards: number,
-  totalStakes: number
+  totalStakes: number,
+  maxApyPlan: IPlan
 }
 
-const defaultPlan = { apy: 0, planId: 0 } as Plan;
-
 const Overview: FC<OverviewProps> = (props: OverviewProps) => {
-  const [maxPlan, setMaxPlan] = useState<Plan>(defaultPlan);
   const { token } = useConfig();
-
-  useEffect(() => {
-    if (props.plans.length) {
-      const activePlans = filterPlans(props.plans);
-      setMaxPlan(activePlans[0]);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.plans.length]);
 
   const getSupplyLocked = (amount: number): string => {
     if (!token?.circulating_supply) return (0).toFixed(2);
@@ -53,7 +40,7 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
             </div>
             <div className="overview-item">
               <div className="overview-item-name">APY MAX</div>
-              <div className="overview-item-value">{maxPlan.apy}%</div>
+              <div className="overview-item-value">{props.maxApyPlan?.apy || 0}%</div>
             </div>
             <div className="overview-item">
               <div className="overview-item-name">TOTAL REWARDS EARNED</div>

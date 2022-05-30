@@ -5,10 +5,9 @@ import { Web3Provider } from '@ethersproject/providers';
 import styles from './Modal.module.scss';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
 import TOKEN_ABI from '../../shared/abis/token-abi.json';
-import { filterPlans } from '../../helpers/filterPlans';
 import { setSocialPrefix } from '../../helpers/getSocialType';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
-import { ModalData, ModalType, Plan, StakeData } from '../../shared/interfaces';
+import { IPlan, ModalData, ModalType, StakeData } from '../../shared/interfaces';
 import { useConfig } from '../../contexts/Config';
 
 type ModalProps = {
@@ -16,7 +15,7 @@ type ModalProps = {
   modalData: ModalData,
   contract: any,
   tokenUserTotal: string,
-  plans: Plan[]
+  activePlans: IPlan[]
 }
 
 const initialModalData: StakeData = {
@@ -32,7 +31,6 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
   const [callError, setCallError] = useState('');
   const [loading, setLoading] = useState(false);
   const [disableEditing, setDisableEditing] = useState(false);
-  const [activePlans, setActivePlans] = useState<Plan[]>([]);
   const [reward, setReward] = useState(0);
 
   const { library, account } = useWeb3React<Web3Provider>();
@@ -63,16 +61,14 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
   }, [props.modalData]);
 
   useEffect(() => {
-    if (props.plans.length) {
-      const activePlans = filterPlans(props.plans);
-      setActivePlans(activePlans);
+    if (props.activePlans.length) {
       setFormData((prevState) => ({
         ...prevState,
-        planId: activePlans[0].planId.toString()
+        planId: props.activePlans[0].blockchainIndex.toString()
       }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.plans.length]);
+  }, [props.activePlans.length]);
 
   const handleCloseClick = (e) => {
     e.preventDefault();
@@ -243,7 +239,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
   }
 
   const getStakingMonthsDuration = (planId: string) => {
-    return activePlans.find(plan => plan.planId.toString() === planId)?.lockMonths;
+    return props.activePlans.find(plan => plan.blockchainIndex.toString() === planId)?.lockMonths;
   }
 
   return (
@@ -321,8 +317,8 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                     <label className="col-sm-3">Staked</label>
                     <div className={`${styles.tokenAvailable} col-sm-9`}>
                       <img src={token.logo} alt={token.ticker} height="20"/>
-                      <span>{props.modalData.channel?.userTotalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        {' '}staked in {props.modalData.channel?.positions.length} positions</span>
+                      <span>{props.modalData.channel?.userTotalStaked.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {' '}staked in {props.modalData.channel?.stakes.length} positions</span>
                     </div>
                   </div>
                 )}
@@ -365,8 +361,8 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                                 id="planId"
                                 value={formData.planId}
                                 onChange={(e) => handleChange('planId', e.target.value)}>
-                          {activePlans.map(plan => (
-                            <option value={plan.planId} key={plan.planId}>{plan.apy}%</option>
+                          {props.activePlans.map(plan => (
+                            <option value={plan.blockchainIndex} key={plan.blockchainIndex}>{plan.apy}%</option>
                           ))}
                         </select>
                       </div>

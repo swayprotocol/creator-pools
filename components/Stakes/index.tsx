@@ -2,14 +2,11 @@ import React, { FC, useEffect, useState } from 'react';
 import styles from './index.module.scss';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import Item from './Item';
-import { Channel, ChannelPosition, ModalData, ModalType, Plan } from '../../shared/interfaces';
-import { ethers } from 'ethers';
+import { IChannel, IStake, ModalData, ModalType, Plan } from '../../shared/interfaces';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
-import { getFarmedAmount } from '../../helpers/getFarmedAmount';
-import { getPlanById } from '../../helpers/getPlanById';
-import { getSocialType } from '../../helpers/getSocialType';
 import { useConfig } from '../../contexts/Config';
+import CommonService from '../../services/Common';
 
 type StakesType = {
   openModal: (modalData: ModalData) => any,
@@ -21,7 +18,7 @@ type StakesType = {
 }
 
 const Stakes: FC<StakesType> = (props: StakesType) => {
-  const [channels, setChannels] = useState<Channel[]>([]);
+  const [userStakes, setUserStakes] = useState<IChannel[]>([]);
 
   const { account } = useWeb3React<Web3Provider>();
   const { token } = useConfig();
@@ -31,100 +28,36 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.contract, props.refreshData, account]);
 
-  useEffect(() => {
-    if (props.plans.length) {
-      calculateAPY(channels);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.plans.length]);
-
   async function loadData() {
-    const activeChannels: any[] = await props.contract.getUserQueue(account);
-    const allPoolHandles = activeChannels.map(channel => channel.poolHandle).filter(name => !!name);
-    let poolsData: any[] = [];
-    if (allPoolHandles.length) {
-      // @ts-ignore
-      const uniquePoolHandles = [...new Set(allPoolHandles)];
-      poolsData = await props.contract.getMultiplePools(uniquePoolHandles);
-      poolsData = poolsData.map((pool, i) => ({ ...pool, poolHandle: uniquePoolHandles[i] }));
-    }
-
-    formatData(activeChannels, poolsData);
+    const stakedData = await CommonService.getUserActiveStakes(account);
+    formatStakedData(stakedData);
   }
 
-  function formatData(activeChannels: any[], poolsData: any[]) {
-    const formatChannels: ChannelPosition[] = activeChannels.map((channel) => {
-      const stakedAtDate = new Date(+ethers.utils.formatUnits(channel.stakedAt, 0) * 1000);
-      const unlockTimeDate = new Date(+ethers.utils.formatUnits(channel.unlockTime, 0) * 1000);
-      const amount = +ethers.utils.formatEther(channel.amount);
-      return {
-        amount: amount,
-        indexInPool: +ethers.utils.formatUnits(channel.indexInPool, 0),
-        planId: channel.planId,
-        plan: { apy: 0 } as Plan,
-        poolHandle: channel.poolHandle,
-        social: getSocialType(channel.poolHandle),
-        stakedAt: stakedAtDate,
-        unlockTime: unlockTimeDate,
-        farmed: 0
+  function formatStakedData(stakedData: IStake[]) {
+
+    let formattedData = {} as IChannel[];
+
+    stakedData.forEach((stake) => {
+      formattedData[stake.pool.poolHandle] = {
+        userTotalStaked: formattedData[stake.pool.poolHandle]?.userTotalStaked + stake.amount || stake.amount,
+        poolHandle: stake.pool.poolHandle,
+        social: stake.pool.social,
+        userTotalEarned: 0,
+        stakes: [... formattedData[stake.pool.poolHandle]?.stakes || [], stake],
+        averageApy: 0,
+        // data from API
+        numberOfStakes: 0,
+        totalAmount: 0
       };
-    });
+    })
 
-    let channels: Channel[] = {} as Channel[];
-    formatChannels.forEach((position: ChannelPosition) => {
-      if (!position.poolHandle) return; // claimed positions return poolHandle: '', let's filter them out
-      const poolDataId = poolsData.findIndex(pool => pool.poolHandle === position.poolHandle);
-      channels[position.poolHandle] = {
-        userTotalAmount: channels[position.poolHandle]?.userTotalAmount + position.amount || position.amount,
-        poolHandle: position.poolHandle.split('-')[1],
-        social: position.social,
-        totalFarmed: 0,
-        positions: [...channels[position.poolHandle]?.positions || [], position],
-        averageAPR: 0,
-        // data from poolsData
-        creator: poolsData[poolDataId]?.creator || '',
-        members: +ethers.utils.formatUnits(poolsData[poolDataId]?.members || 1, 0),
-        numberOfStakes: +ethers.utils.formatUnits(poolsData[poolDataId]?.numberOfStakes || 1, 0),
-        totalAmount: +ethers.utils.formatEther(poolsData[poolDataId]?.totalAmount || 0)
-      };
-    });
+    formattedData = Object.values(formattedData);
+    // set averageApy
+    formattedData.map(channel => channel.averageApy = Math.round(
+      channel.stakes.reduce((value, stake) => value + stake.plan.apy, 0) / channel.stakes.length)
+    );
 
-    channels = Object.values(channels);
-    calculateAPY(channels);
-  }
-
-  function calculateAPY(activeChannels: Channel[]) {
-    let updatedChannels = activeChannels;
-    // calculate apy and farmed amount only if plans present
-    if (props.plans.length) {
-      updatedChannels = activeChannels.map(channel => ({
-        ...channel,
-        positions: channel.positions.map(position => {
-          const positionPlan = getPlanById(position.planId, props.plans);
-          return {
-            ...position,
-            plan: positionPlan,
-            farmed: getFarmedAmount(position.amount, position.stakedAt, position.unlockTime, positionPlan)
-          }
-        }),
-        averageAPR: calculateAverageAPR(channel.positions)
-      }));
-
-      updatedChannels = updatedChannels.map(channel => ({
-        ...channel,
-        totalFarmed: channel.positions.map(position => position.farmed).reduce((a, b) => a + b, 0),
-      }));
-    }
-
-    setChannels(updatedChannels);
-  }
-
-  const calculateAverageAPR = (positions: ChannelPosition[]): number => {
-    // avgApr = (stake1size * apr1 + stake2size * apr2) / (stake1size + stake2size);
-    const averageAPR = positions.map(position => (position.amount * getPlanById(position.planId, props.plans).apy)).reduce((a, b) => a + b, 0) /
-      positions.map(position => position.amount).reduce((a, b) => a + b, 0);
-
-    return Math.round(averageAPR * 100) / 100;
+    setUserStakes(formattedData);
   }
 
   return (
@@ -189,7 +122,7 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
                   </div>
                 </div>
               </div>
-              {channels.length ? channels.map((channelItem, i) => (
+              {userStakes.length ? userStakes.map((channelItem, i) => (
                 <Item key={i}
                       openModal={props.openModal}
                       channel={channelItem}
