@@ -26,11 +26,16 @@ import { getFarmedAmount } from '../helpers/getFarmedAmount';
 import { getMaxPlanByDate } from '../helpers/getMaxPlanByDate';
 import { useConfig } from '../contexts/Config';
 import getStakingAbi from '../helpers/getStakingAbi';
+import { GetStaticProps } from 'next';
 
 declare global {
   interface Window {
     ethereum: any;
   }
+}
+
+type Props = {
+  globalConfig: any
 }
 
 const initialAppState = {
@@ -49,25 +54,27 @@ function initialiseAnalytics(trackingId: string) {
   ReactGA.initialize(trackingId);
 }
 
-const Home: NextPage = () => {
+const Home: NextPage<Props> = ({ globalConfig }) => {
   const [appState, setAppState] = useState(initialAppState);
   const [showModal, setShowModal] = useState<'STAKE' | 'NEWSLETTER' | ''>('');
   const [walletId, setWalletId] = useState('');
-  const [loading, setLoading] = useState(true);
   const [contractData, setContractData] = useState<Contract>();
   const [walletLoaded, setWalletLoaded] = useState(false);
   const [modalData, setModalData] = useState<ModalData>({});
   const [dataLoadError, setDataLoadError] = useState(false);
   const [refreshData, doRefreshData] = useState(0);
-  const { token, staking, network, ga_tracking_id, site } = useConfig();
+  const { token, staking, network, ga_tracking_id, site, isLoading } = useConfig();
 
   useEffect(() => {
-    initialiseAnalytics(ga_tracking_id);
-    ReactGA.pageview('/index');
-    getGeneralData();
-    setLoading(false);
+    if (!isLoading) {
+      getGeneralData();
+    }
+    if (ga_tracking_id) {
+      initialiseAnalytics(ga_tracking_id);
+      ReactGA.pageview('/index');
+    }
     // eslint-disable-next-line
-  }, []);
+  }, [isLoading, ga_tracking_id]);
 
   useEffect(() => {
     async function getUserTokenAmount() {
@@ -75,6 +82,7 @@ const Home: NextPage = () => {
       setAppState(prevState => ({...prevState, tokenUserTotal: availableTokens}))
     }
     if (walletId) getUserTokenAmount();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletId, refreshData]);
 
   async function loadWallet(connector: AbstractConnector, library: Web3Provider) {
@@ -88,7 +96,7 @@ const Home: NextPage = () => {
     })
 
     let signer = library.getSigner();
-    const stakingAbi = getStakingAbi();
+    const stakingAbi = await getStakingAbi();
     const stakingContract = new ethers.Contract(staking.address, stakingAbi, signer);
     const walletId = await connector.getAccount();
 
@@ -196,13 +204,13 @@ const Home: NextPage = () => {
   }
 
   return (
-    <Layout>
+    <Layout config={globalConfig}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <WalletConnect
-          appLoaded={!loading}
+          appLoaded={!isLoading}
           loadWallet={loadWallet}
         />
-        {site.show_tvl_bar && (
+        {site?.show_tvl_bar && (
           <InfoBar tokenUsd={appState.tokenUsd}
                    tokenLockedTotal={appState.tokenLockedTotal}
           />
@@ -258,3 +266,14 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
+export const getStaticProps: GetStaticProps = async () => {
+  const res = await fetch(process.env.NEXT_PUBLIC_CONFIG_URL);
+  const data = await res.json()
+
+  return {
+    props: {
+      globalConfig: data
+    }
+  }
+}

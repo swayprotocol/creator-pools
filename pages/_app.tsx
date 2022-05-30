@@ -4,7 +4,7 @@ import { GlobalConfigProvider } from '../contexts/Config';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <GlobalConfigProvider>
+    <GlobalConfigProvider props={pageProps}>
       <Component {...pageProps} />
     </GlobalConfigProvider>
   )

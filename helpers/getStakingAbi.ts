@@ -1,11 +1,13 @@
-import config from '../config.json';
+async function getStakingAbi(): Promise<any> {
+  const abiEnvName = process.env.NEXT_PUBLIC_ENV || 'PRODUCTION';
+  let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/stakingAbi?name=${abiEnvName.toLowerCase()}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
-function getStakingAbi(){
-  const { staking } = config; 
-
-  const filename = staking.abi;
-  const abi = require(`../shared/abis/${filename}`)
-  return abi;
+  return res.json();
 }
 
 export default getStakingAbi;

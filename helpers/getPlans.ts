@@ -5,7 +5,7 @@ import getStakingAbi from './getStakingAbi';
 
 export async function getPlans(planIds: number[], address: string, provider: string): Promise<Plan[]> {
   const rpcProvider = new JsonRpcProvider(provider);
-  const stakingAbi = getStakingAbi();
+  const stakingAbi = await getStakingAbi();
   const stakingContract = new Contract(address!, stakingAbi, rpcProvider);
 
   return Promise.all(planIds.map(planId => {
