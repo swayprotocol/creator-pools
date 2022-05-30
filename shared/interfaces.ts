@@ -44,14 +44,6 @@ export interface ModalData {
   amount?: string
 }
 
-export interface Plan {
-  planId: number;
-  apy: number;
-  availableUntil: Date;
-  lockMonths: number;
-  createdAt?: Date;
-}
-
 export interface IPlan {
   blockchainIndex: number;
   apy: number;
