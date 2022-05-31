@@ -26,7 +26,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
 
   useEffect(() => {
     const longPoolhandle = setSocialPrefix(props.channel.poolHandle, props.channel.social);
-    calculateReward(longPoolhandle);
+    calculateReward();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -38,9 +38,9 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
     })
   }
 
-  const calculateReward = async (poolHandle) => {
+  const calculateReward = async () => {
     try {
-      const rewardBigNumber = await props.contract.calculateReward(poolHandle,account)
+      const rewardBigNumber = await props.contract.calculateReward(account)
       const reward = ethers.utils.formatEther(rewardBigNumber);
       setReward(parseFloat(reward));
     } catch (error) {

@@ -106,10 +106,6 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
           const awaitTx = await tokenContract.approve(staking.address, allowUnlimited, { gasLimit: 100000 });
           await awaitTx.wait();
         }
-        console.log(tokenContract.address);
-        console.log(formData.poolHandle);
-        console.log(stakeData.amount);
-        console.log(formData.tokenType);
 
         const stakeTx = await props.contract.stake(
           formData.poolHandle,
@@ -331,7 +327,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                       </div>
                     </div>
                     <div className={`col-sm-5 ${styles.tokenAvailable}`}>
-                      <img src={token1.logo} alt={token1.ticker} height="20"/>
+                      <img src={token2.logo} alt={token2.ticker} height="20"/>
                       <span>
                         {props.modalData.amount}
                       </span>

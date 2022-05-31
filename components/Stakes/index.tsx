@@ -65,7 +65,7 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
       const poolDataId = poolsData.findIndex(pool => pool.poolHandle === position.poolHandle);
       channels[position.poolHandle] = {
         userTotalAmount: channels[position.poolHandle]?.userTotalAmount + position.amount || position.amount,
-        poolHandle: position.poolHandle.split('-')[1],
+        poolHandle: position.poolHandle,
         social: position.social,
         totalFarmed: 0,
         positions: [...channels[position.poolHandle]?.positions || [], position],
@@ -74,7 +74,7 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
         creator: poolsData[poolDataId]?.creator || '',
         members: +ethers.utils.formatUnits(poolsData[poolDataId]?.members || 1, 0),
         numberOfStakes: +ethers.utils.formatUnits(poolsData[poolDataId]?.numberOfStakes || 1, 0),
-        totalAmount: +ethers.utils.formatEther(poolsData[poolDataId]?.totalAmount || 0)
+        totalAmount: +ethers.utils.formatEther(poolsData[poolDataId]?.totalAmountSway.add(poolsData[poolDataId]?.totalAmountTraxx))|| 0
       };
     });
 
