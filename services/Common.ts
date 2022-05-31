@@ -1,4 +1,4 @@
-import { IPlan, IPool, IStake } from '../shared/interfaces';
+import { IDistribution, IPlan, IPool, IStake } from '../shared/interfaces';
 import { getSocialType } from '../helpers/getSocialType';
 
 const headers = {
@@ -126,6 +126,16 @@ const CommonService = {
 
   getTotalRewards: (): Promise<number> => {
     return fetch(`${process.env.NEXT_PUBLIC_API_URL}/claim/totalRewards`, {
+      method: 'GET',
+      headers,
+    }).then(handleResponse)
+      .catch(error => {
+        throw Error(error);
+      });
+  },
+
+  getChanelDistribution: (): Promise<IDistribution[]> => {
+    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/stake/chanelDistribution`, {
       method: 'GET',
       headers,
     }).then(handleResponse)

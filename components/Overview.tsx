@@ -13,12 +13,17 @@ const initialOverviewState = {
 };
 
 const Overview: FC<OverviewProps> = (props: OverviewProps) => {
-  const { token } = useConfig();
+  const { token, staking } = useConfig();
   const [overviewState, setOverviewState] = useState(initialOverviewState);
 
   useEffect(() => {
     getOverviewData();
   }, []);
+
+  useEffect(() => {
+    if (staking) setDistribution();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [staking]);
 
   async function getOverviewData() {
     const maxApyPlan = await CommonService.getMaxApyPlan();
@@ -28,6 +33,19 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
       ...prevState,
       totalRewards: totalRewards,
       maxApyPlan: maxApyPlan
+    }));
+  }
+
+  async function setDistribution() {
+    const distribution = await CommonService.getChanelDistribution();
+    const distributionData = distribution.map(item => ({
+      name: staking?.channels.find(channel => channel.prefix === item.chanel).name,
+      distribution: Math.round(Number(item.distribution) * 100)
+    }))
+
+    setOverviewState((prevState) => ({
+      ...prevState,
+      distribution: distributionData
     }));
   }
 
@@ -72,8 +90,8 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
               </div>
               <div className="overview-item-channels col-5">
                 {overviewState.distribution.map((item) => (
-                  <div className="overview-item-channels-item" key={item.prefix}>
-                    {item.name} {calcPercentage(item.count, 10)}%
+                  <div className="overview-item-channels-item" key={item.name}>
+                    {item.name} {item.distribution}%
                   </div>
                 ))}
               </div>

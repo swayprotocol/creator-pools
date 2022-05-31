@@ -78,3 +78,8 @@ export interface IStake {
   collected: boolean;
   hash: string;
 }
+
+export interface IDistribution {
+  chanel: string;
+  distribution: string;
+}
