@@ -88,17 +88,26 @@
     },
     "hasAltTheme": true
   },
-  "token": {
-    "address": "0x262b8aa7542004f023b0eb02bc6b96350a02b728",
+  "token1": {
+    "address": "0xe1A3F0Ca19e64f6Bc516a036FF141e65eD219291",
     "ticker": "SWAY",
     "logo": "/assets/favicon-137x137.png",
     "coingecko_coin_ticker": "sway-social",
     "exchange_url": "https://quickswap.exchange/#/swap?outputCurrency=0x262b8aa7542004f023b0eb02bc6b96350a02b728",
     "circulating_supply": 10917462
   },
+  "token2": {
+    "address": "0x665C1F40e522f89cAE4177d7CB6FD110A4cD7c37",
+    "ticker": "TRAXX",
+    "logo": "/assets/tt_logo.png",
+    "coingecko_coin_ticker": "sway-social",
+    "exchange_url": "https://quickswap.exchange/#/swap?outputCurrency=0x262b8aa7542004f023b0eb02bc6b96350a02b728",
+    "circulating_supply": 10917462
+  },
   "staking": {
-    "address": "0x538Bdc460119Bb95F8ee51E46D22Eee5e7a6cC4e",
+    "address": "0x62aDEd2b32063a9050bfc39E22991b6A426F897D",
     "abi": "staking-abi.json",
+    "apy": 520,
     "channels": [
       {
         "name": "Instagram",
@@ -120,7 +129,7 @@
     "plan_ids": [1, 2, 3, 4, 5, 6]
   },
   "network": {
-    "web3_provider_url": "https://polygon-mainnet.g.alchemy.com/v2/6kkkcccOr3uJck57CliIomFbHt9eSYu5",
+    "web3_provider_url": "https://polygon-mumbai.g.alchemy.com/v2/CKgltJmh4S9sogxkop-8W0H_qx6OJdZn",
     "supported_chain_ids": [137, 80001]
   },
   "ga_tracking_id": "UA-196047216-2"

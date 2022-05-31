@@ -11,7 +11,7 @@ import ReactGA from 'react-ga';
 import { getTokenPrice } from '../helpers/getTokenPrice';
 import Stakes from '../components/Stakes';
 import Modal from '../components/Modal';
-import { IChannelDistributionItem, ModalData, Plan, StakedEvent } from '../shared/interfaces';
+import { IChannelDistributionItem, ModalData, StakedEvent } from '../shared/interfaces';
 import { Contract, ethers } from 'ethers';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
@@ -19,11 +19,9 @@ import WalletConnect from '../components/WalletConnect';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 
 import { getUserAvailableTokens } from '../helpers/getUserAvailableTokens';
-import { getPlans } from '../helpers/getPlans';
 import InfoBar from '../components/InfoBar';
 import Newsletter from '../components/Newsletter/Newsletter';
 import { getFarmedAmount } from '../helpers/getFarmedAmount';
-import { getMaxPlanByDate } from '../helpers/getMaxPlanByDate';
 import { useConfig } from '../contexts/Config';
 import getStakingAbi from '../helpers/getStakingAbi';
 
@@ -37,12 +35,11 @@ const initialAppState = {
   topPools: [],
   latestPools: [],
   topPositions: [],
-  tokenLockedTotal: 0,
-  tokenUsd: 0,
-  tokenUserTotal: '0',
-  plans: [],
+  tokenLockedTotal: [0, 0],
+  tokenUsd: [0, 0],
+  tokenUserTotal: ['0', '0'],
   distribution: [],
-  totalRewardsFarmed: 0
+  totalRewardsFarmed: [0, 0]
 };
 
 function initialiseAnalytics(trackingId: string) {
@@ -59,7 +56,7 @@ const Home: NextPage = () => {
   const [modalData, setModalData] = useState<ModalData>({});
   const [dataLoadError, setDataLoadError] = useState(false);
   const [refreshData, doRefreshData] = useState(0);
-  const { token, staking, network, ga_tracking_id, site } = useConfig();
+  const { token1, token2, staking, network, ga_tracking_id, site } = useConfig();
 
   useEffect(() => {
     initialiseAnalytics(ga_tracking_id);
@@ -71,8 +68,9 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     async function getUserTokenAmount() {
-      const availableTokens = await getUserAvailableTokens(walletId, token.address, network.web3_provider_url);
-      setAppState(prevState => ({...prevState, tokenUserTotal: availableTokens}))
+      const availableTokens1 = await getUserAvailableTokens(walletId, token1.address, network.web3_provider_url);
+      const availableTokens2 = await getUserAvailableTokens(walletId, token2.address, network.web3_provider_url);
+      setAppState(prevState => ({...prevState, tokenUserTotal: [availableTokens1, availableTokens2]}))
     }
     if (walletId) getUserTokenAmount();
   }, [walletId, refreshData]);
@@ -111,18 +109,18 @@ const Home: NextPage = () => {
   async function getGeneralData() {
     try {
       const stakedData = await getStakedData(staking.address, network.web3_provider_url);
-      const tokenPriceUsd = await getTokenPrice(token.coingecko_coin_ticker);
-      const plans = await getAvailablePlans();
+      const token1PriceUsd = await getTokenPrice(token1.coingecko_coin_ticker);
+      const token2PriceUsd = await getTokenPrice(token2.coingecko_coin_ticker);
 
       // calculate data for different columns
       let allCreators: any = {};
       let topPositions: any = {};
-      let totalLocked = 0;
-      const distribution = staking.channels.map(channel => ({ ...channel, count: 0 }));
-      let totalRewardsFarmed = 0;
+      let totalLocked = [0,0];
+      let totalRewardsFarmed = [0, 0];
+      let tokentype = 0; //TODO fix
 
+      console.log(stakedData);
       stakedData.forEach(event => {
-        totalLocked += event.amount;
         allCreators[event.poolHandle] = {
           ...event,
           amount: allCreators[event.poolHandle]?.amount + event.amount || event.amount
@@ -131,20 +129,23 @@ const Home: NextPage = () => {
           ...event,
           amount: topPositions[event.poolHandle]?.amount + event.amount || event.amount
         }
-        const distributionItem = distribution.find(channel => channel.prefix === event.social) as IChannelDistributionItem;
-        distributionItem.count += 1;
-        // prefill plan and unlockTime for farmed calculations
-        event.plan = getMaxPlanByDate(event.date, plans);
-        event.unlockTime = new Date(new Date(event.date).setMonth(new Date(event.date).getMonth() + event.plan.lockMonths));
-        totalRewardsFarmed += getFarmedAmount(event.amount, event.date, event.unlockTime, event.plan)
-      });
 
+        if(tokentype == 0) {
+          totalLocked[0] += event.amount;
+          totalRewardsFarmed[0] += getFarmedAmount(event.amount, event.date, staking.apy)
+        }
+        else {
+          totalLocked[1] += event.amount;
+          totalRewardsFarmed[1] += getFarmedAmount(event.amount, event.date, staking.apy)
+        }
+        // prefill plan and unlockTime for farmed calculations
+
+      });
       // sort by high to low
       allCreators = Object.values(allCreators);
       allCreators.sort((a: { amount: number; }, b: { amount: number; }) => (b.amount - a.amount));
       topPositions = Object.values(topPositions);
       topPositions.sort((a: { amount: number; }, b: { amount: number; }) => (b.amount - a.amount));
-      distribution.sort((a: { count: number; }, b: { count: number; }) => (b.count - a.count));
 
       const latestPools = stakedData.sort((a, b) => { return b.date.getTime() - a.date.getTime() });
       // set state
@@ -153,9 +154,8 @@ const Home: NextPage = () => {
         topPools: allCreators,
         latestPools: latestPools,
         topPositions: topPositions,
-        tokenUsd: tokenPriceUsd,
+        tokenUsd: [token1PriceUsd, token2PriceUsd],
         tokenLockedTotal: totalLocked,
-        distribution: distribution,
         totalRewardsFarmed: totalRewardsFarmed
       }));
       setTotalRewardsInterval(stakedData);
@@ -168,26 +168,16 @@ const Home: NextPage = () => {
     // recalculate total farmed and update state
     const reloadInterval = 7500;
     setInterval(() => {
-      let totalRewardsFarmed = 0;
+      let totalRewardsFarmed = [0,0];
       stakedData.forEach(event => {
-        totalRewardsFarmed += getFarmedAmount(event.amount, event.date, event.unlockTime, event.plan)
+        totalRewardsFarmed[0] += getFarmedAmount(event.amount, event.date, staking.apy)
       });
       setAppState((prevState) => ({
         ...prevState,
         totalRewardsFarmed: totalRewardsFarmed
+
       }));
     }, reloadInterval);
-  }
-
-  async function getAvailablePlans(): Promise<Plan[]> {
-    const plans = await getPlans(staking.plan_ids, staking.address, network.web3_provider_url);
-
-    setAppState((prevState) => ({
-      ...prevState,
-      plans: plans
-    }));
-
-    return plans;
   }
 
   function openStakeModal(modalData: ModalData) {
@@ -214,12 +204,10 @@ const Home: NextPage = () => {
                   tokenUsd={appState.tokenUsd}
                   tokenUserTotal={appState.tokenUserTotal}
                   refreshData={refreshData}
-                  plans={appState.plans}
           />
         )}
         <Overview tokenLockedTotal={appState.tokenLockedTotal}
                   tokenUsd={appState.tokenUsd}
-                  plans={appState.plans}
                   distribution={appState.distribution}
                   totalRewards={appState.totalRewardsFarmed}
                   totalStakes={appState.latestPools.length}
@@ -246,7 +234,6 @@ const Home: NextPage = () => {
                      }
                    }
                  }}
-                 plans={appState.plans}
           />
         )}
         {showModal === 'NEWSLETTER' && (

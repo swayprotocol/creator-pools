@@ -11,8 +11,8 @@ import { useConfig } from '../../contexts/Config';
 type ItemPositions = {
   openModal: (modalData: ModalData) => any
   positions: ChannelPosition[],
-  tokenUsd: number,
-  tokenUserTotal: string,
+  tokenUsd: number[],
+  tokenUserTotal: string[],
   channel: Channel,
   contract: any
 }
@@ -22,7 +22,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
   const [reward, setReward] = useState(0);
 
   const { account } = useWeb3React<Web3Provider>();
-  const { token } = useConfig();
+  const { token1, token2, staking } = useConfig();
 
   useEffect(() => {
     const longPoolhandle = setSocialPrefix(props.channel.poolHandle, props.channel.social);
@@ -65,13 +65,13 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
             <strong>#{position.indexInPool + 1}</strong>
           </div>
           <div className={styles.tableItem}>
-            <strong>{position.amount.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token.ticker}</strong>
+            <strong>{position.amount.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token1.ticker}</strong>
           </div>
           <div className={styles.tableItem}>
-            {position.plan.apy}%
+            {staking.apy}%
           </div>
           <div className={styles.tableItem}>
-            {+position.unlockTime < +new Date() ? (
+            {+position.lastTimeClaimed < +new Date() ? (
               <button className="btn btn-secondary" onClick={() => openStakeModal(ModalType.UNSTAKE, '')}>
                 Unstake
               </button>
@@ -105,7 +105,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
                    step={0.000000000000000001}
                    value={amountToStake}
                    onChange={(e) => setAmountToStake(e.target.value)}/>
-            <div className="after-element" onClick={() => setAmountToStake(props.tokenUserTotal)}>MAX</div>
+            <div className="after-element" onClick={() => setAmountToStake(props.tokenUserTotal[0])}>MAX</div>
           </div>
         </div>
         <div className={styles.tableItem}>
@@ -119,8 +119,8 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
                 Claim
               </button>
             ) : (
-              <a target="_blank" rel="noopener noreferrer" href={token.exchange_url}>
-                Get {token.ticker}
+              <a target="_blank" rel="noopener noreferrer" href={token1.exchange_url}>
+                Get {token1.ticker}
               </a>
           )}
         </div>

@@ -4,9 +4,9 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "string",
+        "internalType": "address",
         "name": "poolHandle",
-        "type": "string"
+        "type": "address"
       },
       {
         "indexed": true,
@@ -24,27 +24,8 @@
       {
         "indexed": true,
         "internalType": "address",
-        "name": "previousOwner",
+        "name": "sender",
         "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "OwnershipTransferred",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "poolHandle",
-        "type": "string"
       },
       {
         "indexed": true,
@@ -55,7 +36,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "amount",
+        "name": "swayAmount",
         "type": "uint256"
       }
     ],
@@ -66,10 +47,85 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "previousAdminRole",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "newAdminRole",
+        "type": "bytes32"
+      }
+    ],
+    "name": "RoleAdminChanged",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "RoleGranted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "RoleRevoked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": false,
-        "internalType": "string",
+        "internalType": "address",
         "name": "poolHandle",
-        "type": "string"
+        "type": "address"
       },
       {
         "indexed": true,
@@ -82,6 +138,12 @@
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum TokentraxxStakingV2.tokenType",
+        "name": "token",
+        "type": "uint8"
       }
     ],
     "name": "Staked",
@@ -92,9 +154,9 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "string",
+        "internalType": "address",
         "name": "poolHandle",
-        "type": "string"
+        "type": "address"
       },
       {
         "indexed": true,
@@ -107,18 +169,45 @@
         "internalType": "uint256",
         "name": "amount",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum TokentraxxStakingV2.tokenType",
+        "name": "token",
+        "type": "uint8"
       }
     ],
     "name": "Unstaked",
     "type": "event"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "ADMIN_ROLE",
+    "outputs": [
       {
-        "internalType": "string",
-        "name": "_poolHandle",
-        "type": "string"
-      },
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "DEFAULT_ADMIN_ROLE",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
       {
         "internalType": "address",
         "name": "_addr",
@@ -137,31 +226,16 @@
     "type": "function"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "getAllPoolHandles",
+    "outputs": [
       {
-        "internalType": "uint8",
-        "name": "_planId",
-        "type": "uint8"
-      },
-      {
-        "internalType": "uint8",
-        "name": "_lockMonths",
-        "type": "uint8"
-      },
-      {
-        "internalType": "uint16",
-        "name": "_apy",
-        "type": "uint16"
-      },
-      {
-        "internalType": "uint64",
-        "name": "_availableUntil",
-        "type": "uint64"
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
       }
     ],
-    "name": "changePlan",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -180,9 +254,9 @@
   {
     "inputs": [
       {
-        "internalType": "string[]",
+        "internalType": "address[]",
         "name": "inputQueue",
-        "type": "string[]"
+        "type": "address[]"
       }
     ],
     "name": "getMultiplePools",
@@ -201,7 +275,12 @@
           },
           {
             "internalType": "uint256",
-            "name": "totalAmount",
+            "name": "totalAmountSway",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalAmountTraxx",
             "type": "uint256"
           },
           {
@@ -211,11 +290,16 @@
           },
           {
             "internalType": "uint256",
-            "name": "numberOfStakes",
+            "name": "numberOfSwayStakes",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "numberOfTraxxStakes",
             "type": "uint256"
           }
         ],
-        "internalType": "struct InstagramStaking.Pool[]",
+        "internalType": "struct TokentraxxStakingV2.Pool[]",
         "name": "",
         "type": "tuple[]"
       }
@@ -226,9 +310,9 @@
   {
     "inputs": [
       {
-        "internalType": "string",
+        "internalType": "address",
         "name": "_poolHandle",
-        "type": "string"
+        "type": "address"
       }
     ],
     "name": "getPool",
@@ -247,7 +331,12 @@
           },
           {
             "internalType": "uint256",
-            "name": "totalAmount",
+            "name": "totalAmountSway",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalAmountTraxx",
             "type": "uint256"
           },
           {
@@ -257,11 +346,16 @@
           },
           {
             "internalType": "uint256",
-            "name": "numberOfStakes",
+            "name": "numberOfSwayStakes",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "numberOfTraxxStakes",
             "type": "uint256"
           }
         ],
-        "internalType": "struct InstagramStaking.Pool",
+        "internalType": "struct TokentraxxStakingV2.Pool",
         "name": "",
         "type": "tuple"
       }
@@ -272,9 +366,9 @@
   {
     "inputs": [
       {
-        "internalType": "string",
+        "internalType": "address",
         "name": "_poolHandle",
-        "type": "string"
+        "type": "address"
       }
     ],
     "name": "getPoolMembers",
@@ -291,27 +385,39 @@
   {
     "inputs": [
       {
-        "internalType": "string",
+        "internalType": "address",
         "name": "_poolHandle",
-        "type": "string"
+        "type": "address"
       }
     ],
     "name": "getPoolQueue",
     "outputs": [
       {
-        "internalType": "uint256[]",
+        "components": [
+          {
+            "internalType": "uint64",
+            "name": "datetime",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum TokentraxxStakingV2.tokenType",
+            "name": "typeOfToken",
+            "type": "uint8"
+          },
+          {
+            "internalType": "address",
+            "name": "user",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct TokentraxxStakingV2.Staking[]",
         "name": "",
-        "type": "uint256[]"
-      },
-      {
-        "internalType": "address[]",
-        "name": "",
-        "type": "address[]"
-      },
-      {
-        "internalType": "uint64[]",
-        "name": "",
-        "type": "uint64[]"
+        "type": "tuple[]"
       }
     ],
     "stateMutability": "view",
@@ -320,14 +426,33 @@
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "_poolHandle",
-        "type": "string"
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
       }
     ],
     "name": "getReward",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getRoleAdmin",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -343,18 +468,8 @@
       {
         "components": [
           {
-            "internalType": "uint8",
-            "name": "planId",
-            "type": "uint8"
-          },
-          {
             "internalType": "uint64",
-            "name": "stakedAt",
-            "type": "uint64"
-          },
-          {
-            "internalType": "uint64",
-            "name": "unlockTime",
+            "name": "lastTimeClaimed",
             "type": "uint64"
           },
           {
@@ -363,17 +478,22 @@
             "type": "uint256"
           },
           {
+            "internalType": "enum TokentraxxStakingV2.tokenType",
+            "name": "typeOfToken",
+            "type": "uint8"
+          },
+          {
             "internalType": "uint256",
             "name": "indexInPool",
             "type": "uint256"
           },
           {
-            "internalType": "string",
+            "internalType": "address",
             "name": "poolHandle",
-            "type": "string"
+            "type": "address"
           }
         ],
-        "internalType": "struct InstagramStaking.StakedValues[]",
+        "internalType": "struct TokentraxxStakingV2.StakedValues[]",
         "name": "",
         "type": "tuple[]"
       }
@@ -384,8 +504,55 @@
   {
     "inputs": [
       {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "grantRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "hasRole",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "contract IERC20",
-        "name": "_stakingToken",
+        "name": "_swayToken",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IERC20",
+        "name": "_traxxToken",
         "type": "address"
       }
     ],
@@ -408,50 +575,19 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
       {
         "internalType": "address",
-        "name": "",
+        "name": "account",
         "type": "address"
       }
     ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint8",
-        "name": "",
-        "type": "uint8"
-      }
-    ],
-    "name": "plans",
-    "outputs": [
-      {
-        "internalType": "uint8",
-        "name": "lockMonths",
-        "type": "uint8"
-      },
-      {
-        "internalType": "uint16",
-        "name": "apy",
-        "type": "uint16"
-      },
-      {
-        "internalType": "uint64",
-        "name": "availableUntil",
-        "type": "uint64"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "renounceOwnership",
+    "name": "renounceRole",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -459,9 +595,27 @@
   {
     "inputs": [
       {
-        "internalType": "string",
+        "internalType": "bytes32",
+        "name": "role",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "revokeRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
         "name": "_poolHandle",
-        "type": "string"
+        "type": "address"
       },
       {
         "internalType": "uint256",
@@ -469,8 +623,8 @@
         "type": "uint256"
       },
       {
-        "internalType": "uint8",
-        "name": "_planId",
+        "internalType": "enum TokentraxxStakingV2.tokenType",
+        "name": "_token",
         "type": "uint8"
       }
     ],
@@ -480,8 +634,40 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "interfaceId",
+        "type": "bytes4"
+      }
+    ],
+    "name": "supportsInterface",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
-    "name": "stakingToken",
+    "name": "swayToken",
+    "outputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "traxxToken",
     "outputs": [
       {
         "internalType": "contract IERC20",
@@ -496,21 +682,13 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
         "name": "_poolHandle",
-        "type": "string"
+        "type": "address"
+      },
+      {
+        "internalType": "enum TokentraxxStakingV2.tokenType",
+        "name": "_token",
+        "type": "uint8"
       }
     ],
     "name": "unstake",

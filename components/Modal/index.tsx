@@ -8,22 +8,21 @@ import TOKEN_ABI from '../../shared/abis/token-abi.json';
 import { filterPlans } from '../../helpers/filterPlans';
 import { setSocialPrefix } from '../../helpers/getSocialType';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
-import { ModalData, ModalType, Plan, StakeData } from '../../shared/interfaces';
+import { ModalData, ModalType, StakeData } from '../../shared/interfaces';
 import { useConfig } from '../../contexts/Config';
 
 type ModalProps = {
   onClose: (reload?: boolean) => any,
   modalData: ModalData,
   contract: any,
-  tokenUserTotal: string,
-  plans: Plan[]
+  tokenUserTotal: string[]
 }
 
 const initialModalData: StakeData = {
   social: '',
   poolHandle: '',
   amount: '',
-  planId: ''
+  tokenType: ''
 }
 
 const Modal: FC<ModalProps> = (props: ModalProps) => {
@@ -32,11 +31,12 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
   const [callError, setCallError] = useState('');
   const [loading, setLoading] = useState(false);
   const [disableEditing, setDisableEditing] = useState(false);
-  const [activePlans, setActivePlans] = useState<Plan[]>([]);
   const [reward, setReward] = useState(0);
+  const [selectedToken, setSelectedToken] = useState(0);
 
   const { library, account } = useWeb3React<Web3Provider>();
-  const { token, staking } = useConfig();
+  const { token1, token2, staking } = useConfig();
+  const tokens = [token1, token2];
 
   useEffect(() => {
     if (props.modalData.channel) {
@@ -44,7 +44,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
         ...prevState,
         social: props.modalData.channel.social,
         poolHandle: props.modalData.channel.poolHandle || '',
-        amount: props.modalData.amount || '',
+        amount: props.modalData.amount || ''
       }));
       if (props.modalData.channel.social && props.modalData.channel.poolHandle) {
         setDisableEditing(true);
@@ -60,18 +60,6 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
       }));
     }
   }, [props.modalData]);
-
-  useEffect(() => {
-    if (props.plans.length) {
-      const activePlans = filterPlans(props.plans);
-      setActivePlans(activePlans);
-      setFormData((prevState) => ({
-        ...prevState,
-        planId: activePlans[0].planId.toString()
-      }));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.plans.length]);
 
   const handleCloseClick = (e) => {
     e.preventDefault();
@@ -98,7 +86,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
       social: formData.social,
       poolHandle: formData.poolHandle,
       amount: formData.amount,
-      planId: formData.planId
+      tokenType: formData.tokenType
     };
 
     if (checkFormValidation(stakeData)) {
@@ -107,23 +95,21 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
 
       // convert amount to eth value
       stakeData.amount = ethers.utils.parseEther(stakeData.amount.toString(10));
-      // set social prefix
-      stakeData.poolHandle = setSocialPrefix(formData.poolHandle, formData.social);
 
       try {
         // check allowance and give permissions
-        const tokenContract = new Contract(token.address, TOKEN_ABI, library.getSigner());
+        const tokenContract = new Contract(tokens[selectedToken].address, TOKEN_ABI, library.getSigner());
         const allowance = await tokenContract.allowance(account, staking.address);
         if (allowance.lte(stakeData.amount)) {
           const allowUnlimited = BigNumber.from(2).pow(256).sub(1);
           const awaitTx = await tokenContract.approve(staking.address, allowUnlimited, { gasLimit: 100000 });
           await awaitTx.wait();
         }
-
+        console.log(formData.poolHandle);
         const stakeTx = await props.contract.stake(
-          stakeData.poolHandle,
+          formData.poolHandle,
           stakeData.amount,
-          stakeData.planId,
+            stakeData.tokenType,
           { gasLimit: 500000 }
         );
 
@@ -180,24 +166,27 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
       [type] : value
     }));
   }
+  const handleTokenChange = (type: string, value: string) => {
+    setSelectedToken(parseFloat(value));
+    setFormData((prevState) => ({
+      ...prevState,
+      [type] : value
+    }));
+  }
 
   const checkFormValidation = (data) => {
     let errors = {};
     let formIsValid = true;
 
     if (props.modalData.type === ModalType.STAKE || props.modalData.type === ModalType.ADD) {
-      if (!data.amount || ethers.utils.parseEther(data.amount).gt(ethers.utils.parseEther(props.tokenUserTotal))) {
+      if (!data.amount || ethers.utils.parseEther(data.amount).gt(ethers.utils.parseEther(props.tokenUserTotal[selectedToken]))) {
         errors['amount'] = true;
         formIsValid = false;
-        if (data.amount && ethers.utils.parseEther(data.amount).gt(ethers.utils.parseEther(props.tokenUserTotal))) {
+        if (data.amount && ethers.utils.parseEther(data.amount).gt(ethers.utils.parseEther(props.tokenUserTotal[selectedToken]))) {
           setCallError('Amount exceeds total available.')
         }
       }
 
-      if (!data.planId) {
-        errors['planId'] = true;
-        formIsValid = false;
-      }
     }
 
     if (!data.poolHandle) {
@@ -241,10 +230,6 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     }
   }
 
-  const getStakingMonthsDuration = (planId: string) => {
-    return activePlans.find(plan => plan.planId.toString() === planId)?.lockMonths;
-  }
-
   return (
     <div className={`modal ${styles.modal}`}>
       <div className="modal-dialog modal-lg">
@@ -282,31 +267,17 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                 {(props.modalData.type === ModalType.STAKE || props.modalData.type === ModalType.UNSTAKE || props.modalData.type === ModalType.ADD) && (
                   <>
                     <div className="form-group row">
-                      <label htmlFor="social" className="col-sm-3">Channel</label>
-                      <div className="col-sm-4">
-                        <select className="form-control"
-                                id="social"
-                                value={formData.social}
-                                onChange={(e) => handleChange('social', e.target.value)}
-                                disabled={disableEditing}>
-                          {staking.channels.map(channel => (
-                            <option value={channel.prefix} key={channel.prefix}>{channel.name}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <label htmlFor="poolHandle" className="col-sm-3">Identificator</label>
+                      <label htmlFor="poolHandle" className="col-sm-3">Address</label>
                       <div className="col-sm-4">
                         <input type="text"
                               className={`form-control ${formError['poolHandle'] ? 'error' : ''}`}
                               id="poolHandle"
-                              placeholder="Enter identificator"
+                              placeholder="Enter eth address"
                               value={formData.poolHandle}
                               onChange={(e) => handleChange('poolHandle', e.target.value.toLowerCase())}
                               disabled={disableEditing}/>
                       </div>
-                      <div className={`${styles.midText} ${styles.lightText} col-sm-5`}>ie. leomessi, banksy.eth ...</div>
+                      <div className={`${styles.midText} ${styles.lightText} col-sm-5`}>ie. 0x12345...</div>
                       {props.modalData.type === ModalType.STAKE && (
                         <div className="col-sm-9 offset-sm-3 mt-3">
                           <p className={`${styles.smallText} mb-0`}>NOTE: We don't validate entries, so make sure there are no typos.</p>
@@ -319,7 +290,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                   <div className="form-group row">
                     <label className="col-sm-3">Staked</label>
                     <div className={`${styles.tokenAvailable} col-sm-9`}>
-                      <img src={token.logo} alt={token.ticker} height="20"/>
+                      <img src={token1.logo} alt={token1.ticker} height="20"/>
                       <span>{props.modalData.channel?.userTotalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         {' '}staked in {props.modalData.channel?.positions.length} positions</span>
                     </div>
@@ -330,13 +301,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                     <hr/>
                   </div>
                 </div>
-                {(props.modalData.type === ModalType.STAKE || props.modalData.type === ModalType.UNSTAKE || props.modalData.type === ModalType.ADD) && (
-                  <div className="row mb-3">
-                    <div className="col-sm-8 offset-sm-3">
-                      {formData.poolHandle && getSocialLink()}
-                    </div>
-                  </div>
-                )}
+
                 {(props.modalData.type === ModalType.STAKE || props.modalData.type === ModalType.ADD) && (
                   <>
                     <div className="form-group row">
@@ -350,26 +315,25 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                               value={formData.amount}
                               onChange={(e) => handleChange('amount', e.target.value)}
                               placeholder="1000"/>
-                        <div className="after-element" onClick={() => handleChange('amount', props.tokenUserTotal)}>MAX</div>
+                        <div className="after-element" onClick={() => handleChange('amount', props.tokenUserTotal[selectedToken])}>MAX</div>
                       </div>
                       <div className={`${styles.tokenAvailable} col-sm-5`}>
-                        <img src={token.logo} alt={token.ticker} height="20"/>
-                        <span>{(+props.tokenUserTotal).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} available</span>
+                        <img src={tokens[selectedToken].logo} alt={tokens[selectedToken].ticker} height="20"/>
+                        <span>{(+props.tokenUserTotal[selectedToken]).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} available</span>
                       </div>
                     </div>
                     <div className="form-group row">
-                      <label htmlFor="planId" className="col-sm-3">Promotional APR</label>
+                      <label htmlFor="tokenType" className="col-sm-3">TokenType</label>
                       <div className="col-sm-3">
-                        <select className={`form-control ${formError['planId'] ? 'error' : ''}`}
-                                id="planId"
-                                value={formData.planId}
-                                onChange={(e) => handleChange('planId', e.target.value)}>
-                          {activePlans.map(plan => (
-                            <option value={plan.planId} key={plan.planId}>{plan.apy}%</option>
-                          ))}
+                        <select className={`form-control ${formError['tokenType'] ? 'error' : ''}`}
+                                id="tokenType"
+                                value={formData.tokenType}
+                                onChange={(e) => handleTokenChange('tokenType', e.target.value)}>
+                          <option value={0} key={token1.ticker}>{token1.ticker}</option>
+                          <option value={1} key={token2.ticker}>{token2.ticker}</option>
                         </select>
                       </div>
-                      <div className={`${styles.midText} col-sm-6`}>Position will be locked for {getStakingMonthsDuration(formData.planId)} months.</div>
+                      <div className={`${styles.midText} col-sm-6`}>Do you want to stake {token1.ticker} or {token2.ticker}?</div>
                     </div>
                   </>
                 )}
@@ -385,7 +349,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                       </div>
                     </div>
                     <div className={`col-sm-5 ${styles.tokenAvailable}`}>
-                      <img src={token.logo} alt={token.ticker} height="20"/>
+                      <img src={token1.logo} alt={token1.ticker} height="20"/>
                       <span>
                         {props.modalData.amount}
                       </span>
@@ -417,7 +381,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
               </form>
             )}
             {(props.modalData.type === ModalType.CLAIM && reward === 0) && (
-              <p>You currently have no {token.ticker} rewards available for claiming.</p>
+              <p>You currently have no {token1.ticker} rewards available for claiming.</p>
             )}
           </div>
         </div>

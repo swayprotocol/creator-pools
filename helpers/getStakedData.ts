@@ -17,10 +17,10 @@ export function getStakedData(address: string, provider: string): Promise<Staked
     Promise.all(logs.map(async (log: Event) => ({
       // log: log,
       amount: +ethers.utils.formatEther(log.args!.amount),
-      poolHandle: log.args!.poolHandle.split('-')[1],
+      poolHandle: log.args!.poolHandle,
       sender: log.args!.sender,
-      social: getSocialType(log.args!.poolHandle),
       date: await log.getBlock().then(res => new Date(res.timestamp * 1000)),
+      tokenType: 0 //TODO set
     })))
   );
 }

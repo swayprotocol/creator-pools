@@ -1,10 +1,9 @@
 export interface StakedEvent {
   amount: number;
   poolHandle: string;
+  social: string;
   sender: string;
   date: Date;
-  social: string;
-  plan?: Plan;
   unlockTime?: Date;
 }
 
@@ -37,34 +36,24 @@ export interface Channel {
 export interface ChannelPosition {
   amount: number;
   indexInPool: number;
-  planId: number;
-  plan: Plan;
   poolHandle: string;
-  stakedAt: Date;
-  unlockTime: Date;
+  lastTimeClaimed: Date;
   social: string;
   farmed: number;
 }
 
 export interface StakeData {
-  poolHandle: string;
-  planId: string;
-  amount: string;
   social: string;
+  poolHandle: string;
+  amount: string;
+  tokenType: string;
 }
 
 export interface ModalData {
   type?: ModalType,
   channel?: Partial<Channel>,
-  amount?: string
-}
-
-export interface Plan {
-  planId: number;
-  apy: number;
-  availableUntil: Date;
-  lockMonths: number;
-  createdAt?: Date;
+  amount?: string,
+  tokenType?: string
 }
 
 export interface IChannelDistributionItem {

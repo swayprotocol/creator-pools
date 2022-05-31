@@ -6,7 +6,7 @@ type PoolsProps = {
   top: StakedEvent[],
   latest: StakedEvent[],
   positions: StakedEvent[],
-  tokenUsd: number,
+  tokenUsd: number[],
   loadError: boolean
   openModal: (modalData: ModalData) => any,
 }
@@ -41,17 +41,17 @@ const Pools: FC<PoolsProps> = (props: PoolsProps) => (
         <div className="col-md-4 mb-5">
           <h4>Top creator pools</h4>
           <hr/>
-          {!props.loadError && renderItems(props.top, props.tokenUsd, PoolItemType.TOP, props)}
+          {!props.loadError && renderItems(props.top, props.tokenUsd[0], PoolItemType.TOP, props)}
         </div>
         <div className="col-md-4 mb-5">
           <h4>Latest stakes</h4>
           <hr/>
-          {!props.loadError && renderItems(props.latest, props.tokenUsd, PoolItemType.LATEST, props)}
+          {!props.loadError && renderItems(props.latest, props.tokenUsd[0], PoolItemType.LATEST, props)}
         </div>
         <div className="col-md-4 mb-5">
           <h4>Highest positions</h4>
           <hr/>
-          {!props.loadError && renderItems(props.positions, props.tokenUsd, PoolItemType.INDIVIDUAL, props)}
+          {!props.loadError && renderItems(props.positions, props.tokenUsd[0], PoolItemType.INDIVIDUAL, props)}
         </div>
       </div>
       {props.loadError && (

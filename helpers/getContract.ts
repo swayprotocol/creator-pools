@@ -2,8 +2,8 @@ import { Contract } from 'ethers';
 
 export function getContract(stakingContract: Contract): any {
   return {
-    calculateReward: async (poolHandle: string, address: string) => {
-      return stakingContract.calculateReward(poolHandle, address);
+    calculateReward: async (address: string) => {
+      return stakingContract.calculateReward(address);
     },
     getCurrentTime: async () => {
       return stakingContract.getCurrentTime();

@@ -22,16 +22,33 @@ hr {
   --bs-gutter-x: 4rem;
 }
 
+.overview-ticker-logo {
+  margin: auto;
+  margin-right: 10px;
+}
+
 .overview-item {
   margin-bottom: 0.5rem;
   .overview-item-name {
+    margin-right: 20px;
+    font-weight: 700;
+    font-size: 16px;
+  }
+  .overview-item-token-ticker{
+    font-weight: 700;
+    font-size: 24px;
+    display: inline-block;
+  }
+  .overview-item-inline {
     display: inline-block;
     margin-right: 20px;
+    font-weight: 400;
+    font-size: 18px;
   }
 
   .overview-item-value {
-    font-weight: 600;
-    font-size: 24px;
+    font-weight: 500;
+    font-size: 32px;
     display: inline-block;
     margin-right: 20px;
   }
@@ -283,3 +300,5 @@ select {
 .error-text {
   color: #ED4337;
 }
+
+
