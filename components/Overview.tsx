@@ -1,11 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
 import { IChannelDistributionItem } from '../shared/interfaces';
-import { filterPlans } from '../helpers/filterPlans';
 import { useConfig } from '../contexts/Config';
 
 type OverviewProps = {
   tokenLockedTotal: number[],
-  tokenUsd: number[],
   distribution: IChannelDistributionItem[],
   totalRewards: number[],
   totalStakes: number
@@ -37,7 +35,6 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
                 <div className="d-inline-flex">
                   <img className="overview-ticker-logo" src={token1.logo} alt={token1.ticker} height="20"/>
                   <div className="overview-item-token-ticker">
-
                     {token1.ticker}
                   </div>
                 </div>

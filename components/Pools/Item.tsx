@@ -9,7 +9,7 @@ import { useConfig } from '../../contexts/Config';
 type Item = {
   index: number,
   item: StakedEvent,
-  tokenUsd: number,
+  tokenUsd: number[],
   type: PoolItemType,
   openModal: (modalData: ModalData) => any,
 }
@@ -35,11 +35,9 @@ const Item: FC<Item> = (props: Item) => {
             </div>
           </div>
           <div>
-            {(props.type === PoolItemType.LATEST || props.type === PoolItemType.INDIVIDUAL) && (
-                <div className={styles.mainText}>{props.item.amount.toLocaleString('en-US', { maximumFractionDigits: 0 })}</div>
-            )}
-            {props.type === PoolItemType.TOP && (
-                <div className={styles.mainText}>${(props.item.amount * props.tokenUsd).toLocaleString('en-US', { maximumFractionDigits: 0 })}</div>
+            {(props.type === PoolItemType.TOP || props.type === PoolItemType.LATEST || props.type === PoolItemType.INDIVIDUAL) && (
+                <div className={styles.mainText}>${(props.item.tokenType == 0) ? (props.item.amount * props.tokenUsd[0]).toLocaleString('en-US', { maximumFractionDigits: 0 }) :
+                    (props.item.amount * props.tokenUsd[1]).toLocaleString('en-US', { maximumFractionDigits: 0 })}</div>
             )}
           </div>
         </div>
@@ -52,13 +50,8 @@ const Item: FC<Item> = (props: Item) => {
             )}
           </div>
           <div>
-            {props.type === PoolItemType.TOP && (
-                <div className={styles.subText}>{props.item.amount.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token1.ticker}</div>
-            )}
-            {props.type === PoolItemType.LATEST && (
-                <div className={styles.subText}>
-                  <Moment date={props.item.date.toISOString()} fromNow></Moment>
-                </div>
+            {(props.type === PoolItemType.TOP || props.type === PoolItemType.LATEST || props.type === PoolItemType.INDIVIDUAL) && (
+                <div className={styles.subText}>{props.item.amount.toLocaleString('en-US', { maximumFractionDigits: 0 })} {(props.item.tokenType === 0) ? token1.ticker : token2.ticker}</div>
             )}
           </div>
         </div>

@@ -71,13 +71,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
             {staking.apy}%
           </div>
           <div className={styles.tableItem}>
-            {+position.lastTimeClaimed < +new Date() ? (
-              <button className="btn btn-secondary" onClick={() => openStakeModal(ModalType.UNSTAKE, '')}>
-                Unstake
-              </button>
-            ) : (
-              <Moment to={position.unlockTime} withTitle titleFormat="D MMM YYYY hh:mm:ss"/>
-            )}
+            Staked
           </div>
           <div className={styles.tableItem}>
             <strong>{position.farmed.toLocaleString('en-US', { maximumFractionDigits: 2 })}</strong>

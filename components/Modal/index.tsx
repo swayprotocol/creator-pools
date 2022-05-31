@@ -5,7 +5,6 @@ import { Web3Provider } from '@ethersproject/providers';
 import styles from './Modal.module.scss';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
 import TOKEN_ABI from '../../shared/abis/token-abi.json';
-import { filterPlans } from '../../helpers/filterPlans';
 import { setSocialPrefix } from '../../helpers/getSocialType';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import { ModalData, ModalType, StakeData } from '../../shared/interfaces';
@@ -22,7 +21,7 @@ const initialModalData: StakeData = {
   social: '',
   poolHandle: '',
   amount: '',
-  tokenType: ''
+  tokenType: 0
 }
 
 const Modal: FC<ModalProps> = (props: ModalProps) => {
@@ -98,18 +97,24 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
 
       try {
         // check allowance and give permissions
-        const tokenContract = new Contract(tokens[selectedToken].address, TOKEN_ABI, library.getSigner());
+        const tokenContract = new Contract(tokens[formData.tokenType].address, TOKEN_ABI, library.getSigner());
         const allowance = await tokenContract.allowance(account, staking.address);
+
         if (allowance.lte(stakeData.amount)) {
+
           const allowUnlimited = BigNumber.from(2).pow(256).sub(1);
           const awaitTx = await tokenContract.approve(staking.address, allowUnlimited, { gasLimit: 100000 });
           await awaitTx.wait();
         }
+        console.log(tokenContract.address);
         console.log(formData.poolHandle);
+        console.log(stakeData.amount);
+        console.log(formData.tokenType);
+
         const stakeTx = await props.contract.stake(
           formData.poolHandle,
-          stakeData.amount,
-            stakeData.tokenType,
+            stakeData.amount,
+            formData.tokenType,
           { gasLimit: 500000 }
         );
 
@@ -124,18 +129,16 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
 
   const unstakeAction = async () => {
     let stakeData = {
-      poolHandle: formData.poolHandle
+      poolHandle: formData.poolHandle,
+      tokenType: formData.tokenType
     };
 
     if (checkFormValidation(stakeData)) {
       setCallError('');
       setLoading(true);
 
-      // set social prefix
-      stakeData.poolHandle = setSocialPrefix(formData.poolHandle, formData.social);
-
       try {
-        const stakeTx = await props.contract.unstake(stakeData.poolHandle, { gasLimit: 500000 });
+        const stakeTx = await props.contract.unstake(stakeData.poolHandle, stakeData.tokenType, { gasLimit: 500000 });
         await stakeTx.wait();
         props.onClose(true);
       } catch (error) {
@@ -149,7 +152,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     setCallError('');
     setLoading(true);
 
-    try{
+    try {
       const longPoolhandle = setSocialPrefix(formData.poolHandle, formData.social);
       const reward = await props.contract.getReward(longPoolhandle)
       await reward.wait()
@@ -170,7 +173,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     setSelectedToken(parseFloat(value));
     setFormData((prevState) => ({
       ...prevState,
-      [type] : value
+      [type] : parseFloat(value)
     }));
   }
 
@@ -197,37 +200,6 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     console.log('Form errors', errors);
     setFormError(errors);
     return formIsValid;
-  }
-
-  const getSocialLink = () => {
-    return (
-      <div className={styles.socialLinkWrapper}>
-        <div className={styles.socialIcon}>
-          {getSocialIcon(formData.social)}
-        </div>
-        <div className={styles.socialName}>
-          <strong>
-            {formData.poolHandle.length > 30 ? getWalletShorthand(formData.poolHandle) : formData.poolHandle}
-          </strong>
-        </div>
-        <div className={styles.socialLink}>
-          <a href={getSocialUrl()} rel="noreferrer" target="_blank">visit</a>
-        </div>
-      </div>
-    )
-  }
-
-  const getSocialUrl = (): string => {
-    switch (formData.social) {
-      case'ig':
-        return `https://www.instagram.com/${formData.poolHandle}`;
-      case 'tt':
-        return `https://www.tiktok.com/@${formData.poolHandle}`;
-      case 'ens':
-        return `https://app.ens.domains/name/${formData.poolHandle}`;
-      case 'w':
-        return `https://polygonscan.com/address/${formData.poolHandle}`;
-    }
   }
 
   return (
@@ -322,6 +294,9 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                         <span>{(+props.tokenUserTotal[selectedToken]).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} available</span>
                       </div>
                     </div>
+                  </>
+                )}
+                {(props.modalData.type === ModalType.UNSTAKE || props.modalData.type === ModalType.STAKE || props.modalData.type === ModalType.ADD) && (
                     <div className="form-group row">
                       <label htmlFor="tokenType" className="col-sm-3">TokenType</label>
                       <div className="col-sm-3">
@@ -333,10 +308,17 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                           <option value={1} key={token2.ticker}>{token2.ticker}</option>
                         </select>
                       </div>
-                      <div className={`${styles.midText} col-sm-6`}>Do you want to stake {token1.ticker} or {token2.ticker}?</div>
+                      {(props.modalData.type === ModalType.UNSTAKE) &&(
+                        <div className={`${styles.midText} col-sm-6`}>Do you want to unstake {token1.ticker} or {token2.ticker}?</div>
+                      )}
+                      {(props.modalData.type === ModalType.STAKE) &&(
+                          <div className={`${styles.midText} col-sm-6`}>Do you want to stake {token1.ticker} or {token2.ticker}?</div>
+                      )}
+
                     </div>
-                  </>
                 )}
+
+
                 {props.modalData.type === ModalType.CLAIM && (
                   <div className="form-group row">
                     <div className="col-sm-4 offset-sm-3">
@@ -370,9 +352,6 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                   </div>
                   <div className="col-sm-8 offset-sm-3">
                     <p className={styles.smallText}>After clicking on {props.modalData.type === ModalType.CLAIM ? 'Claim' : 'Stake'}, Metamask will pop-up to complete the transaction.</p>
-                    {props.modalData.type === ModalType.ADD && (
-                      <p className={styles.smallText}>NOTE: Adding additional positions with promotional APR extend the lockup duration of the total stake.</p>
-                    )}
                     {!!callError && (
                       <p className={`${styles.smallText} error-text`}>{callError}</p>
                     )}

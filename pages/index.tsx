@@ -117,24 +117,31 @@ const Home: NextPage = () => {
       let topPositions: any = {};
       let totalLocked = [0,0];
       let totalRewardsFarmed = [0, 0];
-      let tokentype = 0; //TODO fix
 
-      console.log(stakedData);
       stakedData.forEach(event => {
+
         allCreators[event.poolHandle] = {
           ...event,
           amount: allCreators[event.poolHandle]?.amount + event.amount || event.amount
         };
-        topPositions[event.sender] = {
-          ...event,
-          amount: topPositions[event.poolHandle]?.amount + event.amount || event.amount
-        }
 
-        if(tokentype == 0) {
+
+        if(event.tokenType == 0) {
+          topPositions[event.sender] = {
+            ...event,
+            amount1: topPositions[event.poolHandle]?.amount + event.amount || event.amount
+          }
+
           totalLocked[0] += event.amount;
           totalRewardsFarmed[0] += getFarmedAmount(event.amount, event.date, staking.apy)
+
         }
         else {
+          topPositions[event.sender] = {
+            ...event,
+            amount2: topPositions[event.poolHandle]?.amount + event.amount || event.amount
+          }
+
           totalLocked[1] += event.amount;
           totalRewardsFarmed[1] += getFarmedAmount(event.amount, event.date, staking.apy)
         }
@@ -145,7 +152,7 @@ const Home: NextPage = () => {
       allCreators = Object.values(allCreators);
       allCreators.sort((a: { amount: number; }, b: { amount: number; }) => (b.amount - a.amount));
       topPositions = Object.values(topPositions);
-      topPositions.sort((a: { amount: number; }, b: { amount: number; }) => (b.amount - a.amount));
+      topPositions.sort((a: { amount1: number; }, b: { amount1: number; }) => (b.amount1 - a.amount1));
 
       const latestPools = stakedData.sort((a, b) => { return b.date.getTime() - a.date.getTime() });
       // set state
@@ -170,7 +177,12 @@ const Home: NextPage = () => {
     setInterval(() => {
       let totalRewardsFarmed = [0,0];
       stakedData.forEach(event => {
-        totalRewardsFarmed[0] += getFarmedAmount(event.amount, event.date, staking.apy)
+        if(event.tokenType == 0) {
+          totalRewardsFarmed[0] += getFarmedAmount(event.amount, event.date, staking.apy)
+        }
+        else {
+          totalRewardsFarmed[1] += getFarmedAmount(event.amount, event.date, staking.apy)
+        }
       });
       setAppState((prevState) => ({
         ...prevState,
@@ -207,7 +219,6 @@ const Home: NextPage = () => {
           />
         )}
         <Overview tokenLockedTotal={appState.tokenLockedTotal}
-                  tokenUsd={appState.tokenUsd}
                   distribution={appState.distribution}
                   totalRewards={appState.totalRewardsFarmed}
                   totalStakes={appState.latestPools.length}

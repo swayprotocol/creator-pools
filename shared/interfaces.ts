@@ -4,7 +4,7 @@ export interface StakedEvent {
   social: string;
   sender: string;
   date: Date;
-  unlockTime?: Date;
+  tokenType: number;
 }
 
 export enum PoolItemType {
@@ -46,7 +46,7 @@ export interface StakeData {
   social: string;
   poolHandle: string;
   amount: string;
-  tokenType: string;
+  tokenType: number;
 }
 
 export interface ModalData {

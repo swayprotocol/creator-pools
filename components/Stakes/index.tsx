@@ -61,7 +61,7 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
 
     let channels: Channel[] = {} as Channel[];
     formatChannels.forEach((position: ChannelPosition) => {
-      if (!position.poolHandle) return; // claimed positions return poolHandle: '', let's filter them out
+      if (position.amount == 0) return; // claimed positions return poolHandle: '', let's filter them out
       const poolDataId = poolsData.findIndex(pool => pool.poolHandle === position.poolHandle);
       channels[position.poolHandle] = {
         userTotalAmount: channels[position.poolHandle]?.userTotalAmount + position.amount || position.amount,
@@ -69,7 +69,7 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
         social: position.social,
         totalFarmed: 0,
         positions: [...channels[position.poolHandle]?.positions || [], position],
-        averageAPR: 0,
+        averageAPR: staking.apy,
         // data from poolsData
         creator: poolsData[poolDataId]?.creator || '',
         members: +ethers.utils.formatUnits(poolsData[poolDataId]?.members || 1, 0),

@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import styles from './Item.module.scss';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
-import { Channel, ModalData } from '../../shared/interfaces';
+import {Channel, ModalData, ModalType} from '../../shared/interfaces';
 import ItemPositions from './Positions';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import { useConfig } from '../../contexts/Config';
@@ -14,9 +14,20 @@ type StakedItem = {
   contract: any,
 }
 
+
+
 const StakedItem: FC<StakedItem> = (props: StakedItem) => {
   const [isExpanded, setExpanded] = useState(false);
   const { token1 } = useConfig();
+
+  const openStakeModal = (type: ModalType, amount: string) => {
+    props.openModal({
+      type: type,
+      channel: props.channel,
+      amount: amount
+    })
+  }
+
   return (
       <div className={`${styles.itemWrapper} ${isExpanded ? styles.itemWrapperActive : ''}`}>
 
@@ -41,7 +52,10 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
             {props.channel.averageAPR}%
           </div>
           <div className={styles.tableItem}>
-            {props.channel.positions.some(position => +position.lastTimeClaimed ) ? 'Staked' : 'Unstaked'}
+            <button className="btn btn-secondary" onClick={() => openStakeModal(ModalType.UNSTAKE, '')}>
+              Unstake
+            </button>
+
           </div>
           <div className={styles.tableItem}>
             <strong>{props.channel.totalFarmed.toLocaleString('en-US', { maximumFractionDigits: 2 })}</strong>

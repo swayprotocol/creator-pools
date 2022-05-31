@@ -18,9 +18,10 @@ export function getStakedData(address: string, provider: string): Promise<Staked
       // log: log,
       amount: +ethers.utils.formatEther(log.args!.amount),
       poolHandle: log.args!.poolHandle,
+      social: getSocialType(log.args!.poolHandle),
       sender: log.args!.sender,
       date: await log.getBlock().then(res => new Date(res.timestamp * 1000)),
-      tokenType: 0 //TODO set
+      tokenType: log.args!.token //TODO set
     })))
   );
 }
