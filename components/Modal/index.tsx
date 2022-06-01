@@ -317,8 +317,8 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                     <label className="col-sm-3">Staked</label>
                     <div className={`${styles.tokenAvailable} col-sm-9`}>
                       <img src={token.logo} alt={token.ticker} height="20"/>
-                      <span>{props.modalData.channel?.userTotalStaked.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        {' '}staked in {props.modalData.channel?.stakes.length} positions</span>
+                      <span>{props.modalData.channel?.walletTotalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {' '}staked in {props.modalData.channel?.walletStakesCount} positions</span>
                     </div>
                   </div>
                 )}
