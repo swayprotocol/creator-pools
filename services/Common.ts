@@ -1,4 +1,4 @@
-import { IDistribution, IPlan, IPool, IStake } from '../shared/interfaces';
+import { IChannel, IDistribution, IPlan, IPool, IStake } from '../shared/interfaces';
 import { getSocialType } from '../helpers/getSocialType';
 
 const headers = {
@@ -94,21 +94,11 @@ const CommonService = {
       });
   },
 
-  getUserActiveStakes: (walletId: string): Promise<IStake[]> => {
-    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/stake/activeStakes/${walletId}`, {
+  getUserActivePools: (wallet: string): Promise<IChannel[]> => {
+    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/stake/activeStakesWallet?wallet=${wallet}`, {
       method: 'GET',
       headers,
     }).then(handleResponse)
-      .then((res: IStake[]) => (
-        res.map(stake => ({
-          ...stake,
-          pool: {
-            ...stake.pool,
-            poolHandle: stake.pool.creator.split('-')[1],
-            social: getSocialType(stake.pool.creator)
-          }
-        }))
-      ))
       .catch(error => {
         throw Error(error);
       });
@@ -134,8 +124,8 @@ const CommonService = {
       });
   },
 
-  getChanelDistribution: (): Promise<IDistribution[]> => {
-    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/stake/chanelDistribution`, {
+  getChannelDistribution: (): Promise<IDistribution[]> => {
+    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/stake/channelDistribution`, {
       method: 'GET',
       headers,
     }).then(handleResponse)

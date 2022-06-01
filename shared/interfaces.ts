@@ -21,12 +21,13 @@ export enum ModalType {
 }
 
 export interface IChannel {
-  averageApy: number;
+  averageAPY: number;
+  members: string[];
   numberOfStakes: number;
   poolHandle: string;
   totalAmount: number;
-  userTotalStaked: number;
-  userTotalEarned: number;
+  totalFarmed: number;
+  pool: IPool;
   social: string;
   stakes: IStake[];
 }
@@ -77,9 +78,10 @@ export interface IStake {
   wallet: string;
   collected: boolean;
   hash: string;
+  farmed: number;
 }
 
 export interface IDistribution {
-  chanel: string;
+  channel: string;
   distribution: string;
 }

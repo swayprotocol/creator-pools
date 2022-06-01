@@ -80,7 +80,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
             )}
           </div>
           <div className={styles.tableItem}>
-            {/*<strong>{stake.farmed.toLocaleString('en-US', { maximumFractionDigits: 2 })}</strong>*/}
+            <strong>{stake.farmed.toLocaleString('en-US', { maximumFractionDigits: 2 })}</strong>
           </div>
         </div>
       ))}

@@ -37,9 +37,9 @@ const Overview: FC<OverviewProps> = (props: OverviewProps) => {
   }
 
   async function setDistribution() {
-    const distribution = await CommonService.getChanelDistribution();
+    const distribution = await CommonService.getChannelDistribution();
     const distributionData = distribution.map(item => ({
-      name: staking?.channels.find(channel => channel.prefix === item.chanel).name,
+      name: staking?.channels.find(channel => channel.prefix === item.channel).name,
       distribution: Math.round(Number(item.distribution) * 100)
     }))
 

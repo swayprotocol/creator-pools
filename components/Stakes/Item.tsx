@@ -35,17 +35,17 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
           <strong>{props.channel.totalAmount.toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong>
         </div>
         <div className={styles.tableItem}>
-          <strong>{props.channel.userTotalStaked.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token.ticker}</strong>
-          <div>{(props.channel.userTotalStaked * props.tokenUsd).toLocaleString('en-US', { maximumFractionDigits: 0 })} USD</div>
+          <strong>{props.channel.totalAmount.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token.ticker}</strong>
+          <div>{(props.channel.totalAmount * props.tokenUsd).toLocaleString('en-US', { maximumFractionDigits: 0 })} USD</div>
         </div>
         <div className={styles.tableItem}>
-          {props.channel.averageApy}%
+          {props.channel.averageAPY}%
         </div>
         <div className={styles.tableItem}>
           {props.channel.stakes.some(stake => +new Date(stake.stakedUntil) > +new Date()) ? 'Locked' : 'Unlocked'}
         </div>
         <div className={styles.tableItem}>
-          <strong>{props.channel.userTotalEarned.toLocaleString('en-US', { maximumFractionDigits: 2 })}</strong>
+          <strong>{props.channel.totalFarmed.toLocaleString('en-US', { maximumFractionDigits: 2 })}</strong>
         </div>
       </div>
 

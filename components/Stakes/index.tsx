@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import styles from './index.module.scss';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import Item from './Item';
-import { IChannel, IStake, ModalData, ModalType } from '../../shared/interfaces';
+import { IChannel, ModalData, ModalType } from '../../shared/interfaces';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { useConfig } from '../../contexts/Config';
@@ -28,35 +28,8 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
   }, [props.contract, props.refreshData, account]);
 
   async function loadData() {
-    const stakedData = await CommonService.getUserActiveStakes(account);
-    formatStakedData(stakedData);
-  }
-
-  function formatStakedData(stakedData: IStake[]) {
-
-    let formattedData = {} as IChannel[];
-
-    stakedData.forEach((stake) => {
-      formattedData[stake.pool.poolHandle] = {
-        userTotalStaked: formattedData[stake.pool.poolHandle]?.userTotalStaked + stake.amount || stake.amount,
-        poolHandle: stake.pool.poolHandle,
-        social: stake.pool.social,
-        userTotalEarned: 0,
-        stakes: [... formattedData[stake.pool.poolHandle]?.stakes || [], stake],
-        averageApy: 0,
-        // data from API
-        numberOfStakes: 0,
-        totalAmount: 0
-      };
-    })
-
-    formattedData = Object.values(formattedData);
-    // set averageApy
-    formattedData.map(channel => channel.averageApy = Math.round(
-      channel.stakes.reduce((value, stake) => value + stake.plan.apy, 0) / channel.stakes.length)
-    );
-
-    setUserStakes(formattedData);
+    const activePools = await CommonService.getUserActivePools(account);
+    setUserStakes(activePools);
   }
 
   return (
