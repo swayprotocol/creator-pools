@@ -1,11 +1,7 @@
-import React, { FC, useEffect, useState } from 'react';
-import { useWeb3React } from '@web3-react/core';
-import { Web3Provider } from '@ethersproject/providers';
-import { ethers } from 'ethers';
+import React, { FC, useState } from 'react';
 import Moment from 'react-moment';
 import styles from './Positions.module.scss';
 import { IChannel, IStake, ModalData, ModalType } from '../../shared/interfaces';
-import { setSocialPrefix } from '../../helpers/getSocialType';
 import { useConfig } from '../../contexts/Config';
 
 type ItemPositions = {
@@ -19,16 +15,7 @@ type ItemPositions = {
 
 const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
   const [amountToStake, setAmountToStake] = useState('');
-  const [reward, setReward] = useState(0);
-
-  const { account } = useWeb3React<Web3Provider>();
   const { token } = useConfig();
-
-  useEffect(() => {
-    const longPoolhandle = setSocialPrefix(props.channel.poolHandle, props.channel.social);
-    calculateReward(longPoolhandle);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const openStakeModal = (type: ModalType, amount: string) => {
     props.openModal({
@@ -36,16 +23,6 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
       channel: props.channel,
       amount: amount
     })
-  }
-
-  const calculateReward = async (poolHandle) => {
-    try {
-      const rewardBigNumber = await props.contract.calculateReward(poolHandle,account)
-      const reward = ethers.utils.formatEther(rewardBigNumber);
-      setReward(parseFloat(reward));
-    } catch (error) {
-      console.error(error);
-    }
   }
 
   return (
@@ -114,14 +91,14 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
           </button>
         </div>
         <div className={styles.tableItem}>
-          {(reward !== 0) ? (
-              <button className="btn btn-secondary" onClick={() => openStakeModal(ModalType.CLAIM, reward.toString())}>
-                Claim
-              </button>
-            ) : (
-              <a target="_blank" rel="noopener noreferrer" href={token.exchange_url}>
-                Get {token.ticker}
-              </a>
+          {(props.channel.walletFarmed) ? (
+            <button className="btn btn-secondary" onClick={() => openStakeModal(ModalType.CLAIM, props.channel.walletFarmed.toString())}>
+              Claim
+            </button>
+          ) : (
+            <a target="_blank" rel="noopener noreferrer" href={token.exchange_url}>
+              Get {token.ticker}
+            </a>
           )}
         </div>
       </div>

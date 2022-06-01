@@ -30,6 +30,10 @@ export interface IChannel {
   pool: IPool;
   social: string;
   stakes: IStake[];
+  walletAverageAPY: number;
+  walletFarmed: number;
+  walletStakesCount: number;
+  walletTotalAmount: number;
 }
 
 export interface StakeData {
