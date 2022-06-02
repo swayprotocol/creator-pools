@@ -1,6 +1,5 @@
 async function getStakingAbi(): Promise<any> {
-  const abiEnvName = process.env.NEXT_PUBLIC_ENV || 'PRODUCTION';
-  let res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/stakingAbi?name=${abiEnvName.toLowerCase()}`, {
+  let res = await fetch(`${process.env.NEXT_PUBLIC_STAKING_ABI_URL}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

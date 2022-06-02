@@ -1,24 +1,24 @@
 import React, { FC } from 'react';
 import Item from './Item';
-import { ModalData, PoolItemType, StakedEvent } from '../../shared/interfaces';
+import { IStake, ModalData, PoolItemType } from '../../shared/interfaces';
 
 type PoolsProps = {
-  top: StakedEvent[],
-  latest: StakedEvent[],
-  positions: StakedEvent[],
+  top: Partial<IStake[]>,
+  latest: IStake[],
+  positions: IStake[],
   tokenUsd: number,
   loadError: boolean
   openModal: (modalData: ModalData) => any,
 }
 
-function renderItems(items: StakedEvent[], tokenUsd: number, type: PoolItemType, props: PoolsProps) {
+function renderItems(items: IStake[], tokenUsd: number, type: PoolItemType, props: PoolsProps) {
   return (
     <>
       {items.length ?
-        items?.map((stakedEvent, i) => {
+        items?.map((stake, i) => {
           return <Item key={i}
                        index={i}
-                       item={stakedEvent}
+                       item={stake}
                        tokenUsd={tokenUsd}
                        type={type}
                        openModal={props.openModal}
