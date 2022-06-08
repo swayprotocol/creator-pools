@@ -20,26 +20,32 @@ export enum ModalType {
   CLAIM = 'Claim'
 }
 
-export interface Channel {
-  poolHandle: string;
-  userTotalAmount: number;
-  social: string;
-  totalFarmed: number;
-  positions: ChannelPosition[];
-  creator: string;
-  members: number;
+export interface IChannel {
+  averageAPY: number;
+  members: string[];
   numberOfStakes: number;
-  totalAmount: number;
-  averageAPR: number;
-}
-
-export interface ChannelPosition {
-  amount: number;
-  indexInPool: number;
   poolHandle: string;
-  lastTimeClaimed: Date;
+  totalAmount: number;
+  totalFarmed: number;
+  pool: IPool;
   social: string;
-  farmed: number;
+  stakes: IStake[];
+  walletAverageAPY: number;
+  walletFarmed: number;
+  walletStakesCount: number;
+  walletTotalAmount: number;
+  token0: ItokenInfo;
+  token1: ItokenInfo;
+}
+export interface ItokenInfo{
+  averageAPY: number,
+  stakesCount: number,
+  totalAmount: number,
+  totalFarmed: number,
+  walletAverageAPY: number,
+  walletFarmed: number,
+  walletStakesCount: number,
+  walletTotalAmount: number
 }
 
 export interface StakeData {
@@ -51,13 +57,45 @@ export interface StakeData {
 
 export interface ModalData {
   type?: ModalType,
-  channel?: Partial<Channel>,
+  channel?: Partial<IChannel>,
   amount?: string,
   tokenType?: string
 }
+export interface Itokens {
+  name: string,
+  price: number,
+  totalAmount: number
+}
 
-export interface IChannelDistributionItem {
-  name: string;
-  prefix: string;
-  count?: number;
+export interface IPool {
+  _id: string;
+  creator: string;
+  startTime: Date;
+  poolHandle?: string;
+  social: string;
+  tokens: Itokens[];
+}
+
+export interface IStake {
+  _id: string;
+  pool: IPool;
+  stakedAt: Date;
+  stakedUntil: Date;
+  amount: number;
+  wallet: string;
+  collected: boolean;
+  hash: string;
+  farmed: number;
+  token: string;
+  tokens: Itokens[];
+}
+
+export interface IToken {
+  totalStaked: number;
+  APY: number;
+  totalFarmed: number;
+}
+
+export interface IOverview {
+  Itoken: IToken[];
 }

@@ -2,7 +2,7 @@
   "site": {
     "author": "Sway Social",
     "heading": "Creator Pools",
-    "sub_heading": "v0.2 Beta",
+    "sub_heading": "v0.3 Beta",
     "meta": {
       "title": "Creator Pools | Sway Social",
       "description": "Creator pools introduce a new metaverse-ready social capital concept by staking with your creators and sharing in their success.",
@@ -88,17 +88,17 @@
     },
     "hasAltTheme": true
   },
-  "token2": {
-    "address": "0xe1A3F0Ca19e64f6Bc516a036FF141e65eD219291",
-    "ticker": "SWAY",
+  "token1": {
+    "address": "0x665C1F40e522f89cAE4177d7CB6FD110A4cD7c37",
+    "ticker": "XSWAY",
     "logo": "/assets/favicon-137x137.png",
     "coingecko_coin_ticker": "sway-social",
     "exchange_url": "https://quickswap.exchange/#/swap?outputCurrency=0x262b8aa7542004f023b0eb02bc6b96350a02b728",
     "circulating_supply": 10917462
   },
-  "token1": {
-    "address": "0x665C1F40e522f89cAE4177d7CB6FD110A4cD7c37",
-    "ticker": "TRAXX",
+  "token2": {
+    "address": "0xe1A3F0Ca19e64f6Bc516a036FF141e65eD219291",
+    "ticker": "YTRAXX",
     "logo": "/assets/tt_logo.png",
     "coingecko_coin_ticker": "traxx",
     "exchange_url": "https://quickswap.exchange/#/swap?outputCurrency=0x262b8aa7542004f023b0eb02bc6b96350a02b728",

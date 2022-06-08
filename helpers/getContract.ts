@@ -50,8 +50,8 @@ export function getContract(stakingContract: Contract): any {
     transferOwnership: async (address: string) => {
       return stakingContract.transferOwnership(address);
     },
-    unstake: async (poolHandle: string) => {
-      return stakingContract.unstake(poolHandle);
+    unstake: async (poolHandle: string, tokenType: number) => {
+      return stakingContract.unstake(poolHandle, tokenType);
     }
   }
 }

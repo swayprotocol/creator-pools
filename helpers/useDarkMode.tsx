@@ -10,13 +10,15 @@ function useDarkMode(): [string, Dispatch<SetStateAction<string>>] {
   const { theme } = useConfig();
 
   useEffect(() => {
-    setGlobalStyles(theme.hasAltTheme ? theme[themeStyle] : theme['main']);
+    if (theme) {
+      setGlobalStyles(theme.hasAltTheme ? theme[themeStyle] : theme['main']);
 
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('themeStyle', themeStyle);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('themeStyle', themeStyle);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [themeStyle]);
+  }, [themeStyle, theme]);
 
   return [colorTheme, setThemeStyle];
 }

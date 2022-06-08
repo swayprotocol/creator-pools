@@ -1,10 +1,11 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { Contract, ethers } from 'ethers';
-import TOKEN_ABI from '../shared/abis/token-abi.json';
+import getTokenAbi from "./getTokenAbi";
 
-export function getUserAvailableTokens(wallet: string, address: string, provider: string): Promise<string> {
+export async function getUserAvailableTokens(wallet: string, address: string, provider: string): Promise<string> {
+  const tokenAbi = await getTokenAbi();
   const rpcProvider = new JsonRpcProvider(provider);
-  const tokenContract = new Contract(address!, TOKEN_ABI, rpcProvider);
+  const tokenContract = new Contract(address!, tokenAbi, rpcProvider);
 
   return tokenContract.balanceOf(wallet).then(bigNumber => {
     return ethers.utils.formatEther(bigNumber);

@@ -2,28 +2,26 @@ import React, { FC, useEffect, useState } from 'react';
 import styles from './index.module.scss';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import Item from './Item';
-import { Channel, ChannelPosition, ModalData, ModalType } from '../../shared/interfaces';
-import { ethers } from 'ethers';
+import { IChannel, ModalData, ModalType } from '../../shared/interfaces';
 import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
-import { getFarmedAmount } from '../../helpers/getFarmedAmount';
-import { getPlanById } from '../../helpers/getPlanById';
-import { getSocialType } from '../../helpers/getSocialType';
 import { useConfig } from '../../contexts/Config';
+import CommonService from '../../services/Common';
 
 type StakesType = {
   openModal: (modalData: ModalData) => any,
   contract: any,
   tokenUsd: number[],
   tokenUserTotal: string[],
-  refreshData: number
+  refreshData: number,
+  maxApyPlan: number[]
 }
 
 const Stakes: FC<StakesType> = (props: StakesType) => {
-  const [channels, setChannels] = useState<Channel[]>([]);
+  const [userStakes, setUserStakes] = useState<IChannel[]>([]);
 
   const { account } = useWeb3React<Web3Provider>();
-  const { token1, token2, staking } = useConfig();
+  const { token1 } = useConfig();
 
   useEffect(() => {
     if (account) loadData();
@@ -31,55 +29,8 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
   }, [props.contract, props.refreshData, account]);
 
   async function loadData() {
-    const activeChannels: any[] = await props.contract.getUserQueue(account);
-    const allPoolHandles = activeChannels.map(channel => channel.poolHandle).filter(name => !!name);
-    let poolsData: any[] = [];
-    if (allPoolHandles.length) {
-      // @ts-ignore
-      const uniquePoolHandles = [...new Set(allPoolHandles)];
-      poolsData = await props.contract.getMultiplePools(uniquePoolHandles);
-      poolsData = poolsData.map((pool, i) => ({ ...pool, poolHandle: uniquePoolHandles[i] }));
-    }
-
-    formatData(activeChannels, poolsData);
-  }
-
-  function formatData(activeChannels: any[], poolsData: any[]) {
-    const formatChannels: ChannelPosition[] = activeChannels.map((channel) => {
-      const lastTimeClaimedDate = new Date(+ethers.utils.formatUnits(channel.lastTimeClaimed, 0) * 1000);
-      const amount = +ethers.utils.formatEther(channel.amount);
-      return {
-        amount: amount,
-        indexInPool: +ethers.utils.formatUnits(channel.indexInPool, 0),
-        planId: channel.planId,
-        poolHandle: channel.poolHandle,
-        social: getSocialType(channel.poolHandle),
-        lastTimeClaimed: lastTimeClaimedDate,
-        farmed: 0
-      };
-    });
-
-    let channels: Channel[] = {} as Channel[];
-    formatChannels.forEach((position: ChannelPosition) => {
-      if (position.amount == 0) return; // claimed positions return poolHandle: '', let's filter them out
-      const poolDataId = poolsData.findIndex(pool => pool.poolHandle === position.poolHandle);
-      channels[position.poolHandle] = {
-        userTotalAmount: channels[position.poolHandle]?.userTotalAmount + position.amount || position.amount,
-        poolHandle: position.poolHandle,
-        social: position.social,
-        totalFarmed: 0,
-        positions: [...channels[position.poolHandle]?.positions || [], position],
-        averageAPR: staking.apy,
-        // data from poolsData
-        creator: poolsData[poolDataId]?.creator || '',
-        members: +ethers.utils.formatUnits(poolsData[poolDataId]?.members || 1, 0),
-        numberOfStakes: +ethers.utils.formatUnits(poolsData[poolDataId]?.numberOfStakes || 1, 0),
-        totalAmount: +ethers.utils.formatEther(poolsData[poolDataId]?.totalAmountSway.add(poolsData[poolDataId]?.totalAmountTraxx))|| 0
-      };
-    });
-
-    channels = Object.values(channels);
-    setChannels(channels);
+    const activePools = await CommonService.getUserActivePools(account);
+    setUserStakes(activePools);
   }
 
   return (
@@ -138,18 +89,19 @@ const Stakes: FC<StakesType> = (props: StakesType) => {
                     </div>
                   </div>
                 </div>
-                {channels.length ? channels.map((channelItem, i) => (
+                {userStakes.length ? userStakes.map((channelItem, i) => (
                     <Item key={i}
                           openModal={props.openModal}
                           channel={channelItem}
                           tokenUsd={props.tokenUsd}
                           tokenUserTotal={props.tokenUserTotal}
                           contract={props.contract}
+                          maxApyPlan={props.maxApyPlan}
                     />
                 )) : (
                     <div className={styles.inactive}>
                       <p className="mb-2">No active positions yet. <a className="btn-link" onClick={() => props.openModal({ type: ModalType.STAKE })}>Click here</a> to get started.</p>
-                      <p className="mb-4">You will need {token1.ticker} to get started. <a target="_blank" rel="noopener noreferrer" href={token1.exchange_url}>Get it now</a>.</p>
+                      <p className="mb-4">You will need {token1?.ticker} to get started. <a target="_blank" rel="noopener noreferrer" href={token1?.exchange_url}>Get it now</a>.</p>
                       <p className="mb-0">Don’t know where to stake? Stake with <a className="btn-link" onClick={() => props.openModal({ type: ModalType.STAKE, channel: { poolHandle: 'cloutdotart'} })}>cloutdotart</a>.</p>
                     </div>
                 )}

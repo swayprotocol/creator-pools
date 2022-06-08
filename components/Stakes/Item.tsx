@@ -1,20 +1,19 @@
 import React, { FC, useState } from 'react';
 import styles from './Item.module.scss';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
-import {Channel, ModalData, ModalType} from '../../shared/interfaces';
+import {IChannel, ModalData, ModalType} from '../../shared/interfaces';
 import ItemPositions from './Positions';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import { useConfig } from '../../contexts/Config';
 
 type StakedItem = {
   openModal: (modalData: ModalData) => any,
-  channel: Channel,
+  channel: IChannel,
   tokenUsd: number[],
   tokenUserTotal: string[],
   contract: any,
+  maxApyPlan: number[]
 }
-
-
 
 const StakedItem: FC<StakedItem> = (props: StakedItem) => {
   const [isExpanded, setExpanded] = useState(false);
@@ -27,10 +26,8 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
       amount: amount
     })
   }
-
   return (
       <div className={`${styles.itemWrapper} ${isExpanded ? styles.itemWrapperActive : ''}`}>
-
         <div className={styles.item} onClick={() => setExpanded((prevState => !prevState))}>
           <div className={styles.itemIcon}>▶</div>
           <div className={styles.tableItem}>
@@ -42,14 +39,14 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
             </div>
           </div>
           <div className={styles.tableItem}>
-            <strong>{props.channel.totalAmount.toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong>
+            <strong>{(props.channel.token0.totalAmount + props.channel.token1.totalAmount).toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong>
           </div>
           <div className={styles.tableItem}>
-            <strong>{props.channel.userTotalAmount.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token1.ticker}</strong>
-            <div>{(props.channel.userTotalAmount * props.tokenUsd[0]).toLocaleString('en-US', { maximumFractionDigits: 0 })} USD</div>
+            <strong>{(props.channel.token0.walletTotalAmount + props.channel.token1.walletTotalAmount).toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong>
+            <div>{(props.channel.token0.totalAmount * props.tokenUsd[0] + props.channel.token1.totalAmount * props.tokenUsd[1]).toLocaleString('en-US', { maximumFractionDigits: 0 })} USD</div>
           </div>
           <div className={styles.tableItem}>
-            {props.channel.averageAPR}%
+            {(props.channel.token0.averageAPY).toLocaleString('en-US', { maximumFractionDigits: 1 })}%
           </div>
           <div className={styles.tableItem}>
             <button className="btn btn-secondary" onClick={() => openStakeModal(ModalType.UNSTAKE, '')}>
@@ -58,17 +55,18 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
 
           </div>
           <div className={styles.tableItem}>
-            <strong>{props.channel.totalFarmed.toLocaleString('en-US', { maximumFractionDigits: 2 })}</strong>
+            <strong>{(props.channel.token0.walletFarmed + props.channel.token1.walletFarmed).toLocaleString('en-US', { maximumFractionDigits: 2 })} {token1.ticker}</strong>
           </div>
         </div>
 
         {isExpanded && (
             <ItemPositions openModal={props.openModal}
-                           positions={props.channel.positions}
+                           stakes={props.channel.stakes}
                            tokenUsd={props.tokenUsd}
                            tokenUserTotal={props.tokenUserTotal}
                            channel={props.channel}
                            contract={props.contract}
+                           maxApyPlan={props.maxApyPlan}
             />
         )}
       </div>

@@ -4,8 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import styles from './Modal.module.scss';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
-import TOKEN_ABI from '../../shared/abis/token-abi.json';
-import { setSocialPrefix } from '../../helpers/getSocialType';
+import getTokenAbi from '../../helpers/getTokenAbi';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import { ModalData, ModalType, StakeData } from '../../shared/interfaces';
 import { useConfig } from '../../contexts/Config';
@@ -52,12 +51,6 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     if (props.modalData.type === ModalType.CLAIM) {
       setReward(parseFloat(props.modalData.amount))
     }
-    if (!props.modalData.channel?.social) {
-      setFormData((prevState) => ({
-        ...prevState,
-        social: staking.channels[0].prefix
-      }));
-    }
   }, [props.modalData]);
 
   const handleCloseClick = (e) => {
@@ -97,26 +90,26 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
 
       try {
         // check allowance and give permissions
-        const tokenContract = new Contract(tokens[formData.tokenType].address, TOKEN_ABI, library.getSigner());
+        const tokenAbi = await getTokenAbi();
+        const tokenContract = new Contract(tokens[formData.tokenType].address, tokenAbi, library.getSigner());
         const allowance = await tokenContract.allowance(account, staking.address);
 
         if (allowance.lte(stakeData.amount)) {
-
           const allowUnlimited = BigNumber.from(2).pow(256).sub(1);
           const awaitTx = await tokenContract.approve(staking.address, allowUnlimited, { gasLimit: 100000 });
           await awaitTx.wait();
         }
-
         const stakeTx = await props.contract.stake(
           formData.poolHandle,
             stakeData.amount,
             formData.tokenType,
-          { gasLimit: 500000 }
+          { gasLimit: 5000000 }
         );
 
         await stakeTx.wait();
         props.onClose(true);
       } catch (error) {
+        console.log(error);
         setCallError(error['data']?.message.replace('execution reverted: ', '') || (error as any)?.message || 'Error');
         setLoading(false);
       }
@@ -149,8 +142,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     setLoading(true);
 
     try {
-      const longPoolhandle = setSocialPrefix(formData.poolHandle, formData.social);
-      const reward = await props.contract.getReward(longPoolhandle)
+      const reward = await props.contract.getReward(formData.poolHandle)
       await reward.wait()
       props.onClose(true);
     } catch (error) {
@@ -197,7 +189,6 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
     setFormError(errors);
     return formIsValid;
   }
-
   return (
     <div className={`modal ${styles.modal}`}>
       <div className="modal-dialog modal-lg">
@@ -259,8 +250,8 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                     <label className="col-sm-3">Staked</label>
                     <div className={`${styles.tokenAvailable} col-sm-9`}>
                       <img src={token1.logo} alt={token1.ticker} height="20"/>
-                      <span>{props.modalData.channel?.userTotalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        {' '}staked in {props.modalData.channel?.positions.length} positions</span>
+                      <span>{(props.modalData.channel?.token0.totalAmount + props.modalData.channel?.token1.totalAmount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {' '}staked in {props.modalData.channel?.stakes.length} positions</span>
                     </div>
                   </div>
                 )}

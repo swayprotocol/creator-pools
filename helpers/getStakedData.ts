@@ -5,13 +5,13 @@ import { StakedEvent } from '../shared/interfaces';
 import { getSocialType } from './getSocialType';
 import getStakingAbi from './getStakingAbi';
 
-export function getStakedData(address: string, provider: string): Promise<StakedEvent[]> {
-  const rpcProvider = new JsonRpcProvider(provider);
-  const stakingAbi = getStakingAbi();
-  const stakingContract = new Contract(address!, stakingAbi, rpcProvider);
+export async function getStakedData(address: string, provider: string): Promise<StakedEvent[]> {
+    const rpcProvider = new JsonRpcProvider(provider);
+    const stakingAbi = await getStakingAbi();
+    const stakingContract = new Contract(address!, stakingAbi, rpcProvider);
 
-  // filter by 'Staked' event only
-  const filter = stakingContract.filters.Staked();
+    // filter by 'Staked' event only
+    const filter = stakingContract.filters.Staked();
 
   return stakingContract.queryFilter(filter, 21001090).then((logs: Event[]) =>
     Promise.all(logs.map(async (log: Event) => ({
@@ -21,7 +21,7 @@ export function getStakedData(address: string, provider: string): Promise<Staked
       social: getSocialType(log.args!.poolHandle),
       sender: log.args!.sender,
       date: await log.getBlock().then(res => new Date(res.timestamp * 1000)),
-      tokenType: log.args!.token //TODO set
+      tokenType: log.args!.token
     })))
   );
 }
