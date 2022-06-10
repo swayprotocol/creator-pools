@@ -44,6 +44,21 @@
           "destination": "/index.html"
         }
       ]
+    },
+    {
+      "public": "out",
+      "target": "dualpools-staging",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
     }
   ],
   "emulators": {

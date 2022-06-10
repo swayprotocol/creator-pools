@@ -5,7 +5,6 @@ import FAQ from '../components/FAQ/FAQ';
 import Overview from '../components/Overview';
 import Header from '../components/Header/Header';
 import Pools from '../components/Pools';
-import { getStakedData } from '../helpers/getStakedData';
 import { getContract } from '../helpers/getContract';
 import ReactGA from 'react-ga';
 import { getTokenPrice } from '../helpers/getTokenPrice';
@@ -84,6 +83,7 @@ const Home: NextPage<Props> = ({ globalConfig }) => {
       setAppState(prevState => ({...prevState, tokenUserTotal: [availableTokens1, availableTokens2]}))
     }
     if (walletId) getUserTokenAmount();
+       // eslint-disable-next-line
   }, [walletId, refreshData]);
 
   async function loadWallet(connector: AbstractConnector, library: Web3Provider) {
