@@ -17,7 +17,7 @@ type StakedItem = {
 
 const StakedItem: FC<StakedItem> = (props: StakedItem) => {
   const [isExpanded, setExpanded] = useState(false);
-  const { token1 } = useConfig();
+  const { token1,token2 } = useConfig();
 
   const openStakeModal = (type: ModalType, amount: string) => {
     props.openModal({
@@ -39,11 +39,18 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
             </div>
           </div>
           <div className={styles.tableItem}>
-            <strong>{(props.channel.token0.totalAmount + props.channel.token1.totalAmount).toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong>
+            <span><strong>{(props.channel.token0.totalAmount).toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong> {token1.ticker}</span>
+            <span><strong>{(props.channel.token1.totalAmount).toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong> {token2.ticker}</span>
           </div>
           <div className={styles.tableItem}>
-            <strong>{(props.channel.token0.walletTotalAmount + props.channel.token1.walletTotalAmount).toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong>
-            <div>{(props.channel.token0.totalAmount * props.tokenUsd[0] + props.channel.token1.totalAmount * props.tokenUsd[1]).toLocaleString('en-US', { maximumFractionDigits: 0 })} USD</div>
+            <span>
+              <strong>{(props.channel.token0.walletTotalAmount).toLocaleString('en-US', { maximumFractionDigits: 0 })}  </strong>
+              {(props.channel.token0.totalAmount * props.tokenUsd[0]).toLocaleString('en-US', { maximumFractionDigits: 0 })} USD
+            </span>
+            <span>
+              <strong>{(props.channel.token1.walletTotalAmount).toLocaleString('en-US', { maximumFractionDigits: 0 })}  </strong>
+              {(props.channel.token1.totalAmount * props.tokenUsd[1]).toLocaleString('en-US', { maximumFractionDigits: 0 })} USD
+            </span>
           </div>
           <div className={styles.tableItem}>
             {(props.channel.token0.averageAPY).toLocaleString('en-US', { maximumFractionDigits: 1 })}%
