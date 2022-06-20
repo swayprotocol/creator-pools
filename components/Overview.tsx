@@ -91,7 +91,7 @@ async function getOverviewData() {
               </div>
               <div className="overview-item">
                 <div className="overview-item-name">TOTAL REWARDS EARNED</div>
-                <div className="overview-item-value">{overviewState.totalRewards[1].toLocaleString('en-US', { maximumFractionDigits: 2 })} {token1?.ticker}</div>
+                <div className="overview-item-value">{overviewState.totalRewards[1].toLocaleString('en-US', { maximumFractionDigits: 2 })} {token2?.ticker}</div>
               </div>
             </div>
           </div>
