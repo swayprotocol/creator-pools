@@ -8,6 +8,7 @@ import getTokenAbi from '../../helpers/getTokenAbi';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import { ModalData, ModalType, StakeData } from '../../shared/interfaces';
 import { useConfig } from '../../contexts/Config';
+import Alert from '../Alert';
 
 type ModalProps = {
   onClose: (reload?: boolean) => any,
@@ -31,6 +32,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
   const [disableEditing, setDisableEditing] = useState(false);
   const [reward, setReward] = useState(0);
   const [selectedToken, setSelectedToken] = useState(0);
+  const [alert, setAlert] = useState(false);
 
   const { library, account } = useWeb3React<Web3Provider>();
   const { token1, token2, staking } = useConfig();
@@ -129,6 +131,7 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
       try {
         const stakeTx = await props.contract.unstake(stakeData.poolHandle, stakeData.tokenType, { gasLimit: 500000 });
         await stakeTx.wait();
+        setAlert(true);
         props.onClose(true);
       } catch (error) {
         setCallError(error['data']?.message.replace('execution reverted: ', '') || (error as any)?.message || 'Error');
@@ -352,6 +355,11 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
           </div>
         </div>
       </div>
+      {alert && <Alert 
+        title={'Unstake'}
+        text={'Unstake was processed successfully'} 
+        onClose={() => setAlert(false)}/>
+      }
     </div>
   );
 }
