@@ -261,28 +261,6 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                   </div>
                 </div>
 
-                {(props.modalData.type === ModalType.STAKE || props.modalData.type === ModalType.ADD) && (
-                  <>
-                    <div className="form-group row">
-                      <label htmlFor="amount" className="col-sm-3">Amount</label>
-                      <div className="col-sm-4 extended-input">
-                        <input type="number"
-                              className={`form-control ${formError['amount'] ? 'error' : ''}`}
-                              id="amount"
-                              min={1}
-                              step={0.000000000000000001}
-                              value={formData.amount}
-                              onChange={(e) => handleChange('amount', e.target.value)}
-                              placeholder="1000"/>
-                        <div className="after-element" onClick={() => handleChange('amount', props.tokenUserTotal[selectedToken])}>MAX</div>
-                      </div>
-                      <div className={`${styles.tokenAvailable} col-sm-5`}>
-                        <img src={tokens[selectedToken].logo} alt={tokens[selectedToken].ticker} height="20"/>
-                        <span>{(+props.tokenUserTotal[selectedToken]).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} available</span>
-                      </div>
-                    </div>
-                  </>
-                )}
                 {(props.modalData.type === ModalType.UNSTAKE || props.modalData.type === ModalType.STAKE || props.modalData.type === ModalType.ADD) && (
                     <div className="form-group row">
                       <label htmlFor="tokenType" className="col-sm-3">TokenType</label>
@@ -305,6 +283,28 @@ const Modal: FC<ModalProps> = (props: ModalProps) => {
                     </div>
                 )}
 
+                {(props.modalData.type === ModalType.STAKE || props.modalData.type === ModalType.ADD) && (
+                  <>
+                    <div className="form-group row">
+                      <label htmlFor="amount" className="col-sm-3">Amount</label>
+                      <div className="col-sm-4 extended-input">
+                        <input type="number"
+                              className={`form-control ${formError['amount'] ? 'error' : ''}`}
+                              id="amount"
+                              min={1}
+                              step={0.000000000000000001}
+                              value={formData.amount}
+                              onChange={(e) => handleChange('amount', e.target.value)}
+                              placeholder="1000"/>
+                        <div className="after-element" onClick={() => handleChange('amount', props.tokenUserTotal[selectedToken])}>MAX</div>
+                      </div>
+                      <div className={`${styles.tokenAvailable} col-sm-5`}>
+                        <img src={tokens[selectedToken].logo} alt={tokens[selectedToken].ticker} height="20"/>
+                        <span>{(+props.tokenUserTotal[selectedToken]).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} available</span>
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 {props.modalData.type === ModalType.CLAIM && (
                   <div className="form-group row">
