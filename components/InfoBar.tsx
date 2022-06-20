@@ -15,8 +15,7 @@ const InfoBar: FC<BarType> = (props: BarType) => {
         <div className="container">
           <div className="row">
             <p>
-              <strong>{(props.tokenLockedTotal[0] + props.tokenLockedTotal[1]).toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong> TVL
-              - total {token1.ticker} and {token2.ticker} locked in creator pools
+              <strong>{(props.tokenLockedTotal[0]).toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong> {token1.ticker} and <strong>{(props.tokenLockedTotal[1]).toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong> {token2.ticker} locked in creator pools
             </p>
           </div>
         </div>
