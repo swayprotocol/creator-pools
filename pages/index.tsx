@@ -10,7 +10,7 @@ import ReactGA from 'react-ga';
 import { getTokenPrice } from '../helpers/getTokenPrice';
 import Stakes from '../components/Stakes';
 import Modal from '../components/Modal';
-import { ModalData } from '../shared/interfaces';
+import { ModalData, ModalType } from '../shared/interfaces';
 import { Contract, ethers } from 'ethers';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
@@ -24,6 +24,7 @@ import { useConfig } from '../contexts/Config';
 import getStakingAbi from '../helpers/getStakingAbi';
 import { GetStaticProps } from 'next';
 import CommonService from '../services/Common';
+import Alert from '../components/Alert';
 
 declare global {
   interface Window {
@@ -54,7 +55,7 @@ function initialiseAnalytics(trackingId: string) {
 
 const Home: NextPage<Props> = ({ globalConfig }) => {
   const [appState, setAppState] = useState(initialAppState);
-  const [showModal, setShowModal] = useState<'STAKE' | 'NEWSLETTER' | ''>('');
+  const [showModal, setShowModal] = useState<'STAKE' | 'NEWSLETTER' | 'UNSTAKE' |''>('');
   const [walletId, setWalletId] = useState('');
   const [loading, setLoading] = useState(true);
   const [contractData, setContractData] = useState<Contract>();
@@ -194,11 +195,21 @@ const Home: NextPage<Props> = ({ globalConfig }) => {
                        setShowModal('NEWSLETTER');
                      }
                    }
+                   if (modalData.type === ModalType.UNSTAKE) {
+                    setShowModal('UNSTAKE')
+                   }
                  }}
           />
         )}
         {showModal === 'NEWSLETTER' && (
           <Newsletter onClose={() => setShowModal('')}/>
+        )}
+        {showModal === 'UNSTAKE' && (
+           <Alert 
+              title={'Unstake'}
+              text={'Unstake was processed successfully'} 
+              onClose={() => setShowModal('')}
+            />
         )}
       </Web3ReactProvider>
     </Layout>
