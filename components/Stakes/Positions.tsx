@@ -25,6 +25,16 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
     })
   }
 
+  const apy = (stake: IStake) => {
+    if (stake.plan?.apy) return stake.plan.apy
+    return props.channel.walletAverageAPY
+  }
+
+  const farmed = (stake: IStake) => {
+    if (stake.farmed) return stake.farmed
+    return (props.channel.walletFarmed * stake.amount) / props.channel.walletTotalAmount
+  }
+
   return (
     <div className={styles.positionWrapper}>
 
@@ -45,7 +55,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
             <strong>{stake.amount.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token.ticker}</strong>
           </div>
           <div className={styles.tableItem}>
-            {stake.plan.apy}%
+            {apy(stake).toLocaleString('en-US', { maximumFractionDigits: 1 })}%
           </div>
           <div className={styles.tableItem}>
             {+new Date(stake.stakedUntil) < +new Date() ? (
@@ -57,7 +67,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
             )}
           </div>
           <div className={styles.tableItem}>
-            <strong>{stake.farmed.toLocaleString('en-US', { maximumFractionDigits: 2 })}</strong>
+            <strong>{farmed(stake).toLocaleString('en-US', { maximumFractionDigits: 2 })}</strong>
           </div>
         </div>
       ))}

@@ -32,20 +32,20 @@ const StakedItem: FC<StakedItem> = (props: StakedItem) => {
           </div>
         </div>
         <div className={styles.tableItem}>
-          <strong>{props.channel.totalAmount.toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong>
+          <strong>{props.channel.totalAmount?.toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong>
         </div>
         <div className={styles.tableItem}>
-          <strong>{props.channel.walletTotalAmount.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token.ticker}</strong>
-          <div>{(props.channel.walletTotalAmount * props.tokenUsd).toLocaleString('en-US', { maximumFractionDigits: 0 })} USD</div>
+          <strong>{props.channel.walletTotalAmount?.toLocaleString('en-US', { maximumFractionDigits: 0 })} {token.ticker}</strong>
+          <div>{(props.channel.walletTotalAmount * props.tokenUsd)?.toLocaleString('en-US', { maximumFractionDigits: 0 })} USD</div>
         </div>
         <div className={styles.tableItem}>
-          {props.channel.walletAverageAPY.toLocaleString('en-US', { maximumFractionDigits: 1 })}%
+          {props.channel.walletAverageAPY?.toLocaleString('en-US', { maximumFractionDigits: 1 })}%
         </div>
         <div className={styles.tableItem}>
           {props.channel.stakes.some(stake => +new Date(stake.stakedUntil) > +new Date()) ? 'Locked' : 'Unlocked'}
         </div>
         <div className={styles.tableItem}>
-          <strong>{props.channel.walletFarmed.toLocaleString('en-US', { maximumFractionDigits: 2 })}</strong>
+          <strong>{props.channel.walletFarmed?.toLocaleString('en-US', { maximumFractionDigits: 2 })}</strong>
         </div>
       </div>
 
