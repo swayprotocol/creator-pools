@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import styles from './Item.module.scss';
-import { ModalData, ModalType, PoolItemType, StakedEvent } from '../../shared/interfaces';
+import { IStake, ModalData, ModalType, PoolItemType } from '../../shared/interfaces';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import { getSocialIcon } from '../../helpers/getSocialIcon';
 import Moment from 'react-moment';
@@ -8,7 +8,7 @@ import { useConfig } from '../../contexts/Config';
 
 type Item = {
   index: number,
-  item: StakedEvent,
+  item: IStake,
   tokenUsd: number,
   type: PoolItemType,
   openModal: (modalData: ModalData) => any,
@@ -25,12 +25,12 @@ const Item: FC<Item> = (props: Item) => {
             <div className={`${styles.mainText} ${styles.alt}`}>#{props.index + 1}</div>
           )}
           <div className={`${styles.innerTitleWrap} ${styles.clickable}`}
-               onClick={() => props.openModal({ type: ModalType.STAKE, channel: { poolHandle: props.item.poolHandle, social: props.item.social } })}>
+               onClick={() => props.openModal({ type: ModalType.STAKE, channel: { poolHandle: props.item.pool.poolHandle, social: props.item.pool.social } })}>
             <div className={styles.socialIcon}>
-              {getSocialIcon(props.item.social)}
+              {getSocialIcon(props.item.pool.social)}
             </div>
             <div className={styles.mainText}>
-              {props.item.poolHandle.length > 30 ? getWalletShorthand(props.item.poolHandle) : props.item.poolHandle}
+              {props.item.pool.creator.length > 30 ? getWalletShorthand(props.item.pool.poolHandle) : props.item.pool.poolHandle}
             </div>
             {/*<div className={styles.mainText}>3/4</div>*/}
           </div>
@@ -49,7 +49,7 @@ const Item: FC<Item> = (props: Item) => {
         <div>
           {/*<div className={styles.subText}>8.58% of total 13,282,221</div>*/}
           {(props.type === PoolItemType.LATEST || props.type === PoolItemType.INDIVIDUAL) && (
-            <div className={styles.subText}>{getWalletShorthand(props.item.sender)}</div>
+            <div className={styles.subText}>{getWalletShorthand(props.item.wallet)}</div>
           )}
         </div>
         <div>
@@ -58,7 +58,7 @@ const Item: FC<Item> = (props: Item) => {
           )}
           {props.type === PoolItemType.LATEST && (
             <div className={styles.subText}>
-              <Moment date={props.item.date.toISOString()} fromNow></Moment>
+              <Moment date={props.item.stakedAt} fromNow></Moment>
             </div>
           )}
         </div>

@@ -13,7 +13,7 @@ const FAQ: FC = () => {
     });
   }
 
-  if (!site.faq?.length) {
+  if (!site?.faq?.length) {
     return null;
   }
 

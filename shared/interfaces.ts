@@ -4,7 +4,6 @@ export interface StakedEvent {
   sender: string;
   date: Date;
   social: string;
-  plan?: Plan;
   unlockTime?: Date;
 }
 
@@ -21,29 +20,20 @@ export enum ModalType {
   CLAIM = 'Claim'
 }
 
-export interface Channel {
-  poolHandle: string;
-  userTotalAmount: number;
-  social: string;
-  totalFarmed: number;
-  positions: ChannelPosition[];
-  creator: string;
-  members: number;
+export interface IChannel {
+  averageAPY: number;
+  members: string[];
   numberOfStakes: number;
-  totalAmount: number;
-  averageAPR: number;
-}
-
-export interface ChannelPosition {
-  amount: number;
-  indexInPool: number;
-  planId: number;
-  plan: Plan;
   poolHandle: string;
-  stakedAt: Date;
-  unlockTime: Date;
+  totalAmount: number;
+  totalFarmed: number;
+  pool: IPool;
   social: string;
-  farmed: number;
+  stakes: IStake[];
+  walletAverageAPY: number;
+  walletFarmed: number;
+  walletStakesCount: number;
+  walletTotalAmount: number;
 }
 
 export interface StakeData {
@@ -55,20 +45,47 @@ export interface StakeData {
 
 export interface ModalData {
   type?: ModalType,
-  channel?: Partial<Channel>,
+  channel?: Partial<IChannel>,
   amount?: string
 }
 
-export interface Plan {
-  planId: number;
+export interface IPlan {
+  blockchainIndex: number;
   apy: number;
   availableUntil: Date;
   lockMonths: number;
-  createdAt?: Date;
+  createdAt: Date;
+  _id: string;
 }
 
 export interface IChannelDistributionItem {
   name: string;
   prefix: string;
   count?: number;
+}
+
+export interface IPool {
+  _id: string;
+  creator: string;
+  startTime: Date;
+  poolHandle?: string;
+  social: string;
+}
+
+export interface IStake {
+  _id: string;
+  plan: IPlan;
+  pool: IPool;
+  stakedAt: Date;
+  stakedUntil: Date;
+  amount: number;
+  wallet: string;
+  collected: boolean;
+  hash: string;
+  farmed: number;
+}
+
+export interface IDistribution {
+  channel: string;
+  distribution: string;
 }

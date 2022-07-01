@@ -5,13 +5,12 @@ import FAQ from '../components/FAQ/FAQ';
 import Overview from '../components/Overview';
 import Header from '../components/Header/Header';
 import Pools from '../components/Pools';
-import { getStakedData } from '../helpers/getStakedData';
 import { getContract } from '../helpers/getContract';
 import ReactGA from 'react-ga';
 import { getTokenPrice } from '../helpers/getTokenPrice';
 import Stakes from '../components/Stakes';
 import Modal from '../components/Modal';
-import { IChannelDistributionItem, ModalData, Plan, StakedEvent } from '../shared/interfaces';
+import { ModalData } from '../shared/interfaces';
 import { Contract, ethers } from 'ethers';
 import { Web3ReactProvider } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
@@ -19,13 +18,12 @@ import WalletConnect from '../components/WalletConnect';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 
 import { getUserAvailableTokens } from '../helpers/getUserAvailableTokens';
-import { getPlans } from '../helpers/getPlans';
 import InfoBar from '../components/InfoBar';
 import Newsletter from '../components/Newsletter/Newsletter';
-import { getFarmedAmount } from '../helpers/getFarmedAmount';
-import { getMaxPlanByDate } from '../helpers/getMaxPlanByDate';
 import { useConfig } from '../contexts/Config';
 import getStakingAbi from '../helpers/getStakingAbi';
+import { GetStaticProps } from 'next';
+import CommonService from '../services/Common';
 
 declare global {
   interface Window {
@@ -33,23 +31,28 @@ declare global {
   }
 }
 
+type Props = {
+  globalConfig: any
+}
+
 const initialAppState = {
   topPools: [],
-  latestPools: [],
+  latestStakes: [],
   topPositions: [],
   tokenLockedTotal: 0,
   tokenUsd: 0,
   tokenUserTotal: '0',
-  plans: [],
+  activePlans: [],
   distribution: [],
-  totalRewardsFarmed: 0
+  totalRewardsFarmed: 0,
+  maxApyPlan: undefined
 };
 
 function initialiseAnalytics(trackingId: string) {
   ReactGA.initialize(trackingId);
 }
 
-const Home: NextPage = () => {
+const Home: NextPage<Props> = ({ globalConfig }) => {
   const [appState, setAppState] = useState(initialAppState);
   const [showModal, setShowModal] = useState<'STAKE' | 'NEWSLETTER' | ''>('');
   const [walletId, setWalletId] = useState('');
@@ -59,15 +62,19 @@ const Home: NextPage = () => {
   const [modalData, setModalData] = useState<ModalData>({});
   const [dataLoadError, setDataLoadError] = useState(false);
   const [refreshData, doRefreshData] = useState(0);
-  const { token, staking, network, ga_tracking_id, site } = useConfig();
+  const { token, staking, network, ga_tracking_id, site, isLoading } = useConfig();
 
   useEffect(() => {
-    initialiseAnalytics(ga_tracking_id);
-    ReactGA.pageview('/index');
-    getGeneralData();
     setLoading(false);
+    if (!isLoading) {
+      getGeneralData();
+    }
+    if (ga_tracking_id) {
+      initialiseAnalytics(ga_tracking_id);
+      ReactGA.pageview('/index');
+    }
     // eslint-disable-next-line
-  }, []);
+  }, [isLoading, ga_tracking_id]);
 
   useEffect(() => {
     async function getUserTokenAmount() {
@@ -75,6 +82,7 @@ const Home: NextPage = () => {
       setAppState(prevState => ({...prevState, tokenUserTotal: availableTokens}))
     }
     if (walletId) getUserTokenAmount();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [walletId, refreshData]);
 
   async function loadWallet(connector: AbstractConnector, library: Web3Provider) {
@@ -88,7 +96,7 @@ const Home: NextPage = () => {
     })
 
     let signer = library.getSigner();
-    const stakingAbi = getStakingAbi();
+    const stakingAbi = await getStakingAbi();
     const stakingContract = new ethers.Contract(staking.address, stakingAbi, signer);
     const walletId = await connector.getAccount();
 
@@ -110,84 +118,34 @@ const Home: NextPage = () => {
 
   async function getGeneralData() {
     try {
-      const stakedData = await getStakedData(staking.address, network.web3_provider_url);
+      const stakes = await CommonService.getLatestStakes();
+      const topStakes = await CommonService.getTopStakes();
+      const topPositions = await CommonService.getHighestPositions();
       const tokenPriceUsd = await getTokenPrice(token.coingecko_coin_ticker);
-      const plans = await getAvailablePlans();
-
-      // calculate data for different columns
-      let allCreators: any = {};
-      let topPositions: any = {};
-      let totalLocked = 0;
-      const distribution = staking.channels.map(channel => ({ ...channel, count: 0 }));
-      let totalRewardsFarmed = 0;
-
-      stakedData.forEach(event => {
-        totalLocked += event.amount;
-        allCreators[event.poolHandle] = {
-          ...event,
-          amount: allCreators[event.poolHandle]?.amount + event.amount || event.amount
-        };
-        topPositions[event.sender] = {
-          ...event,
-          amount: topPositions[event.poolHandle]?.amount + event.amount || event.amount
-        }
-        const distributionItem = distribution.find(channel => channel.prefix === event.social) as IChannelDistributionItem;
-        distributionItem.count += 1;
-        // prefill plan and unlockTime for farmed calculations
-        event.plan = getMaxPlanByDate(event.date, plans);
-        event.unlockTime = new Date(new Date(event.date).setMonth(new Date(event.date).getMonth() + event.plan.lockMonths));
-        totalRewardsFarmed += getFarmedAmount(event.amount, event.date, event.unlockTime, event.plan)
-      });
-
-      // sort by high to low
-      allCreators = Object.values(allCreators);
-      allCreators.sort((a: { amount: number; }, b: { amount: number; }) => (b.amount - a.amount));
-      topPositions = Object.values(topPositions);
-      topPositions.sort((a: { amount: number; }, b: { amount: number; }) => (b.amount - a.amount));
-      distribution.sort((a: { count: number; }, b: { count: number; }) => (b.count - a.count));
-
-      const latestPools = stakedData.sort((a, b) => { return b.date.getTime() - a.date.getTime() });
-      // set state
       setAppState((prevState) => ({
         ...prevState,
-        topPools: allCreators,
-        latestPools: latestPools,
+        latestStakes: stakes,
+        topPools: topStakes,
         topPositions: topPositions,
-        tokenUsd: tokenPriceUsd,
-        tokenLockedTotal: totalLocked,
-        distribution: distribution,
-        totalRewardsFarmed: totalRewardsFarmed
+        tokenUsd: tokenPriceUsd
       }));
-      setTotalRewardsInterval(stakedData);
+      await getActivePlans();
     } catch (err) {
-      setDataLoadError(true)
+      setDataLoadError(true);
     }
   }
 
-  function setTotalRewardsInterval(stakedData: StakedEvent[]) {
-    // recalculate total farmed and update state
-    const reloadInterval = 7500;
-    setInterval(() => {
-      let totalRewardsFarmed = 0;
-      stakedData.forEach(event => {
-        totalRewardsFarmed += getFarmedAmount(event.amount, event.date, event.unlockTime, event.plan)
-      });
-      setAppState((prevState) => ({
-        ...prevState,
-        totalRewardsFarmed: totalRewardsFarmed
-      }));
-    }, reloadInterval);
-  }
-
-  async function getAvailablePlans(): Promise<Plan[]> {
-    const plans = await getPlans(staking.plan_ids, staking.address, network.web3_provider_url);
+  async function getActivePlans() {
+    let activePlans = await CommonService.getActivePlans();
+    // sort by high to low APY
+    activePlans.sort((a: { apy: number; }, b: { apy: number; }) => (b.apy - a.apy));
+    const totalLocked = await CommonService.getTotalCurrentlyStaked();
 
     setAppState((prevState) => ({
       ...prevState,
-      plans: plans
+      activePlans: activePlans,
+      tokenLockedTotal: totalLocked
     }));
-
-    return plans;
   }
 
   function openStakeModal(modalData: ModalData) {
@@ -196,13 +154,13 @@ const Home: NextPage = () => {
   }
 
   return (
-    <Layout>
+    <Layout config={globalConfig}>
       <Web3ReactProvider getLibrary={getLibrary}>
         <WalletConnect
           appLoaded={!loading}
           loadWallet={loadWallet}
         />
-        {site.show_tvl_bar && (
+        {site?.show_tvl_bar && (
           <InfoBar tokenUsd={appState.tokenUsd}
                    tokenLockedTotal={appState.tokenLockedTotal}
           />
@@ -214,18 +172,11 @@ const Home: NextPage = () => {
                   tokenUsd={appState.tokenUsd}
                   tokenUserTotal={appState.tokenUserTotal}
                   refreshData={refreshData}
-                  plans={appState.plans}
           />
         )}
-        <Overview tokenLockedTotal={appState.tokenLockedTotal}
-                  tokenUsd={appState.tokenUsd}
-                  plans={appState.plans}
-                  distribution={appState.distribution}
-                  totalRewards={appState.totalRewardsFarmed}
-                  totalStakes={appState.latestPools.length}
-        />
+        <Overview tokenLockedTotal={appState.tokenLockedTotal}/>
         <Pools top={appState.topPools.slice(0, 10)}
-               latest={appState.latestPools.slice(0, 10)}
+               latest={appState.latestStakes}
                positions={appState.topPositions.slice(0, 10)}
                tokenUsd={appState.tokenUsd}
                loadError={dataLoadError}
@@ -246,7 +197,7 @@ const Home: NextPage = () => {
                      }
                    }
                  }}
-                 plans={appState.plans}
+                 activePlans={appState.activePlans}
           />
         )}
         {showModal === 'NEWSLETTER' && (
@@ -258,3 +209,14 @@ const Home: NextPage = () => {
 };
 
 export default Home;
+
+export const getStaticProps: GetStaticProps = async () => {
+  const res = await fetch(process.env.NEXT_PUBLIC_CONFIG_URL);
+  const data = await res.json()
+
+  return {
+    props: {
+      globalConfig: data
+    }
+  }
+}

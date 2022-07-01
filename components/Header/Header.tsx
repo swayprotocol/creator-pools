@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './Header.module.scss';
 import { getWalletShorthand } from '../../helpers/getWalletShorthand';
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { injected } from '../../shared/constants';
+import { InjectedConnector } from '@web3-react/injected-connector';
 import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import useDarkMode from '../../helpers/useDarkMode';
@@ -15,7 +15,7 @@ type HeaderProps = {
 const Header = (props: HeaderProps) => {
   const { activate, deactivate, account, active } = useWeb3React<Web3Provider>();
   const [colorTheme, setTheme] = useDarkMode();
-  const { site, theme } = useConfig();
+  const { site, theme, network } = useConfig();
 
   const tryActivation = async (connector: AbstractConnector) => {
     return await activate(connector, undefined, true)
@@ -55,6 +55,8 @@ const Header = (props: HeaderProps) => {
   };
 
   async function connectWallet() {
+    if (!network) return;
+    const injected = new InjectedConnector({ supportedChainIds: network.supported_chain_ids });
     const isConnected = await tryActivation(injected);
     if (isConnected) {
       await activate(injected);
@@ -68,17 +70,17 @@ const Header = (props: HeaderProps) => {
 
           <div className={`${styles.topSection} my-3`}>
             <div className="header-title">
-              <h1 className="d-inline me-3">{site.heading}</h1>
-              <span>{site.sub_heading}</span>
+              <h1 className="d-inline me-3">{site?.heading}</h1>
+              <span>{site?.sub_heading}</span>
             </div>
             <div className="d-flex">
-              {site.networks.map(network => (
+              {site?.networks.map(network => (
                 <div className={styles.networkItem} key={network.name}>
                   <div className={`${styles.networkItemStatus} ${network.active ? styles.active : ''}`}/>
                   <div className={styles.networkItemName}>{network.name}</div>
                 </div>
               ))}
-              {theme.hasAltTheme && (
+              {theme?.hasAltTheme && (
                 <div className={styles.themeButtonWrapper}>
                   <button className={styles.themeButton} onClick={() => setTheme(colorTheme)}>
                     <svg width="20" height="20" viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -91,7 +93,7 @@ const Header = (props: HeaderProps) => {
           </div>
 
           <div className={`${styles.topSection} my-1`}>
-            {site.show_powered_by && (
+            {site?.show_powered_by && (
               <div className="d-flex align-items-center">
                 <h5 className="d-inline-block me-2 mb-0">Powered by</h5>
                 <a href="https://swaysocial.org/" rel="noreferrer" target="_blank" title="Sway Social">
