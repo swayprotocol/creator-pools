@@ -3,6 +3,7 @@ import { useWeb3React } from '@web3-react/core';
 import { Web3Provider } from '@ethersproject/providers';
 import { ethers } from 'ethers';
 import Moment from 'react-moment';
+import moment from 'moment';
 import styles from './Positions.module.scss';
 import { Channel, ChannelPosition, ModalData, ModalType } from '../../shared/interfaces';
 import { setSocialPrefix } from '../../helpers/getSocialType';
@@ -20,6 +21,7 @@ type ItemPositions = {
 const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
   const [amountToStake, setAmountToStake] = useState('');
   const [reward, setReward] = useState(0);
+  const [nextClaim, setNextClaim] = useState<Date>();
 
   const { account } = useWeb3React<Web3Provider>();
   const { token } = useConfig();
@@ -27,6 +29,7 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
   useEffect(() => {
     const longPoolhandle = setSocialPrefix(props.channel.poolHandle, props.channel.social);
     calculateReward(longPoolhandle);
+    calculateNextClaim()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -46,6 +49,13 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  const calculateNextClaim = async () => {
+    // Claimed set to last stake date + 30 days
+    const latest = props.positions.reduce((a,b) => +a.stakedAt > +b.stakedAt ? a : b)
+    const unlockDate = moment(latest.stakedAt).add(30,'days').toDate()
+    setNextClaim(unlockDate)
   }
 
   return (
@@ -119,9 +129,10 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
                 Claim
               </button>
             ) : (
-              <a target="_blank" rel="noopener noreferrer" href={token.exchange_url}>
-                Get {token.ticker}
-              </a>
+              <div className={styles.spacingTop}>
+                <span>Next claim:</span> 
+                <p><strong><Moment to={nextClaim} withTitle titleFormat="D MMM hh:mm:ss"/></strong></p>
+              </div>
           )}
         </div>
       </div>
