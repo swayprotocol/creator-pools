@@ -1,8 +1,9 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import Moment from 'react-moment';
 import styles from './Positions.module.scss';
 import { IChannel, IStake, ModalData, ModalType } from '../../shared/interfaces';
 import { useConfig } from '../../contexts/Config';
+import moment from 'moment';
 
 type ItemPositions = {
   openModal: (modalData: ModalData) => any
@@ -15,7 +16,13 @@ type ItemPositions = {
 
 const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
   const [amountToStake, setAmountToStake] = useState('');
+  const [nextClaim, setNextClaim] = useState<Date>();
   const { token } = useConfig();
+
+  useEffect(() => {
+    calculateNextClaim()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const openStakeModal = (type: ModalType, amount: string) => {
     props.openModal({
@@ -33,6 +40,13 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
   const farmed = (stake: IStake) => {
     if (stake.farmed) return stake.farmed
     return (props.channel.walletFarmed * stake.amount) / props.channel.walletTotalAmount
+  }
+
+  const calculateNextClaim = async () => {
+    // Claimed set to last stake date + 30 days
+    const latest = props.stakes.reduce((a,b) => +a.stakedAt > +b.stakedAt ? a : b)
+    const unlockDate = moment(latest.stakedAt).add(30,'days').toDate()
+    setNextClaim(unlockDate)
   }
 
   return (
@@ -101,14 +115,15 @@ const ItemPositions: FC<ItemPositions> = (props: ItemPositions) => {
           </button>
         </div>
         <div className={styles.tableItem}>
-          {(props.channel.walletFarmed) ? (
+          {(props.channel.bcWalletFarmed ) ? (
             <button className="btn btn-secondary" onClick={() => openStakeModal(ModalType.CLAIM, props.channel.walletFarmed.toString())}>
               Claim
             </button>
           ) : (
-            <a target="_blank" rel="noopener noreferrer" href={token.exchange_url}>
-              Get {token.ticker}
-            </a>
+            <div className={styles.spacingTop}>
+            <span>Next claim:</span> 
+            <p><strong><Moment to={nextClaim} withTitle titleFormat="D MMM hh:mm:ss"/></strong></p>
+            </div>
           )}
         </div>
       </div>

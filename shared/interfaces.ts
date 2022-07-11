@@ -32,6 +32,7 @@ export interface IChannel {
   stakes: IStake[];
   walletAverageAPY: number;
   walletFarmed: number;
+  bcWalletFarmed: number;
   walletStakesCount: number;
   walletTotalAmount: number;
 }
