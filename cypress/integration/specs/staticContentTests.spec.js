@@ -3,8 +3,7 @@
 describe('Check if ', () => {
   beforeEach(() => {
 
-    cy.visit('https://creatorpools.live/')
-
+    cy.visit('https://staging.creatorpools.live/')
   })
 
   it('Should display infoBar correctly', () => {
@@ -42,10 +41,6 @@ describe('Check if ', () => {
     cy.get('#__next > section:nth-child(3) > div > div > div.col-12.col-sm-8 > div:nth-child(1) > div:nth-child(3)').should('include.text', '% of circulating supply')
 
     cy.get('#__next > section:nth-child(3) > div > div > div.col-12.col-sm-4 > div > div.overview-item-title.col-7').should('include.text', "CHANNEL DISTRIBUTION")
-    cy.get('#__next > section:nth-child(3) > div > div > div.col-12.col-sm-4 > div > div.overview-item-channels.col-5 > div:nth-child(1)').should('include.text', "Instagram")
-    cy.get('#__next > section:nth-child(3) > div > div > div.col-12.col-sm-4 > div > div.overview-item-channels.col-5 > div:nth-child(2)').should('include.text', "Wallet")
-    cy.get('#__next > section:nth-child(3) > div > div > div.col-12.col-sm-4 > div > div.overview-item-channels.col-5 > div:nth-child(3)').should('include.text', "TikTok")
-    cy.get('#__next > section:nth-child(3) > div > div > div.col-12.col-sm-4 > div > div.overview-item-channels.col-5 > div:nth-child(4)').should('include.text', "Ethereum Name Service")
     cy.get('#__next > div > div > div > p').should('include.text', "TVL - total SWAY locked in creator pools")
 
     cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(1) > h4').should('have.text', 'Top creator pools')
