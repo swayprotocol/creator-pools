@@ -1,9 +1,11 @@
 describe('User can load page', () => {
     before(() => {
+
         cy.visit('https://staging.creatorpools.live/')
         //Used for the page to finish loading all the elements correctly
-        cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div.Item_titleWrap__jEPrA > div.Item_innerTitleWrap__PNF36.Item_clickable___l0o4 > div.Item_mainText__qWngH')
+        cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(1) > div:nth-child(3) > div:nth-child(1) > div.Item_titleWrap__jEPrA > div.Item_innerTitleWrap__PNF36.Item_clickable___l0o4')
     });
+
     it('Should switch theme color', () => {
         cy.get('#__next').should('have.css', 'color', 'rgb(35, 35, 35)');
         cy.get(' #__next > section.mb-5 > div > div > div.Header_topSection__loo_5.my-3 > div.d-flex > div.Header_themeButtonWrapper__YNNTR > button ').click()
@@ -11,6 +13,7 @@ describe('User can load page', () => {
         cy.get(' #__next > section.mb-5 > div > div > div.Header_topSection__loo_5.my-3 > div.d-flex > div.Header_themeButtonWrapper__YNNTR > button ').click()
         cy.get('#__next').should('have.css', 'color', 'rgb(35, 35, 35)');
     });
+
     it('Should open FAQ', () => {
         cy.get('#__next > section.mt-5.mb-4 > div > div > div > div:nth-child(2) > h4').click();
         cy.get('#__next > section.mt-5.mb-4 > div > div > div > div:nth-child(2) > div > p:nth-child(1)').should('have.text', 'Creator pools introduce a new metaverse-ready social capital concept by staking with your creators and sharing in their success.')
@@ -29,14 +32,12 @@ describe('User can load page', () => {
         cy.get('#__next > section.mt-5.mb-4 > div > div > div > div:nth-child(5) > div > p:nth-child(2)').should('have.text', '1) PROMOTIONAL PERIOD. The first generation staking pool offers a promotional APR of up to 444% instead of direct returns from NFT sales. Read more.')
         cy.get('#__next > section.mt-5.mb-4 > div > div > div > div:nth-child(5) > div > p:nth-child(3)').should('have.text', '2) BEING FIRST PAYS OFF. The first position in the pool gets the most favorable terms and yields better rewards. You can sit at the top position forever. Might be a smart idea to be the first to stake with @garyvee or beeple.eth...?')
         cy.get('#__next > section.mt-5.mb-4 > div > div > div > div:nth-child(5) > div > p:nth-child(4)').should('have.text', 'If a creator doesn\'t claim his pool, you can simply withdraw your stake after the promotional period. Click on Unstake to begin the withdrawal process.')
-
     });
 
     it('Should open popup on Top creator pools', () => {
         cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(1)').children().each(($el,index) => {
             if(index > 1) {
-                cy.log(index)
-                cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(1) > div:nth-child(' + (index+1) + ') > div:nth-child(1) > div.Item_titleWrap__jEPrA > div.Item_innerTitleWrap__PNF36.Item_clickable___l0o4 > div.Item_mainText__qWngH').click()
+                cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(1) > div:nth-child(' + (index+1) + ') > div:nth-child(1) > div.Item_titleWrap__jEPrA > div.Item_innerTitleWrap__PNF36.Item_clickable___l0o4 ').click()
                 cy.get('#__next > div.modal.undefined > div > div > div.modal-header.pb-0 > h3').should('have.text', 'Stake');
                 cy.get('#__next > div.modal.undefined > div > div > div.modal-body > form > div:nth-child(1) > label').should('have.text', 'Channel');
                 cy.get('#__next > div.modal.undefined > div > div > div.modal-body > form > div:nth-child(2) > label').should('have.text', 'Identificator');
@@ -56,10 +57,11 @@ describe('User can load page', () => {
             }
         })
     });
-    it('Should open popup on Latest stakes', () => {
+
+    it.only('Should open popup on Latest stakes', () => {
         cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(2)').children().each(($el,index) => {
             if(index > 1) {
-                cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(2) > div:nth-child(' + (index+1) + ') > div:nth-child(1) > div.Item_titleWrap__jEPrA > div.Item_innerTitleWrap__PNF36.Item_clickable___l0o4 > div.Item_mainText__qWngH').click()
+                cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(2) > div:nth-child(' + (index+1) + ') > div:nth-child(1) > div.Item_titleWrap__jEPrA > div.Item_innerTitleWrap__PNF36.Item_clickable___l0o4').click()
                 cy.get('#__next > div.modal.undefined > div > div > div.modal-header.pb-0 > h3').should('have.text', 'Stake');
                 cy.get('#__next > div.modal.undefined > div > div > div.modal-body > form > div:nth-child(1) > label').should('have.text', 'Channel');
                 cy.get('#__next > div.modal.undefined > div > div > div.modal-body > form > div:nth-child(2) > label').should('have.text', 'Identificator');
@@ -67,7 +69,6 @@ describe('User can load page', () => {
                 cy.get('#__next > div.modal.undefined > div > div > div.modal-body > form > div:nth-child(6) > label').should('have.text', 'Promotional APR');
 
                 cy.get('#__next > div.modal.undefined > div > div > div.modal-body > form > div.row.mb-3 > div > div > div.Modal_socialName__zuvC3').should('not.be.empty');
-
                 cy.get('#__next > div.modal.undefined > div > div > div.modal-body > form > div:nth-child(2) > div.col-sm-9.offset-sm-3.mt-3 > p').should('have.text',
                     'NOTE: We don\'t validate entries, so make sure there are no typos.');
                 cy.get('#__next > div.modal.undefined > div > div > div.modal-body > form > div:nth-child(2) > div.Modal_midText__eg_0j.Modal_lightText__54BhX.col-sm-5').should('have.text',
@@ -75,14 +76,22 @@ describe('User can load page', () => {
 
                 cy.get('#__next > div.modal.undefined > div > div > div.modal-body > form > div:nth-child(5) > div.Modal_tokenAvailable__7uPFe.col-sm-5 > img').should('be.visible')
 
+                cy.get('#__next > div.modal.undefined > div > div > div.modal-body > form > div:nth-child(6) > div.Modal_midText__eg_0j.col-sm-6')
+                    .invoke('text')
+                    .should('match', /Position will be locked for [0-9][0-9] months./);
+
+                cy.get('#planId').invoke('text').should('match', /[0-9]+%/)
+                cy.get('#__next > div.modal.undefined > div > div > div.modal-body > form > div:nth-child(5) > div.Modal_tokenAvailable__7uPFe.col-sm-5 > span').invoke('text').should('match', /[0-9]+.[0-9]+ available/)
+
                 cy.get('#__next > div.modal.undefined > div > div > div.modal-header.pb-0 > button').click()
             }
         })
     });
+
     it('Should open popup on Highest position', () => {
         cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(3)').children().each(($el,index) => {
             if(index > 1) {
-                cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(3) > div:nth-child(' + (index+1) + ') > div:nth-child(1) > div.Item_titleWrap__jEPrA > div.Item_innerTitleWrap__PNF36.Item_clickable___l0o4 > div.Item_mainText__qWngH').click()
+                cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(3) > div:nth-child(' + (index+1) + ') > div:nth-child(1) > div.Item_titleWrap__jEPrA > div.Item_innerTitleWrap__PNF36.Item_clickable___l0o4').click()
                 cy.get('#__next > div.modal.undefined > div > div > div.modal-header.pb-0 > h3').should('have.text', 'Stake');
                 cy.get('#__next > div.modal.undefined > div > div > div.modal-body > form > div:nth-child(1) > label').should('have.text', 'Channel');
                 cy.get('#__next > div.modal.undefined > div > div > div.modal-body > form > div:nth-child(2) > label').should('have.text', 'Identificator');
@@ -106,7 +115,8 @@ describe('User can load page', () => {
             }
         })
     });
-    it.only('Footer links should work', () => {
+
+    it('Footer links should work', () => {
         cy.get('#__next > footer > div > div:nth-child(1) > ul > li:nth-child(2) > a').should('have.attr', 'href', 'https://swaysocial.org')
         cy.get('#__next > footer > div > div:nth-child(1) > ul > li:nth-child(3) > a').should('have.attr', 'href', 'https://github.com/swayprotocol')
         cy.get('#__next > footer > div > div:nth-child(1) > ul > li:nth-child(4) > a').should('have.attr', 'href', 'https://t.me/swayprotocol')
