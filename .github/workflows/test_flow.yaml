@@ -21,7 +21,7 @@ jobs:
         run: |
           echo $ENV_FILE | base64 -di > .env
 
-      - run: npm install
+      - run: yarn
       - run: yarn run export
 
       - name: Archive Artifact
@@ -29,13 +29,3 @@ jobs:
         with:
           name: out
           path: out
-
-  test:
-    needs: [build]
-    name: Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Install and run Synpress
-        run:  yarn test:e2e
