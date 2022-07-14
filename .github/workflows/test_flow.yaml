@@ -19,7 +19,7 @@ jobs:
         env:
           ENV_FILE: ${{ secrets.CYPRESS_TESTS }}
         run: |
-          echo $ENV_FILE | base64 --decode > .env
+          echo $ENV_FILE | base64 -di > .env
 
       - run: yarn
       - run: yarn run export
