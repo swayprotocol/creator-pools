@@ -22,10 +22,9 @@ describe('Test metamask functions', () => {
   });
 
   it('Should open stake modal and stake it', () => {
-    let hashBla = 'TX_HASH'
+    let staked = false
     stakingContract.once('Staked', async (poolHandle,address,amount,poolIndex,reciept) => {
-      console.log(poolHandle,address,amount,poolIndex,reciept)
-      hashBla=reciept.transactionHash
+      staked = true
     })
     cy.get('.Stakes_connectWrapper__XanLe > .btn').click()
     cy.get('#social').type('ig')
@@ -33,9 +32,34 @@ describe('Test metamask functions', () => {
     cy.get('#amount').type(1000)
     cy.get('.modal-body > form').find('button').click()
     cy.confirmMetamaskTransaction()
-    cy.wait(30000).then(()=>{
-      const status = cy.etherscanWaitForTxSuccess(hashBla)
-      console.log(status)
+    cy.wait(40000).then(()=>{
+      cy.get('.close-btn').click()
+      expect(staked).to.be.true
     })
   })
+
+  it('Should unstake ', () => {
+    let unstaked = false
+    stakingContract.once('Unstaked', async (poolHandle,recipient,amount,reciept) => {
+      console.log(poolHandle,recipient,amount,reciept)
+      unstaked = true
+    })
+    
+    cy.wait(5000).then(()=>{
+      cy.get('.Item_item__woJYJ').contains('test').parents('.Item_item__woJYJ').contains('Locked')
+    })
+    cy.wait(60000).then(()=>{
+      cy.get('.Item_item__woJYJ').contains('test').click()
+      cy.get('.Item_item__woJYJ').contains('test').parents('.Item_item__woJYJ').contains('Unlocked')
+      cy.contains('Unstake').click()
+      cy.get('.modal-body').contains('Unstake').click()
+      cy.confirmMetamaskTransaction()
+    })
+    cy.wait(40000).then(()=>{
+      cy.get('.close-btn').click()
+      expect(unstaked).to.be.true
+    })
+  })
+
+
 })
