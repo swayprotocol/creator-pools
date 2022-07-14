@@ -21,7 +21,7 @@ jobs:
         run: |
           echo $ENV_FILE | base64 -di > .env
 
-      - run: yarn
+      - run: npm install
       - run: yarn run export
 
       - name: Archive Artifact
