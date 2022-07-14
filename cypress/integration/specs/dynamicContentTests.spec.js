@@ -1,4 +1,4 @@
-describe.only('Dynamic tests', () => {
+describe('Dynamic tests', () => {
     before(() => {
 
         cy.visit('https://staging.creatorpools.live/')
@@ -58,7 +58,7 @@ describe.only('Dynamic tests', () => {
         })
     });
 
-    it.only('Should open popup on Latest stakes', () => {
+    it('Should open popup on Latest stakes', () => {
         cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(2)').children().each(($el,index) => {
             if(index > 1) {
                 cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(2) > div:nth-child(' + (index+1) + ') > div:nth-child(1) > div.Item_titleWrap__jEPrA > div.Item_innerTitleWrap__PNF36.Item_clickable___l0o4').click()
