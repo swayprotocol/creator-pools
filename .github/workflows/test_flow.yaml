@@ -38,5 +38,4 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install and run Synpress
-        run:  yarn add @synthetixio/synpress -g          
-              yarn test:e2e
+        run:  yarn test:e2e
