@@ -1,6 +1,4 @@
-
-
-describe('Check if ', () => {
+describe('Static tests ', () => {
 
   beforeEach(() => {
     cy.visit('https://staging.creatorpools.live/')

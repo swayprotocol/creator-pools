@@ -1,4 +1,4 @@
-describe('User can load page', () => {
+describe.only('Dynamic tests', () => {
     before(() => {
 
         cy.visit('https://staging.creatorpools.live/')
