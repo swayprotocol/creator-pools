@@ -78,7 +78,7 @@ describe('Dynamic tests', () => {
 
                 cy.get('#__next > div.modal.undefined > div > div > div.modal-body > form > div:nth-child(6) > div.Modal_midText__eg_0j.col-sm-6')
                     .invoke('text')
-                    .should('match', /Position will be locked for [0-9][0-9] months./);
+                    .should('match', /Position will be locked for [0-9]+ months./);
 
                 cy.get('#planId').invoke('text').should('match', /[0-9]+%/)
                 cy.get('#__next > div.modal.undefined > div > div > div.modal-body > form > div:nth-child(5) > div.Modal_tokenAvailable__7uPFe.col-sm-5 > span').invoke('text').should('match', /[0-9]+.[0-9]+ available/)
