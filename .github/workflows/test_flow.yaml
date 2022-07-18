@@ -37,5 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: yarn global add @synthetixio/synpress -g
+      - run: yarn global add @synthetixio/synpress
+      - run: yarn global add ethers
+      - run: yarn global add @ethersproject/providers
       - run: SECRET_WORDS='${{ secrets.CYPRESS_TESTING_MNEMONIC }}' synpress run --configFile cypress/e2e/customConfig.json
