@@ -1,8 +1,7 @@
-import { Contract } from 'ethers'
-import { JsonRpcProvider } from '@ethersproject/providers';
+import { Contract, ethers } from 'ethers'
 import stakingAbi from '../../../shared/abis/staging-staking-abi.json'
 const url = 'https://polygon-mumbai.g.alchemy.com/v2/6kkkcccOr3uJck57CliIomFbHt9eSYu5';
-const rpcProvider = new JsonRpcProvider(url);
+const rpcProvider = new ethers.providers.JsonRpcProvider(url);
 const stakingContract = new Contract('0x440141a6325966a4fDecce951f449D0fC2581B60', stakingAbi, rpcProvider)
 
 
@@ -41,7 +40,6 @@ describe('Test metamask functions', () => {
   it('Should unstake ', () => {
     let unstaked = false
     stakingContract.once('Unstaked', async (poolHandle,recipient,amount,reciept) => {
-      console.log(poolHandle,recipient,amount,reciept)
       unstaked = true
     })
     
