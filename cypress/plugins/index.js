@@ -21,4 +21,8 @@ module.exports = (on, config) => {
     // `on` is used to hook into various events Cypress emits
     // `config` is the resolved Cypress config
     const ethers = require('ethers')
+    const Contract = require('ethers')
+    on('before:run', (details) => {
+        console.log('Ethers loaded')
+    })
 }
