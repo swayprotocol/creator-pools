@@ -34,8 +34,5 @@
     "eslint-config-next": "12.0.7",
     "sass": "^1.45.2",
     "typescript": "4.5.4"
-  },
-  "browser": {
-    "ethers": false
   }
 }
