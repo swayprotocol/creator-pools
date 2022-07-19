@@ -1,4 +1,4 @@
-import { Contract, ethers } from '../../../node_modules/ethers/lib/index'
+import { Contract, ethers } from 'ethers'
 import stakingAbi from '../../../shared/abis/staging-staking-abi.json'
 const url = 'https://polygon-mumbai.g.alchemy.com/v2/6kkkcccOr3uJck57CliIomFbHt9eSYu5';
 const rpcProvider = new ethers.providers.JsonRpcProvider(url);
