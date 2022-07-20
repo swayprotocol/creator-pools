@@ -1,4 +1,5 @@
 {
+  "projectId": "4cuvwb",
   "baseUrl": "https://staging.creatorpools.live/",
   "userAgent": "synpress",
   "retries": { "runMode": 0, "openMode": 0 },
