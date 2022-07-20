@@ -14,15 +14,17 @@ describe('Test metamask functions', () => {
   });
 
   it('Should open stake modal and stake it', () => {
-    cy.get('.Stakes_connectWrapper__XanLe > .btn').click()
-    cy.get('#social').type('ig')
-    cy.get('#poolHandle').type('test')
-    cy.get('#amount').type(1000)
-    cy.get('.modal-body > form').find('button').click()
-    cy.confirmMetamaskTransaction()
-    cy.wait(40000).then(()=>{
-      cy.get('.close-btn').click()
-      cy.get('.Item_item__woJYJ').contains('test').parents('.Item_item__woJYJ').contains('Locked')
+    cy.wait(2000).then(()=>{
+      cy.get('.Stakes_connectWrapper__XanLe > .btn').click()
+      cy.get('#social').type('ig')
+      cy.get('#poolHandle').type('test')
+      cy.get('#amount').type(1000)
+      cy.get('.modal-body > form').find('button').click()
+      cy.confirmMetamaskTransaction()
+      cy.wait(40000).then(()=>{
+        cy.get('.close-btn').click()
+        cy.get('.Item_item__woJYJ').contains('test').parents('.Item_item__woJYJ').contains('Locked')
+      })
     })
   })
 
