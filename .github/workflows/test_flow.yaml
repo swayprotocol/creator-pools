@@ -45,4 +45,4 @@ jobs:
           path: out
           
       - run: yarn global add @synthetixio/synpress
-      - run: SECRET_WORDS='${{ secrets.CYPRESS_TESTING_MNEMONIC }}' synpress run --configFile cypress/e2e/customConfig.json
+      - run: SECRET_WORDS='${{ secrets.CYPRESS_TESTING_MNEMONIC }}' synpress run --configFile cypress/e2e/customConfig.json --record --key 6a50a203-8831-4ca5-bd99-87c5d5140cfb
