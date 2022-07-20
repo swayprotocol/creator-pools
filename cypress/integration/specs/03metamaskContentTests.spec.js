@@ -20,7 +20,9 @@ describe('Test metamask functions', () => {
       cy.get('#poolHandle').type('test')
       cy.get('#amount').type(1000)
       cy.get('.modal-body > form').find('button').click({ force: true })
-      cy.confirmMetamaskTransaction()
+      
+      // confirm transaction or confirm spending
+      cy.confirmMetamaskPermissionToSpend()
       cy.wait(40000).then(()=>{
         cy.get('.close-btn').click()
         cy.get('.Item_item__woJYJ').contains('test').parents('.Item_item__woJYJ').contains('Locked')
