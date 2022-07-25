@@ -35,15 +35,15 @@ describe('Static tests ', () => {
 
     cy.get('#__next > section:nth-child(3) > div > div > div.col-12.col-sm-8 > div:nth-child(1) > div.overview-item-value')
         .invoke('text')
-        .should('match', /(.?,?[0-9])+ [a-zA-Z]+/);
+        .should('match', /^(.?,?[0-9])+ [a-zA-Z]+$/);
 
     cy.get('#__next > section:nth-child(3) > div > div > div.col-12.col-sm-8 > div:nth-child(2) > div.overview-item-value')
         .invoke('text')
-        .should('match', /(.?,?[0-9])+%/);
+        .should('match', /^(.?,?[0-9])+%$/);
 
     cy.get('#__next > section:nth-child(3) > div > div > div.col-12.col-sm-8 > div:nth-child(3) > div.overview-item-value')
         .invoke('text')
-        .should('match', /(.?,?[0-9])+ [a-zA-Z]+/);
+        .should('match', /^(.?,?[0-9])+ [a-zA-Z]+$/);
 
     cy.get('#__next > section:nth-child(3) > div > div > div.col-12.col-sm-4 > div > div.overview-item-channels.col-5 > div')
         .invoke('text')
