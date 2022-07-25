@@ -6,13 +6,17 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "export": "next build && next export"
+    "export": "next build && next export",
+    "test:e2e": "env-cmd synpress run --configFile cypress/e2e/customConfig.json",
+    "test:e2e-record": "env-cmd synpress run --configFile cypress/e2e/customConfig.json --record --key 6a50a203-8831-4ca5-bd99-87c5d5140cfb"
   },
   "dependencies": {
+    "@synthetixio/synpress": "^1.2.0",
     "@web3-react/abstract-connector": "^6.0.7",
     "@web3-react/core": "^6.1.9",
     "@web3-react/injected-connector": "^6.0.7",
     "bootstrap": "^5.2.0",
+    "env-cmd": "^10.1.0",
     "ethers": "^5.6.9",
     "moment": "^2.29.4",
     "next": "^12.2.2",

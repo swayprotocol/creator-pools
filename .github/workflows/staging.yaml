@@ -29,9 +29,24 @@ jobs:
         with:
           name: out
           path: out
+  test:
+    needs: [build]
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download Artifact
+        uses: actions/download-artifact@master
+        with:
+          name: out
+          path: out
+
+      - run: yarn global add @synthetixio/synpress
+      - run: SECRET_WORDS='${{ secrets.CYPRESS_TESTING_MNEMONIC }}' synpress run --configFile cypress/e2e/customConfig.json --record --key 6a50a203-8831-4ca5-bd99-87c5d5140cfb
 
   deploy:
-    needs: [build]
+    needs: [test]
     name: Deploy
     runs-on: ubuntu-latest
     steps:
