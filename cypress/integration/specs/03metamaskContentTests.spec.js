@@ -23,7 +23,7 @@ describe('Test metamask functions', () => {
 
       // confirm transaction or confirm spending
       cy.confirmMetamaskPermissionToSpend()
-      cy.wait(60000).then(()=>{
+      cy.wait(40000).then(()=>{
         cy.get('.close-btn').click()
         cy.get('.Item_item__woJYJ').contains('test').parents('.Item_item__woJYJ').contains('Locked')
       })
