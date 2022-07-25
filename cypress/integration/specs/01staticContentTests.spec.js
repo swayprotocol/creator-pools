@@ -35,23 +35,23 @@ describe('Static tests ', () => {
 
     cy.get('#__next > section:nth-child(3) > div > div > div.col-12.col-sm-8 > div:nth-child(1) > div.overview-item-value')
         .invoke('text')
-        .should('match', /^(.?,?[0-9])+ [a-zA-Z]+$/);
+        .should('match', /^\$?[\d,]+(\.\d*)? [a-zA-Z]+$/);
 
     cy.get('#__next > section:nth-child(3) > div > div > div.col-12.col-sm-8 > div:nth-child(2) > div.overview-item-value')
         .invoke('text')
-        .should('match', /^(.?,?[0-9])+%$/);
+        .should('match', /^\$?[\d,]+(\.\d*)?%$/);
 
     cy.get('#__next > section:nth-child(3) > div > div > div.col-12.col-sm-8 > div:nth-child(3) > div.overview-item-value')
         .invoke('text')
-        .should('match', /^(.?,?[0-9])+ [a-zA-Z]+$/);
+        .should('match', /^\$?[\d,]+(\.\d*)? [a-zA-Z]+$/);
 
     cy.get('#__next > section:nth-child(3) > div > div > div.col-12.col-sm-4 > div > div.overview-item-channels.col-5 > div')
         .invoke('text')
-        .should('match', /[a-zA-Z]+ [0-9]+%/);
+        .should('match', /^[a-zA-Z]+ [0-9]+%$/);
 
     cy.get('#__next > section:nth-child(3) > div > div > div.col-12.col-sm-8 > div:nth-child(1) > div:nth-child(3)')
         .invoke('text')
-        .should('match', /[0-9]+\.?[0-9]*% of circulating supply/);
+        .should('match', /^[0-9]+\.?[0-9]*% of circulating supply$/);
 
     cy.get('#__next > section:nth-child(3) > div > div > div.col-12.col-sm-8 > div:nth-child(1) > div:nth-child(3)').should('include.text', '% of circulating supply')
 
@@ -64,11 +64,11 @@ describe('Static tests ', () => {
 
     cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(1) > div > div:nth-child(1) > div:nth-child(2) > div')
         .invoke('text')
-        .should('match', /[0-9]+$/);
+        .should('match', /^[0-9]+$/);
 
     cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(1) > div > div:nth-child(2) > div:nth-child(2) > div')
         .invoke('text')
-        .should('match', /[0-9]+ [a-zA-Z]+/);
+        .should('match', /^[0-9]+ [a-zA-Z]+$/);
 
 
     cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(2) > h4').should('have.text', 'Latest stakes')
@@ -76,15 +76,15 @@ describe('Static tests ', () => {
 
     cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(2) > div > div:nth-child(1) > div:nth-child(2) > div')
         .invoke('text')
-        .should('match', /[0-9]+/);
+        .should('match', /^[0-9]+$/);
 
     cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(2) > div')
         .invoke('text')
-        .should('match', /[0-9]+ [a-zA-Z]+/);
+        .should('match', /^[0-9]+ [a-zA-Z]+$/);
 
     cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div')
         .invoke('text')
-        .should('match', /0x(\d?[a-zA-Z]?.?)*/);
+        .should('match', /^0x(\d?[a-zA-Z]?.?)*$/);
 
     cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(3) > h4').should('have.text', 'Highest positions')
     cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(3) > div > div:nth-child(1) > div.Item_titleWrap__jEPrA > div.Item_innerTitleWrap__PNF36.Item_clickable___l0o4 > div.Item_socialIcon__DjOW9').should('be.visible')
@@ -94,11 +94,11 @@ describe('Static tests ', () => {
 
     cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(3) > div > div:nth-child(1) > div:nth-child(2) > div')
         .invoke('text')
-        .should('match', /[0-9]+/);
+        .should('match', /^[0-9]+$/);
 
     cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) > div')
         .invoke('text')
-        .should('match', /0x(\d?[a-zA-Z]?.?)*/);
+        .should('match', /^0x(\d?[a-zA-Z]?.?)*$/);
   });
 
   it('Should display FAQ correctly', () => {
