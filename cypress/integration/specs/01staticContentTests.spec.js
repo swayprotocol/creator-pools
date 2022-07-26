@@ -84,7 +84,7 @@ describe('Static tests ', () => {
 
     cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(1) > div')
         .invoke('text')
-        .should('match', /0x(\d?[a-zA-Z]?.?)*/);
+        .should('match', /0x[a-zA-Z0-9]*/);
 
     cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(3) > h4').should('have.text', 'Highest positions')
     cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(3) > div > div:nth-child(1) > div.Item_titleWrap__jEPrA > div.Item_innerTitleWrap__PNF36.Item_clickable___l0o4 > div.Item_socialIcon__DjOW9').should('be.visible')
@@ -98,7 +98,7 @@ describe('Static tests ', () => {
 
     cy.get('#__next > section:nth-child(4) > div > div > div:nth-child(3) > div > div:nth-child(2) > div:nth-child(1) > div')
         .invoke('text')
-        .should('match', /0x(\d?[a-zA-Z]?.?)*/);
+        .should('match', /0x[a-zA-Z0-9]*/);
   });
 
   it('Should display FAQ correctly', () => {
