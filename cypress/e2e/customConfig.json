@@ -1,0 +1,15 @@
+{
+  "projectId": "4cuvwb",
+  "baseUrl": "https://staging.creatorpools.live/",
+  "userAgent": "synpress",
+  "retries": { "runMode": 0, "openMode": 0 },
+  "integrationFolder": "cypress/integration/specs",
+  "chromeWebSecurity": true,
+  "component": {
+    "componentFolder": ".",
+    "testFiles": "**/*spec.{js,jsx,ts,tsx}"
+  },
+  "env": {
+    "coverage": false
+  }
+}
