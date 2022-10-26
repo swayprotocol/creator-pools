@@ -1,0 +1,46 @@
+.modal {
+  a {
+    color: black;
+    text-decoration: underline;
+  } 
+}
+
+.logo {
+  display:block;
+  margin: auto;
+  max-width: 200px;
+}
+
+.description {
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #E9F0FC;
+}
+
+.socialLinkWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.socialIcon {
+  display: flex;
+  width: 22px;
+}
+
+.socialName {
+  margin-left: 1rem;
+}
+
+.socialLink {
+  margin-left: 1rem;
+}
+
+.tokenAvailable {
+  display: flex;
+  align-items: center;
+  line-height: 1;
+
+  img {
+    margin-right: 10px;
+  }
+}
