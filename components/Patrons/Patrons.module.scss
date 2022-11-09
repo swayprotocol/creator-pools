@@ -1,6 +1,6 @@
 .modal {
   a {
-    color: black;
+    color: var(--text-dark);
     text-decoration: underline;
   } 
 }
@@ -14,7 +14,7 @@
 .description {
   padding: 10px;
   border-radius: 10px;
-  background-color: #E9F0FC;
+  background-color: var(--active-stakes-item-bg)
 }
 
 .socialLinkWrapper {
