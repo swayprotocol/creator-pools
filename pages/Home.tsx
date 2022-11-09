@@ -193,8 +193,10 @@ const Home: NextPage = () => {
   }
 
   function openStakeModal(modalData: ModalData) {
-    if (router && router?.pathname?.includes('cloutpatrons'))
+    if (router && router?.pathname?.includes('cloutpatrons')){
+      console.log(router)
       setShowModal('PATRONS')
+    }
     else
       setShowModal('STAKE');
     setModalData(modalData);
