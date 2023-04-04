@@ -15,8 +15,9 @@ const InfoBar: FC<BarType> = (props: BarType) => {
         <div className="container">
           <div className="row">
             <p>
-              <strong>{(props.tokenLockedTotal).toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong> TVL
-              - total {token.ticker} locked in creator pools
+              {/* <strong>{(props.tokenLockedTotal).toLocaleString('en-US', { maximumFractionDigits: 0 })}</strong> TVL
+              - total {token.ticker} locked in creator pools */}
+              Creator pools are getting discontinued. Active staking plans will remain active by end of 2023. Read more about transition to Sway Protocol at <a href='https://swayprotocol.org' target='_blank' rel='noreferrer'>swayprotocol.org</a>
             </p>
           </div>
         </div>
