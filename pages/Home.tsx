@@ -223,13 +223,13 @@ const Home: NextPage = () => {
                   plans={appState.plans}
           />
         )}
-        <Overview tokenLockedTotal={appState.tokenLockedTotal}
+        {/* <Overview tokenLockedTotal={appState.tokenLockedTotal}
                   tokenUsd={appState.tokenUsd}
                   plans={appState.plans}
                   distribution={appState.distribution}
                   totalRewards={appState.totalRewardsFarmed}
                   totalStakes={appState.latestPools.length}
-        />
+        /> */}
         <Pools top={appState.topPools.slice(0, 10)}
                latest={appState.latestPools.slice(0, 10)}
                positions={appState.topPositions.slice(0, 10)}
